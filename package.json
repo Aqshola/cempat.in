@@ -10,11 +10,18 @@
     "@types/node": "^16.11.25",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",
+    "autoprefixer": "^10.4.2",
+    "mapbox-gl": "^2.7.0",
+    "postcss": "^8.4.6",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-map-gl": "^7.0.7",
+    "react-router-dom": "6",
     "react-scripts": "5.0.0",
+    "tailwindcss": "^3.0.23",
     "typescript": "^4.5.5",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "zustand": "^3.7.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -39,5 +46,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^16.2.1",
+    "@commitlint/config-conventional": "^16.2.1",
+    "husky": "^7.0.4"
   }
 }
