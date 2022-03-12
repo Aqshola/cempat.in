@@ -24,3 +24,25 @@
     @apply font-poppins;
   }
 }
+
+
+.animate-scale-up {
+  animation-duration: 0.2s;
+  animation-name: scale-up;
+  animation-timing-function: ease-in;
+  
+  
+}
+
+@keyframes scale-up {
+    from{
+      transform:scale(0)
+    }
+
+    50%{
+      transform:scale(1.5)
+    }
+    to{
+      to:scale(1)
+    }
+}
