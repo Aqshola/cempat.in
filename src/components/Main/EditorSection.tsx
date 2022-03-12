@@ -1,8 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
-import useOutsideClick from "helper/useOutsideClick";
-import { CgClose } from "react-icons/cg";
+import RightNav from "components/Nav/RightNav";
 
 type Props = {
   onOutsideEditor: () => void;
@@ -14,28 +13,13 @@ type Props = {
 
 export default function EditorSection({
   titleEditor,
-  onCloseEditor,
-  onOutsideEditor,
-  showEditor,
-  onSaveEditor
+  onSaveEditor,
+  ...props
 }: Props) {
   const [editorState, seteditorState] = useState(EditorState.createEmpty());
-  const rightNavRef = useRef(null);
-  useOutsideClick(rightNavRef, () => {
-    onOutsideEditor();
-  });
+  
   return (
-    <div
-      ref={rightNavRef}
-      id="right-nav"
-      className={
-        "transition-all duration-500 min-h-screen w-full md:w-1/2 absolute right-0 top-0 bg-white z-20 py-7 px-4 flex flex-col " +
-        (showEditor ? "translate-x-0 visible" : " translate-x-full invisible")
-      }
-    >
-      <button className="w-fit h-fit" onClick={onCloseEditor}>
-        <CgClose className="w-6 h-6 text-[#03C88E]" />
-      </button>
+    <RightNav {...props}>
       <h1 className="text-[#03C88E] font-semibold mt-10 text-2xl">
         {titleEditor}
       </h1>
@@ -63,6 +47,6 @@ export default function EditorSection({
       >
         Simpan
       </button>
-    </div>
+    </RightNav>
   );
 }
