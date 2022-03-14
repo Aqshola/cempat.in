@@ -18,8 +18,8 @@ export default function SideNav() {
       id="side-nav"
       className={
         "transition-all duration-500  min-h-screen   z-50 bg-[#03C88E] py-5 px-6 flex flex-col " +
-        (route.pathname === "main" ? " w-full md:w-1/4 absolute " : "") +
-        (route.pathname === "main"
+        (firstPathname === "main" ? " w-full md:w-1/4 absolute " : "") +
+        (firstPathname === "main"
           ? sideNav
             ? " translate-x-0 visible "
             : " -translate-x-full invisible"
