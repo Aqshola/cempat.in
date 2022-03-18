@@ -8,7 +8,7 @@ function Landing() {
     <div className='w-full grid grid-cols-2 md:h-screen overflow-hidden h-fit'>
         <div className='order-2 md:order-1 col-span-2 md:col-span-1 px-10 md:px-16 flex flex-col py-16 md:py-36'>
             <h1 className='font-bold text-[#03C88E] text-4xl md:text-5xl flex items-center'>
-              <span className='mr-5'><Landmark/></span>
+              <span className='mr-5'><Landmark className='fill-[#03C88E]'/></span>
               Cempat.in
               </h1>
             <p className='mt-5 font-light'>Ceritain tempat yang kamu kunjungin</p>
