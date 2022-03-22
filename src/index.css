@@ -30,8 +30,10 @@
   animation-duration: 0.2s;
   animation-name: scale-up;
   animation-timing-function: ease-in;
-  
-  
+}
+
+.mapboxgl-ctrl{
+  box-shadow: none !important;
 }
 
 @keyframes scale-up {
