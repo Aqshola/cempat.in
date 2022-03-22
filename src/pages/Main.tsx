@@ -1,15 +1,16 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MapGL, { Marker, MapRef } from "react-map-gl";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { ImLocation2 } from "react-icons/im";
 
 import "mapbox-gl/dist/mapbox-gl.css";
-import { MdEditLocation } from "react-icons/md";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { sideNavStore } from "store/navStore";
 import EditorSection from "components/Main/EditorSection";
 import Search from "components/Main/Search";
 import LocationStory from "components/Main/LocationStory";
+import MarkerStory from "components/Icon/MarkerStory";
+import MarkerPicked from "components/Icon/MarkerPicked";
 
 type location = {
   lng: number;
@@ -41,7 +42,10 @@ export default function Main() {
   >();
 
   const [showStory, setshowStory] = useState<boolean>(false);
-  const [storyData, setstoryData] = useState({});
+  const [initialLocation, setinitialLocation] = useState({
+    lat: 106.816666,
+    long: -6.2,
+  });
 
   const mapGlRef = useRef<MapRef | null>(null);
 
@@ -78,6 +82,24 @@ export default function Main() {
     }
   };
 
+  const viewLocation=(lat:number,long:number,bbox:[number, number, number, number], type:string)=>{
+    setinitialLocation({
+      lat:lat,
+      long:long
+    })
+
+    if(type=="poi"){
+      mapGlRef.current?.flyTo({
+        center:[lat,long],
+        essential:true
+      })
+    }else{
+      mapGlRef.current?.fitBounds(bbox);
+    }
+
+  }
+
+
   return (
     <div className="h-screen">
       <button
@@ -88,18 +110,17 @@ export default function Main() {
         <GiHamburgerMenu className="w-5 h-5 md:w-6 md:h-6 text-white" />
       </button>
 
-      <Search />
+      <Search handleSearch={viewLocation}/>
 
       <MapGL
+      optimizeForTerrain={true}
         ref={mapGlRef}
         onClick={(el) => _pickLocation(el)}
         mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
         initialViewState={{
-          longitude: 106.816666,
-          latitude: -6.2,
+          longitude: initialLocation.lat,
+          latitude: initialLocation.long,
           zoom: 10,
-          bearing: 0,
-          pitch: 0,
         }}
         attributionControl={false}
         mapStyle="mapbox://styles/mapbox/streets-v9"
@@ -178,14 +199,14 @@ export default function Main() {
 type PickedMarkerProps = {
   lng: number;
   lat: number;
-  classnames?:string
+  classnames?: string;
 };
 
 const PickedMarker = ({ lng, lat, classnames }: PickedMarkerProps) => {
   return (
     <>
       <Marker longitude={lng} latitude={lat} anchor="bottom">
-        <MdEditLocation className="text-[#03C88E] w-10 h-10 animate-scale-up" />
+        <MarkerPicked className="animate-scale-up w-10 h-10" />
       </Marker>
     </>
   );
@@ -199,9 +220,7 @@ type StoryMarkerProps = PickedMarkerProps & {
 const StoryMarker = ({ onClick, lng, lat }: StoryMarkerProps) => {
   return (
     <Marker longitude={lng} latitude={lat} anchor="bottom" onClick={onClick}>
-      
-        <ImLocation2 className="w-10 h-10 fill-rose-500 transition-transform active:scale-90" />
-      
+      <MarkerStory className="w-16 h-16" />
     </Marker>
   );
 };
