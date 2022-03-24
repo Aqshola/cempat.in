@@ -17,7 +17,7 @@ export default function SideNav() {
     <div
       id="side-nav"
       className={
-        "transition-all duration-500  min-h-screen   z-50 bg-[#03C88E] py-5 px-6 flex flex-col " +
+        "transition-all duration-500  min-h-screen   z-50 bg-green-primary py-5 px-6 flex flex-col " +
         (firstPathname === "main" ? " w-full md:w-1/4 absolute " : "") +
         (firstPathname === "main"
           ? sideNav

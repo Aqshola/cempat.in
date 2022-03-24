@@ -30,7 +30,7 @@ export default function RightNav({
       }
     >
       <button className="w-fit h-fit" onClick={onCloseEditor}>
-        <CgClose className="w-6 h-6 text-[#03C88E]" />
+        <CgClose className="w-6 h-6 text-green-primary" />
       </button>
 
       {children}

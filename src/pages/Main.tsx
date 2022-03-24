@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
-import MapGL, { Marker, MapRef } from "react-map-gl";
+import React, { useRef, useState } from "react";
+import MapGL, { MapRef } from "react-map-gl";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { ImLocation2 } from "react-icons/im";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
@@ -9,8 +8,7 @@ import { sideNavStore } from "store/navStore";
 import EditorSection from "components/Main/EditorSection";
 import Search from "components/Main/Search";
 import LocationStory from "components/Main/LocationStory";
-import MarkerStory from "components/Icon/MarkerStory";
-import MarkerPicked from "components/Icon/MarkerPicked";
+import {StoryMarker, PickedMarker} from "components/Main/Marker"
 
 type location = {
   lng: number;
@@ -53,7 +51,6 @@ export default function Main() {
     const detail = mapGlRef.current?.queryRenderedFeatures(obj.point);
     const { lng, lat } = obj.lngLat;
 
-    console.log(lng, lat);
 
     if (detail !== undefined && detail.length > 0) {
       setdetailPickedLocation(detail[0]?.properties?.name || lng + "," + lat);
@@ -82,38 +79,41 @@ export default function Main() {
     }
   };
 
-  const viewLocation=(lat:number,long:number,bbox:[number, number, number, number], type:string)=>{
+  const viewLocation = (
+    lat: number,
+    long: number,
+    bbox: [number, number, number, number],
+    type: string
+  ) => {
     setinitialLocation({
-      lat:lat,
-      long:long
-    })
+      lat: lat,
+      long: long,
+    });
 
-    if(type=="poi"){
+    if (type == "poi") {
       mapGlRef.current?.flyTo({
-        center:[lat,long],
-        essential:true
-      })
-    }else{
+        center: [lat, long],
+        essential: true,
+      });
+    } else {
       mapGlRef.current?.fitBounds(bbox);
     }
-
-  }
-
+  };
 
   return (
     <div className="h-screen">
       <button
         id="nav-btn"
-        className="p-2 md:p-3 bg-[#03C88E] rounded-full absolute top-10 left-5 md:left-10 z-20"
+        className="p-2 md:p-3 bg-green-primary rounded-full absolute top-10 left-5 md:left-10 z-20"
         onClick={() => showSideNav(true)}
       >
         <GiHamburgerMenu className="w-5 h-5 md:w-6 md:h-6 text-white" />
       </button>
 
-      <Search handleSearch={viewLocation}/>
+      <Search handleSearch={viewLocation} />
 
       <MapGL
-      optimizeForTerrain={true}
+        optimizeForTerrain={true}
         ref={mapGlRef}
         onClick={(el) => _pickLocation(el)}
         mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
@@ -186,8 +186,8 @@ export default function Main() {
         className={
           "transition-all shadow  rounded-lg px-3 py-2 absolute z-10 right-5 bottom-10 md:right-20 text-sm md:text-base  font-semibold " +
           (pickLocation
-            ? " bg-white text-[#03C88E]"
-            : " bg-[#03C88E] text-white")
+            ? " bg-white text-green-primary"
+            : " bg-green-primary text-white")
         }
       >
         {pickLocation ? "Pilih lokasi " : "Tulis cerita"}
@@ -196,31 +196,3 @@ export default function Main() {
   );
 }
 
-type PickedMarkerProps = {
-  lng: number;
-  lat: number;
-  classnames?: string;
-};
-
-const PickedMarker = ({ lng, lat, classnames }: PickedMarkerProps) => {
-  return (
-    <>
-      <Marker longitude={lng} latitude={lat} anchor="bottom">
-        <MarkerPicked className="animate-scale-up w-10 h-10" />
-      </Marker>
-    </>
-  );
-};
-
-type StoryMarkerProps = PickedMarkerProps & {
-  listStory?: any;
-  onClick?: () => void;
-};
-
-const StoryMarker = ({ onClick, lng, lat }: StoryMarkerProps) => {
-  return (
-    <Marker longitude={lng} latitude={lat} anchor="bottom" onClick={onClick}>
-      <MarkerStory className="w-16 h-16" />
-    </Marker>
-  );
-};
