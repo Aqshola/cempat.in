@@ -1,7 +1,7 @@
 import React, { useEffect, useRef} from "react";
 import { BiCurrentLocation } from "react-icons/bi";
 
-import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+import geocoder from "lib/MapboxGeocoder";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 type Props = {
@@ -10,12 +10,9 @@ type Props = {
 
 
 export default function Search({handleSearch}: Props) {
+  
   const searchBox = useRef(null);
-  const geocoder = new MapboxGeocoder({
-    accessToken:
-      "pk.eyJ1IjoiYXFzaG9sIiwiYSI6ImNsMDFxeXB3cDAxY24za29jbzB3dGZmMXAifQ.kBd0VXt-SYDBq6K3f7Nd9w",
-    types: "country,region,place,postcode,locality,neighborhood,district,address,poi",
-  });
+  
 
   useEffect(() => {
     if (searchBox) {
@@ -38,9 +35,9 @@ export default function Search({handleSearch}: Props) {
       <div className="hidden p-2  h-12 md:flex bg-white shadow rounded relative items-center">
         <div id="search" className="shadow-none" ref={searchBox}></div>
 
-        <span className="w-[2px] bg-[#03C88E] opacity-30 h-full  block"></span>
+        <span className="w-[2px] bg-green-primary opacity-30 h-full  block"></span>
         <button className="mx-2">
-          <BiCurrentLocation className="text-[#03C88E] w-5 h-5" />
+          <BiCurrentLocation className="text-green-primary w-5 h-5" />
         </button>
       </div>
     </div>

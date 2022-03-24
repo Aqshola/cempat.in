@@ -15,10 +15,10 @@ function LinkSideNav({ Icon, link, children, active = false }: Props) {
       to={link}
       className={
         " transition-all px-3 py-3 text-lg flex  " +
-        (active ? " rounded-md bg-white text-[#03C88E]" : " text-white")
+        (active ? " rounded-md bg-white text-green-primary" : " text-white")
       }
     >
-      <Icon className={"transition-colors w-7 h-7 mr-5 "+(active?" text-[#03C88E]":"text-white")} />
+      <Icon className={"transition-colors w-7 h-7 mr-5 "+(active?" text-green-primary":"text-white")} />
       <span>{children}</span>
     </Link>
   );

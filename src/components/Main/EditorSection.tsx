@@ -20,7 +20,7 @@ export default function EditorSection({
   
   return (
     <RightNav {...props}>
-      <h1 className="text-[#03C88E] font-semibold mt-10 text-2xl">
+      <h1 className="text-green-primary font-semibold mt-10 text-2xl">
         {titleEditor}
       </h1>
       <div className="mt-10 w-full">
@@ -42,7 +42,7 @@ export default function EditorSection({
       <button
         onClick={onSaveEditor}
         className={
-          "rounded-lg px-3 py-2 text-sm md:text-base w-fit self-end mt-20 font-semibold bg-[#03C88E] text-white"
+          "rounded-lg px-3 py-2 text-sm md:text-base w-fit self-end mt-20 font-semibold bg-green-primary text-white"
         }
       >
         Simpan

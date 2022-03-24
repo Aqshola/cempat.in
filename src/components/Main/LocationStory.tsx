@@ -18,7 +18,7 @@ function LocationStory({ titleEditor, ...props }: Props) {
 
   return (
     <RightNav {...props}>
-      <h1 className="text-[#03C88E] font-semibold mt-10 text-2xl">
+      <h1 className="text-green-primary font-semibold mt-10 text-2xl">
         Hutan Kota
       </h1>
       {showDetail ? <StoryDetail showDetail={_showDetailStory} /> : <StoryList showDetail={_showDetailStory}/>}
