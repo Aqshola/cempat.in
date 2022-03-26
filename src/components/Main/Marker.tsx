@@ -20,12 +20,14 @@ const PickedMarker = ({ lng, lat, classnames }: PickedMarkerProps) => {
 
 type StoryMarkerProps = PickedMarkerProps & {
   listStory?: any;
-  onClick?: () => void;
+  onClick?: (...T:any) => void;
 };
 
 const StoryMarker = ({ onClick, lng, lat }: StoryMarkerProps) => {
   return (
-    <Marker longitude={lng} latitude={lat} anchor="bottom" onClick={onClick}>
+    <Marker longitude={lng} latitude={lat} anchor="bottom" 
+    onClick={onClick}
+    >
       <MarkerStory className="w-16 h-16" />
     </Marker>
   );

@@ -25,7 +25,7 @@ export default function RightNav({
       ref={rightNavRef}
       id="right-nav"
       className={
-        "transition-all duration-500 min-h-screen w-full md:w-1/2 absolute right-0 top-0 bg-white z-20 py-7 px-4 flex flex-col " +
+        "transition-all duration-500 min-h-screen w-full md:w-2/5 absolute right-0 top-0 bg-white z-20 py-7 px-4 flex flex-col " +
         (showEditor ? "translate-x-0 visible" : " translate-x-full invisible")
       }
     >

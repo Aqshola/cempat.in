@@ -82,7 +82,7 @@ function MarkerPicked({className}: Props) {
           gradientUnits="userSpaceOnUse"
         >
           <stop stopColor="white" />
-          <stop offset="1" stopColor="white" stop-opacity="0.35" />
+          <stop offset="1" stopColor="white" stopOpacity="0.35" />
         </linearGradient>
       </defs>
     </svg>
