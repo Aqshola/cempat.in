@@ -1,28 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import RightNav from "components/Nav/RightNav";
+import useInfoLatLong from "helper/useInfoLatLong";
 
 type Props = {
   onOutsideEditor: () => void;
   showEditor: boolean;
   onCloseEditor: () => void;
-  titleEditor: string;
+  infoLocation: { lng: number; lat: number,name?:string|null } | null;
   onSaveEditor: () => void;
 };
 
 export default function EditorSection({
-  titleEditor,
+  infoLocation,
   onSaveEditor,
   ...props
 }: Props) {
   const [editorState, seteditorState] = useState(EditorState.createEmpty());
-  
+  const [getInfo] = useInfoLatLong();
+  const [placeName, setplaceName] = useState<any>()
+  const gettingInfo = async () => {
+    if (infoLocation) {
+      let info = await getInfo(infoLocation.lng, infoLocation.lat);
+      console.log(info)
+      setplaceName(info.features[0].text)
+    }
+  };
+
+  useEffect(() => {
+    if (props.showEditor) {
+      gettingInfo();
+    }
+  }, [props.showEditor]);
+
   return (
     <RightNav {...props}>
-      <h1 className="text-green-primary font-semibold mt-10 text-2xl">
-        {titleEditor}
-      </h1>
+      <h1 className="text-green-primary font-semibold mt-10 text-2xl">{infoLocation?.name? infoLocation.name:placeName}</h1>
       <div className="mt-10 w-full">
         <Editor
           placeholder="Tulis ceritamu disini"

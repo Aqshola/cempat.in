@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MapGL, { MapRef } from "react-map-gl";
 import { GiHamburgerMenu } from "react-icons/gi";
 
@@ -8,11 +8,12 @@ import { sideNavStore } from "store/navStore";
 import EditorSection from "components/Main/EditorSection";
 import Search from "components/Main/Search";
 import LocationStory from "components/Main/LocationStory";
-import {StoryMarker, PickedMarker} from "components/Main/Marker"
+import { StoryMarker, PickedMarker } from "components/Main/Marker";
 
 type location = {
   lng: number;
   lat: number;
+  name?: string | null;
 };
 
 const DummyLocation: location[] = [
@@ -33,11 +34,11 @@ const DummyLocation: location[] = [
 export default function Main() {
   const { showSideNav } = sideNavStore((state) => state);
   const [pickLocation, setpickLocation] = useState<boolean>(false);
-  const [pickedLocation, setpickedLocation] = useState<location | null>(null);
+  const [pickedLocation, setpickedLocation] = useState<location | null>({
+    lng: 0,
+    lat: 0,
+  });
   const [showEditor, setshowEditor] = useState<boolean>(false);
-  const [detailPickedLocation, setdetailPickedLocation] = useState<
-    string | any
-  >();
 
   const [showStory, setshowStory] = useState<boolean>(false);
   const [initialLocation, setinitialLocation] = useState({
@@ -45,22 +46,25 @@ export default function Main() {
     long: -6.2,
   });
 
+  const [zoomLevel, setzoomLevel] = useState<number | any>(10);
+
   const mapGlRef = useRef<MapRef | null>(null);
 
   const _pickLocation = (obj: any) => {
-    const detail = mapGlRef.current?.queryRenderedFeatures(obj.point);
     const { lng, lat } = obj.lngLat;
 
-
-    if (detail !== undefined && detail.length > 0) {
-      setdetailPickedLocation(detail[0]?.properties?.name || lng + "," + lat);
-    } else {
-      setdetailPickedLocation(lng + "," + lat);
-    }
+    mapGlRef.current?.flyTo({
+      center: [lng, lat],
+      essential: true,
+    });
+    
+    const detail = mapGlRef.current?.queryRenderedFeatures(obj.point);
+    
     if (pickLocation) {
       setpickedLocation({
         lng,
         lat,
+        name: detail ? detail[0]?.properties?.name : null,
       });
     }
   };
@@ -90,7 +94,7 @@ export default function Main() {
       long: long,
     });
 
-    if (type == "poi") {
+    if (type === "poi") {
       mapGlRef.current?.flyTo({
         center: [lat, long],
         essential: true,
@@ -98,6 +102,10 @@ export default function Main() {
     } else {
       mapGlRef.current?.fitBounds(bbox);
     }
+  };
+
+  const onZoom = () => {
+    setzoomLevel(mapGlRef.current?.getZoom());
   };
 
   return (
@@ -113,6 +121,7 @@ export default function Main() {
       <Search handleSearch={viewLocation} />
 
       <MapGL
+        onZoomEnd={onZoom}
         optimizeForTerrain={true}
         ref={mapGlRef}
         onClick={(el) => _pickLocation(el)}
@@ -120,7 +129,7 @@ export default function Main() {
         initialViewState={{
           longitude: initialLocation.lat,
           latitude: initialLocation.long,
-          zoom: 10,
+          zoom: zoomLevel,
         }}
         attributionControl={false}
         mapStyle="mapbox://styles/mapbox/streets-v9"
@@ -137,7 +146,7 @@ export default function Main() {
           <>
             <StoryMarker
               key={i}
-              onClick={() => {
+              onClick={(e) => {
                 if (!pickLocation) {
                   setshowStory(true);
                 }
@@ -158,7 +167,7 @@ export default function Main() {
         onOutsideEditor={() => {
           setshowEditor(false);
         }}
-        titleEditor={detailPickedLocation}
+        infoLocation={pickedLocation}
       />
 
       <LocationStory
@@ -195,4 +204,3 @@ export default function Main() {
     </div>
   );
 }
-
