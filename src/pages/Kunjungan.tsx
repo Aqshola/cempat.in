@@ -21,7 +21,7 @@ function Kunjungan({}: Props) {
       </div>
       <h1 className="text-2xl font-semibold">Tempat yang di kunjungi</h1>
       <ul id="list-kunjungan" className="mt-16">
-        <li className="p-2 w-full border border-[#03C88E] font-medium">Hutan Kota</li>
+        <li className="p-2 w-full border border-green-primary font-medium">Hutan Kota</li>
       </ul>
     </div>
   );

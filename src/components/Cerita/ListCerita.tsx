@@ -4,9 +4,9 @@ type Props = {};
 
 function ListCerita({}: Props) {
   return (
-    <div className="w-full border-2 border-[#03C88E] p-5 cursor-pointer">
+    <div className="w-full border-2 border-green-primary p-5 cursor-pointer">
       <div className="flex items-end">
-        <h1 className="text-xl font-semibold text-[#03C88E] flex-grow justify-center">
+        <h1 className="text-xl font-semibold text-green-primary flex-grow justify-center">
           Cerita Kita
         </h1>
         <p className="text-sm">20 Februari 2022</p>
