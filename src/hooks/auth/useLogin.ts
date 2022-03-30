@@ -7,7 +7,7 @@ type UserData = {
   email: string;
   username: string;
 };
-export function useLogin(): [
+export default function useLogin(): [
   (email: string, password: string) => void,
   {
     user: UserData | null;
