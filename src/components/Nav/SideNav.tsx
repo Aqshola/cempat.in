@@ -6,12 +6,17 @@ import { CgClose } from "react-icons/cg";
 import { useLocation } from "react-router-dom";
 import LinkSideNav from "./Link/LinkSideNav";
 import {ImLocation2} from "react-icons/im"
+import useLogout from "hooks/auth/useLogout";
 
 export default function SideNav() {
   const { sideNav, showSideNav } = sideNavStore((state) => state);
   const route = useLocation();
   const firstPathname=route.pathname.split("/")[1]
-  
+
+  const [logout, data, loading] = useLogout();
+  const _handleLogout=()=>{
+    logout()
+  }
   
   return (
     <div
@@ -41,13 +46,9 @@ export default function SideNav() {
         <LinkSideNav Icon={FaMapMarked} link="/main" children={"Peta"} active={firstPathname==="main"}/>
         <LinkSideNav Icon={FaEnvelopeOpen} link="/cerita" children={"Cerita"} active={firstPathname==="cerita"}/>
         <LinkSideNav Icon={ImLocation2} link="/kunjungan" children={"Kunjungan"} active={firstPathname==="kunjungan"}/>
-        
-        
-        
-        
       </div>
 
-      <button className="mt-auto text-white text-left">Keluar</button>
+      <button onClick={_handleLogout} className="mt-auto text-white text-left">Keluar</button>
     </div>
   );
 }

@@ -51,6 +51,7 @@ function useRegis(): [
             {
               username,
               user_id: user.id,
+              email
             },
           ]);
 
