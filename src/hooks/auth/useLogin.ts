@@ -1,12 +1,10 @@
-import supabase from "lib/Supabase";
+import supabase from "lib/supabase";
 import React, { useState } from "react";
 import { User, ApiError, PostgrestError } from "@supabase/supabase-js";
 
-type UserData = {
-  user_id: string;
-  email: string;
-  username: string;
-};
+import { UserData } from "types/types";
+
+
 export default function useLogin(): [
   (email: string, password: string) => void,
   {

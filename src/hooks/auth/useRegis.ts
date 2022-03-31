@@ -1,11 +1,8 @@
 import { ApiError, PostgrestError } from "@supabase/supabase-js";
-import supabase from "lib/Supabase";
+import supabase from "lib/supabase";
 import React, { useState } from "react";
 
-type UserData = {
-  user_id: string;
-  username: string;
-};
+import { UserData } from "types/types";
 
 function useRegis(): [
   (email: string, password: string, name: string) => void,

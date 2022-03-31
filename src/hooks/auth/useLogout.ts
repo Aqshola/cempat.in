@@ -1,4 +1,4 @@
-import supabase from "lib/Supabase";
+import supabase from "lib/supabase";
 import React, { useState } from "react";
 
 function useLogout(): [() => void, { logout: any; error: any }, boolean] {

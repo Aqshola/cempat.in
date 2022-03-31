@@ -4,6 +4,8 @@ import { authStore } from "store/authStore";
 
 type Props = {
   children: JSX.Element;
+  loading?:boolean;
+  auth?:boolean
 };
 
 type LocationState = {
@@ -12,31 +14,35 @@ type LocationState = {
     };
   };
 
-export function PrivateRoute({ children }: Props) {
+export function PrivateRoute({ children,loading,auth }: Props) {
   const { isAuth, authLoading } = authStore((state) => state);
   const location = useLocation();
+
+  
+
+  
 
   if (authLoading) {
     return <div>Loading...</div>;
   }
 
   if (!isAuth && !authLoading) {
-    <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
   return children;
 }
 
-export function PublicRoute({ children }: Props) {
+export function PublicRoute({ children,loading,auth }: Props) {
   const { isAuth, authLoading } = authStore((state) => state);
-  const location = useLocation();
-  let from=(location.state as LocationState).from.pathname || "/main";
+  // const location = useLocation();
+  // let from=(location.state as LocationState).from.pathname;
 
   if (authLoading) {
     return <div>Loading...</div>;
   }
 
   if (isAuth && !authLoading) {
-    <Navigate to={from} replace />;
+    return <Navigate to={"/main"} replace />;
   }
   return children;
 }
