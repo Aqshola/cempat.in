@@ -1,21 +1,21 @@
 import Landmark from "components/Icon/Landmark";
 import React, { useState } from "react";
 import { BsGoogle } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useLogin from "hooks/auth/useLogin";
 import ErrorBox from "components/Error/ErrorBox";
 
 function Login() {
   const [formData, setformData] = useState({ email: "", password: "" });
-  const [login, data, loading] = useLogin();
+  const [login, error, loading] = useLogin();
 
   const _setformData = (e: React.ChangeEvent<HTMLInputElement>) => {
     setformData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const _handleLogin = () => {
+  const _handleLogin = (e:React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     login(formData.email, formData.password);
-    console.log(data);
   };
 
   return (
@@ -27,11 +27,11 @@ function Login() {
           <span className="text-lg">Selamat Datang Kembali</span>
         </h1>
 
-        <div className="w-80">
-          <ErrorBox showError={true} message={"tes"} />
+        <div className="w-80 mt-5">
+          <ErrorBox showError={!!error} message={error?.message || ""} />
         </div>
 
-        <form action="" className="mt-14 w-80" onSubmit={_handleLogin}>
+        <form className="mt-5 w-80" onSubmit={_handleLogin}>
           <div className="flex flex-col gap-2">
             <label htmlFor="email" className="text-sm">
               Email
@@ -56,14 +56,14 @@ function Login() {
               onChange={_setformData}
               type="password"
               required
-              name="email"
-              id="email"
+              name="password"
+              id="password"
               placeholder="Password"
               className="p-2 border border-green-primary rounded-md placeholder:text-sm text-sm"
             />
           </div>
           <button className="text-white py-2 px-3 bg-green-primary rounded-md mt-5 text-sm w-full">
-            Login
+            {loading ? "loading..." : "Login"}
           </button>
           <div className="flex justify-between items-center mt-2">
             <div className="flex items-center ">

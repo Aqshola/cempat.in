@@ -1,19 +1,34 @@
 import { Session } from "@supabase/supabase-js";
-import supabase from "lib/Supabase";
+import supabase from "lib/supabase";
 import React, { useState } from "react";
+import { authStore } from "store/authStore";
+import { UserData } from "types/types";
+import useLogout from "./useLogout";
 
-function useSession(): [() => void, Session | null, boolean] {
+function useSession(): [() => void, boolean] {
   const [loading, setloading] = useState<boolean>(false);
-  const [session, setsession] = useState<Session | null>(null);
+  const { setAuthStatus } = authStore((state) => state);
+  const [logout] = useLogout();
+
   return [
-    () => {
-      supabase.auth.onAuthStateChange((_event, session) => {
-        setloading(true);
-        setsession(session);
-        setloading(false);
-      });
+    async () => {
+      setloading(true);
+      const session = supabase.auth.session();
+      if (session) {
+        const { data } = await supabase
+          .from("user")
+          .select("username, email, id, user_id")
+          .eq("user_id", session.user?.id)
+          .single();
+
+        if (data) {
+          setAuthStatus(true, data);
+        }
+      } else {
+        logout();
+      }
+      setloading(false);
     },
-    session,
     loading,
   ];
 }

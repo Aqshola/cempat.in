@@ -1,30 +1,24 @@
-import supabase from "lib/Supabase";
+import supabase from "lib/supabase";
 import React, { useState } from "react";
+import { authStore } from "store/authStore";
+import { ApiError, PostgrestError } from "@supabase/supabase-js";
 
-function useLogout(): [() => void, { logout: any; error: any }, boolean] {
-  const [data, setdata] = useState({
-    logout: false,
-    error: null,
-  });
+function useLogout():[()=>Promise<void>,ApiError|PostgrestError|null,boolean] {
   const [loading, setloading] = useState<boolean>(false);
+  const { setAuthStatus } = authStore(state => state);
+  const [error, seterror] = useState<ApiError|null>(null)
   return [
     async () => {
       setloading(true);
       const { error } = await supabase.auth.signOut();
-      if (error) {
-        setdata({
-          logout: true,
-          error: null,
-        });
-      } else {
-        setdata({
-          logout: false,
-          error: error,
-        });
+      if(error){
+        seterror(error)
+      }else{
+        setAuthStatus(false,null)
       }
       setloading(false);
     },
-    data,
+    error,
     loading,
   ];
 }

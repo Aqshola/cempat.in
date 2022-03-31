@@ -1,28 +1,13 @@
-import supabase from "lib/Supabase";
+import supabase from "lib/supabase";
 import React, { useState } from "react";
-import { User, ApiError, PostgrestError } from "@supabase/supabase-js";
+import { ApiError, PostgrestError } from "@supabase/supabase-js";
+import { authStore } from "store/authStore";
 
-type UserData = {
-  user_id: string;
-  email: string;
-  username: string;
-};
-export default function useLogin(): [
-  (email: string, password: string) => void,
-  {
-    user: UserData | null;
-    error: ApiError | null | PostgrestError;
-  },
-  boolean
-] {
+
+export default function useLogin():[(email:string,password:string)=>Promise<void>,ApiError|PostgrestError|null,boolean]{
   const [loading, setloading] = useState<boolean>(false);
-  const [data, setdata] = useState<{
-    user: UserData | null;
-    error: ApiError | null | PostgrestError;
-  }>({
-    user: null,
-    error: null,
-  });
+  const {setAuthStatus} = authStore(state=>state)
+  const [error, seterror] = useState<ApiError|PostgrestError|null>(null)
 
   return [
     async (email: string, password: string) => {
@@ -33,34 +18,26 @@ export default function useLogin(): [
       });
 
       if (error) {
-        setdata({ user: null, error });
+        seterror(error);
+        setAuthStatus(false,null)
       }
 
       if (user) {
         const { data, error: ErrorSelect } = await supabase
           .from("user")
-          .select("username, id, user_id")
-          .eq("user_id", user.id);
+          .select("username, id, user_id, email")
+          .eq("user_id", user.id).single()
         if (data) {
-          setdata({
-            user: {
-              user_id: data[0].user_id,
-              username: data[0].username,
-              email: user.email || "",
-            },
-            error: null,
-          });
+          setAuthStatus(true, data)
         } else {
-          setdata({
-            user: null,
-            error: ErrorSelect,
-          });
+          seterror(ErrorSelect)
+          setAuthStatus(false,null)
         }
       }
 
       setloading(false);
     },
-    data,
+    error,
     loading,
   ];
 }

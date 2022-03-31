@@ -7,15 +7,18 @@ import { useLocation } from "react-router-dom";
 import LinkSideNav from "./Link/LinkSideNav";
 import {ImLocation2} from "react-icons/im"
 import useLogout from "hooks/auth/useLogout";
+import { authStore } from "store/authStore";
 
 export default function SideNav() {
   const { sideNav, showSideNav } = sideNavStore((state) => state);
+  const setAuthStatus = authStore(state=>state.setAuthStatus)
   const route = useLocation();
   const firstPathname=route.pathname.split("/")[1]
 
-  const [logout, data, loading] = useLogout();
+  const [logout] = useLogout();
   const _handleLogout=()=>{
     logout()
+    showSideNav(false)
   }
   
   return (

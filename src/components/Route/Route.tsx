@@ -4,39 +4,35 @@ import { authStore } from "store/authStore";
 
 type Props = {
   children: JSX.Element;
+  loading:boolean
 };
 
-type LocationState = {
-    from: {
-      pathname: string;
-    };
-  };
 
-export function PrivateRoute({ children }: Props) {
-  const { isAuth, authLoading } = authStore((state) => state);
+export function PrivateRoute({ children,loading}: Props) {
+  const { isAuth} = authStore((state) => state);
   const location = useLocation();
 
-  if (authLoading) {
+
+  if (loading) {
     return <div>Loading...</div>;
   }
 
-  if (!isAuth && !authLoading) {
-    <Navigate to="/login" state={{ from: location }} replace />;
+  if (!isAuth && !loading) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
   return children;
 }
 
-export function PublicRoute({ children }: Props) {
+export function PublicRoute({ children, loading}: Props) {
   const { isAuth, authLoading } = authStore((state) => state);
-  const location = useLocation();
-  let from=(location.state as LocationState).from.pathname || "/main";
+  
 
-  if (authLoading) {
+  if (loading) {
     return <div>Loading...</div>;
   }
 
-  if (isAuth && !authLoading) {
-    <Navigate to={from} replace />;
+  if (isAuth && !loading) {
+    return <Navigate to={"/main"} replace />;
   }
   return children;
 }

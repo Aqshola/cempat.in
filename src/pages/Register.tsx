@@ -12,7 +12,7 @@ function Register() {
     username: "",
   });
 
-  const [regis, data, loading] = useRegis();
+  const [regis, error, loading] = useRegis();
 
   const _setformData = (e: React.ChangeEvent<HTMLInputElement>) => {
     setformData({
@@ -23,28 +23,13 @@ function Register() {
 
   const _register = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    regis(formData.email, formData.password, formData.username);
 
-    const { email, password, username } = formData;
-    regis(email, password, username);
-
-    if (data.error) {
-      setformData({
-        email: "",
-        username: "",
-        password: "",
-      });
+    if(error){
+      console.log(error)
     }
   };
-
-  useEffect(() => {
-    if (data.error) {
-      setformData({
-        email: "",
-        username: "",
-        password: "",
-      });
-    }
-  }, [data.error]);
+  
 
   return (
     <div className="w-full grid grid-cols-2 h-screen">
@@ -54,13 +39,6 @@ function Register() {
            <br />
            <span className="text-lg">Selamat Datang</span>
         </h1>
-
-        <div className="w-80 mt-5">
-          <ErrorBox
-            showError={!!data.error}
-            message={data.error?.message || ""}
-          />
-        </div>
         <form action="" className="w-80 mt-2" onSubmit={_register}>
           <div className="flex flex-col gap-2">
             <label htmlFor="username" className="text-sm">

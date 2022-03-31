@@ -1,37 +1,17 @@
 import { ApiError, PostgrestError } from "@supabase/supabase-js";
-import supabase from "lib/Supabase";
+import supabase from "lib/supabase";
 import React, { useState } from "react";
+import { authStore } from "store/authStore";
 
-type UserData = {
-  user_id: string;
-  username: string;
-};
 
-function useRegis(): [
-  (email: string, password: string, name: string) => void,
-  {
-    user: UserData | null;
-    error: ApiError | PostgrestError | null;
-  },
-  boolean
-] {
+function useRegis():[(email:string,password:string,username:string)=>Promise<void>,ApiError|PostgrestError|null,boolean] {
   const [loading, setloading] = useState(false);
-  const [data, setdata] = useState<{
-    user: UserData | null;
-    error: ApiError | PostgrestError | null;
-  }>({
-    user: null,
-    error: null,
-  });
+  const [error, seterror] = useState<ApiError|PostgrestError|null>(null)
+  const {setAuthStatus} = authStore(state=>state)
 
   return [
     async (email: string, password: string, username: string) => {
-      setdata({
-        user:null,
-        error:null,
-      })
       setloading(true);
-
 
       const { user, error: authError } = await supabase.auth.signUp({
         email,
@@ -39,9 +19,8 @@ function useRegis(): [
       });
 
       if (authError) {
-        setdata({ user: null, error: authError });
-        setloading(false);
-        return;
+        seterror(authError);
+        setAuthStatus(false,null)
       }
 
       if (user) {
@@ -56,22 +35,22 @@ function useRegis(): [
           ]);
 
         if (insertError) {
-          setdata({ user: null, error: insertError });
-          setloading(false);
-          return;
+          seterror(insertError);
+          setAuthStatus(false,null)
+          
         }
 
         if (data) {
-          setdata({
-            user: data[0],
-            error: null,
-          });
+          setAuthStatus(true, {
+            email,
+            username,
+            user_id:user.id
+          })
         }
       }
       setloading(false);
-      return;
     },
-    data,
+    error,
     loading,
   ];
 }

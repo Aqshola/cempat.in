@@ -143,7 +143,6 @@ export default function Main() {
         )}
 
         {DummyLocation.map((loc, i) => (
-          <>
             <StoryMarker
               key={i}
               onClick={(e) => {
@@ -154,7 +153,6 @@ export default function Main() {
               lat={loc.lat}
               lng={loc.lng}
             />
-          </>
         ))}
       </MapGL>
 
