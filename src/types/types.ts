@@ -3,3 +3,14 @@ export type UserData = {
   email: string;
   username: string;
 };
+
+export type Location = {
+  lng: number;
+  lat: number;
+  place_name?: string | null;
+};
+
+export type Result<R,E>={
+  data:R;
+  error:E;
+}

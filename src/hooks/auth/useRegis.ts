@@ -12,6 +12,7 @@ function useRegis():[(email:string,password:string,username:string)=>Promise<voi
   return [
     async (email: string, password: string, username: string) => {
       setloading(true);
+      seterror(null)
 
       const { user, error: authError } = await supabase.auth.signUp({
         email,

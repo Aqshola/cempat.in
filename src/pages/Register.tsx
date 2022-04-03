@@ -5,6 +5,11 @@ import { Link } from "react-router-dom";
 import useRegis from "hooks/auth/useRegis";
 import ErrorBox from "components/Error/ErrorBox";
 
+
+
+/**
+ * TODO: Onchange check username and email
+ */
 function Register() {
   const [formData, setformData] = useState({
     email: "",
@@ -39,7 +44,10 @@ function Register() {
            <br />
            <span className="text-lg">Selamat Datang</span>
         </h1>
-        <form action="" className="w-80 mt-2" onSubmit={_register}>
+        <div className="w-80 mt-5">
+          {!!error && <ErrorBox message={error.message} />}
+        </div>
+        <form action="" className="w-80 mt-5" onSubmit={_register}>
           <div className="flex flex-col gap-2">
             <label htmlFor="username" className="text-sm">
               Username

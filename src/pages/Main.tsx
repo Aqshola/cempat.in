@@ -9,6 +9,8 @@ import EditorSection from "components/Main/EditorSection";
 import Search from "components/Main/Search";
 import LocationStory from "components/Main/LocationStory";
 import { StoryMarker, PickedMarker } from "components/Main/Marker";
+import Button from "components/Button/Button";
+import clsx from "clsx";
 
 type location = {
   lng: number;
@@ -57,9 +59,9 @@ export default function Main() {
       center: [lng, lat],
       essential: true,
     });
-    
+
     const detail = mapGlRef.current?.queryRenderedFeatures(obj.point);
-    
+
     if (pickLocation) {
       setpickedLocation({
         lng,
@@ -109,14 +111,21 @@ export default function Main() {
   };
 
   return (
-    <div className="h-screen">
-      <button
+    <div className="h-screen" id="nav-btn" aria-label="nav-btn">
+      <Button
+        shape="round"
+        className="p-2 absolute top-10 left-5 md:left-10 z-20"
+        onClick={() => showSideNav(true)}
+      >
+        <GiHamburgerMenu className="w-5 h-5 md:w-6 md:h-6 text-white" />
+      </Button>
+      {/* <button
         id="nav-btn"
         className="p-2 md:p-3 bg-green-primary rounded-full absolute top-10 left-5 md:left-10 z-20"
         onClick={() => showSideNav(true)}
       >
         <GiHamburgerMenu className="w-5 h-5 md:w-6 md:h-6 text-white" />
-      </button>
+      </button> */}
 
       <Search handleSearch={viewLocation} />
 
@@ -143,16 +152,16 @@ export default function Main() {
         )}
 
         {DummyLocation.map((loc, i) => (
-            <StoryMarker
-              key={i}
-              onClick={(e) => {
-                if (!pickLocation) {
-                  setshowStory(true);
-                }
-              }}
-              lat={loc.lat}
-              lng={loc.lng}
-            />
+          <StoryMarker
+            key={i}
+            onClick={(e) => {
+              if (!pickLocation) {
+                setshowStory(true);
+              }
+            }}
+            lat={loc.lat}
+            lng={loc.lng}
+          />
         ))}
       </MapGL>
 
@@ -178,27 +187,27 @@ export default function Main() {
         }}
       />
 
-      <button
+      <Button
+        
+        variant="danger"
         onClick={_cancelPick}
-        className={
-          "transition-all shadow w-max rounded-lg px-3 py-2 absolute z-10 left-10 bottom-10 md:right-20 text-sm md:text-base  font-semibold bg-red-500 text-white" +
-          (pickLocation ? " visible opacity-100" : " invisible opacity-0")
-        }
+        className={clsx(
+          "shadow w-max absolute z-10 left-10 bottom-10 md:right-20",
+          pickLocation && ["visible opacity-100"],
+          !pickLocation && [" invisible opacity-0"]
+        )}
       >
         Batal
-      </button>
+      </Button>
 
-      <button
+      <Button
+        
         onClick={_newStory}
-        className={
-          "transition-all shadow  rounded-lg px-3 py-2 absolute z-10 right-5 bottom-10 md:right-20 text-sm md:text-base  font-semibold " +
-          (pickLocation
-            ? " bg-white text-green-primary"
-            : " bg-green-primary text-white")
-        }
+        className="absolute z-10 right-5 bottom-10 md:right-20 shadow"
+        variant={pickLocation ? "secondary" : "primary"}
       >
         {pickLocation ? "Pilih lokasi " : "Tulis cerita"}
-      </button>
+      </Button>
     </div>
   );
 }

@@ -1,7 +1,17 @@
 import { UserData } from "types/types";
 import create from "zustand";
 
-export const authStore = create((set: any) => ({
+
+
+
+interface AuthStore {
+  isAuth:boolean,
+  authData:UserData | null,
+  authLoading:boolean,
+  setAuthStatus:(value:boolean, authData:UserData|null)=>void,
+}
+
+export const authStore = create<AuthStore>((set: any) => ({
   isAuth: false,
   authData: null,
   authLoading: false,
