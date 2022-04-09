@@ -1,4 +1,4 @@
-import React, { useRef} from "react";
+import React, { useRef } from "react";
 import useOutsideClick from "hooks/helper/useOutsideClick";
 import { CgClose } from "react-icons/cg";
 
@@ -6,15 +6,16 @@ type Props = {
   onOutsideEditor: () => void;
   showEditor: boolean;
   onCloseEditor: () => void;
-  children:React.ReactNode
-  
+  children: React.ReactNode;
+  title?:React.ReactNode
 };
 
 export default function RightNav({
   onCloseEditor,
   onOutsideEditor,
   showEditor,
-  children
+  children,
+  title,
 }: Props) {
   const rightNavRef = useRef(null);
   useOutsideClick(rightNavRef, () => {
@@ -29,9 +30,12 @@ export default function RightNav({
         (showEditor ? "translate-x-0 visible" : " translate-x-full invisible")
       }
     >
-      <button className="w-fit h-fit" onClick={onCloseEditor}>
-        <CgClose className="w-6 h-6 text-green-primary" />
-      </button>
+      <div className="flex gap-5 items-center">
+        <button className="w-fit h-fit" onClick={onCloseEditor}>
+          <CgClose className="w-6 h-6 text-green-primary" />
+        </button>
+        {title}
+      </div>
 
       {children}
     </div>

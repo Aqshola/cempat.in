@@ -28,6 +28,7 @@
     "react-map-gl": "^7.0.10",
     "react-router-dom": "6",
     "react-scripts": "5.0.0",
+    "react-toastify": "^8.2.0",
     "swr": "^1.2.2",
     "tailwindcss": "^3.0.23",
     "typescript": "^4.5.5",

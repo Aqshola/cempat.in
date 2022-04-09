@@ -31,13 +31,23 @@ export default function Search({ handleSearch }: Props) {
     });
   }, []);
 
+  const _getCurrentPosition = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((e) => {
+        handleSearch(e.coords.longitude, e.coords.latitude, [], "poi");
+      });
+    } else {
+      console.log("not allowed");
+    }
+  };
+
   return (
     <div className="absolute z-10 right-10 top-10">
       <div className="p-2 h-10 md:h-12 flex bg-white shadow rounded relative items-center">
         <div id="search" className="shadow-none" ref={searchBox}></div>
 
         <span className="w-[2px] bg-green-primary opacity-30 h-full  block"></span>
-        <button className="mx-2">
+        <button className="mx-2" onClick={_getCurrentPosition}>
           <BiCurrentLocation className="text-green-primary w-5 h-5" />
         </button>
       </div>

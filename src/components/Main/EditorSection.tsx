@@ -7,12 +7,13 @@ import Button from "components/Button/Button";
 import useCreate from "hooks/cerita/useCreate";
 import { authStore } from "store/authStore";
 import { sideNavStore } from "store/navStore";
+import { Location } from "types/types";
 type Props = {
   onOutsideEditor: () => void;
   showEditor: boolean;
   onCloseEditor: () => void;
-  infoLocation: { lng: number; lat: number; name?: string | null } | null;
-  onSaveEditor: () => void;
+  infoLocation: Location| null;
+  onSaveEditor: (T: any) => void;
 };
 
 export default function EditorSection({
@@ -26,7 +27,7 @@ export default function EditorSection({
     title: "",
     content: EditorState.createEmpty(),
   });
-  const [create, data, loading] = useCreate();
+  const [create, result, loading] = useCreate();
   const user = authStore((state) => state.authData);
   const showSideNav = sideNavStore((state) => state.showSideNav);
 
@@ -51,7 +52,7 @@ export default function EditorSection({
         {
           lat: infoLocation?.lat || 0,
           lng: infoLocation?.lng || 0,
-          place_name: infoLocation?.name || placeName,
+          place_name: infoLocation?.place_name || placeName,
         },
         formData.title,
         formData.content,
@@ -61,15 +62,21 @@ export default function EditorSection({
   };
 
   useEffect(() => {
-    if (!loading && !data.error) {
-      showSideNav(false);
-      props.onCloseEditor();
-      setformData({
-        title: "",
-        content: EditorState.createEmpty(),
-      });
+    if (!loading && !result.error) {
+      if(result.data){
+        showSideNav(false);
+        let res=result.data[0]
+        console.log(result.data)
+        onSaveEditor({...res});
+        props.onCloseEditor();
+        setformData({
+          title: "",
+          content: EditorState.createEmpty(),
+        });
+
+      }
     }
-  }, [loading, data.error]);
+  }, [loading, result.error]);
 
   useEffect(() => {
     if (props.showEditor) {
@@ -81,12 +88,12 @@ export default function EditorSection({
     <RightNav
       {...props}
       onCloseEditor={() => {
-        setplaceName(null)
+        setplaceName(null);
         props.onCloseEditor();
       }}
     >
       <h1 className="text-green-primary font-semibold mt-10 text-2xl">
-        {infoLocation?.name ? infoLocation.name : placeName}
+        {infoLocation?.place_name ? infoLocation.place_name : placeName}
       </h1>
 
       <div className="mt-10 w-full border-t py-5">

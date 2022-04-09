@@ -85,7 +85,7 @@ function Button({
         variant === "primary" && ["bg-green-primary text-white"],
         variant === "secondary" && ["bg-white text-green-primary"],
         variant === "danger" && ["bg-red-500 text-white"],
-        "font-medium transition-all flex items-center justify-center disabled:bg-white relative"
+        "font-medium transition-all flex items-center justify-center disabled:bg-white"
       )}
       disabled={loading === null ? props.disabled : loading}
     >
