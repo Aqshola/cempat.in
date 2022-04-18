@@ -15,7 +15,14 @@ import { ApiLocation, Location } from "types/types";
 import StoryList from "components/Main/ListStory";
 import DetailStory from "components/Main/DetailStory";
 import useRemoveDuplicate from "hooks/helper/useRemoveDuplicate";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import mapboxgl from 'mapbox-gl';
+
+ // The following is required to stop "npm build" from transpiling mapbox code.
+    // notice the exclamation point in the import.
+    // @ts-ignore
+    // eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
+mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
 /*
  *TODO: Fetch location by bounding box ✅
