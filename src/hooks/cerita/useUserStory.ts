@@ -4,10 +4,6 @@ import { Result, ApiLocation, Story } from "types/types";
 import { PostgrestError } from "@supabase/supabase-js";
 
 
-
-
-
-
 function useUserStory(): [
   (user_id: string) => Promise<void>,
   Result<Story[], PostgrestError | null>,

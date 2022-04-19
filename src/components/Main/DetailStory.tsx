@@ -5,6 +5,8 @@ import { ApiLocation } from "types/types";
 import { convertFromRaw, EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import { useSearchParams } from "react-router-dom";
+import { data } from "autoprefixer";
+import parseDateString from "hooks/helper/parseDateString";
 
 type Props = {
   onOutsideEditor: () => void;
@@ -17,12 +19,11 @@ type Props = {
 function DetailStory({ titleEditor, viewData, ...props }: Props) {
   const [getDetail, result, loading] = useDetail();
   let editorState = EditorState.createEmpty();
-  const [searchParams]=useSearchParams()
-  const idParams=searchParams.get("id")
+  const [searchParams] = useSearchParams();
+  const idParams = searchParams.get("id");
 
-  
   useEffect(() => {
-    getDetail(Number(idParams)|| 0);
+    getDetail(Number(idParams) || 0);
   }, [idParams]);
 
   if (!loading && result.data) {
@@ -33,7 +34,11 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
   return (
     <RightNav
       {...props}
-      title={<p className="font-medium">{viewData.place_name || result.data?.place_name}</p>}
+      title={
+        <p className="font-medium">
+          {viewData.place_name || result.data?.place_name}
+        </p>
+      }
     >
       {loading ? (
         <span
@@ -42,10 +47,16 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
         ></span>
       ) : (
         <>
-          <h1 className="text-green-primary font-semibold mt-10 text-2xl">
+          <p className="text-right text-xs mt-10">
+            Ditulis oleh {" "}
+            <span className="font-semibold">{result.data?.user.username}</span>,{" "}
+            {result.data?.created_at? parseDateString(result.data?.created_at || " "):""}
+          </p>
+          <h1 className="text-green-primary font-semibold text-3xl mt-2">
             {result.data?.title}
           </h1>
-          <div className="mt-2">
+
+          <div className="mt-1">
             <Editor
               editorClassName="text-sm font-poppins"
               editorState={editorState}
@@ -53,7 +64,6 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
               toolbarHidden={true}
             />
           </div>
-          {/* <p className="text-sm mt-5 font-light">{result.data?.content}</p> */}
         </>
       )}
     </RightNav>

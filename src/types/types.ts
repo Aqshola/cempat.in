@@ -25,4 +25,8 @@ export type Story = Location & {
   content: string;
   id: string;
   user_id: string;
+  created_at:string;
+  user:{
+    username:string;
+  }
 };

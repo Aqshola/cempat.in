@@ -1,8 +1,8 @@
 import { PostgrestError } from "@supabase/supabase-js";
-import { data } from "autoprefixer";
+
 import supabase from "lib/supabase";
 import React, { useState } from "react";
-import { ApiLocation, Result, Story } from "types/types";
+import { Result, Story } from "types/types";
 
 export default function useDetail(): [
   (id: number) => Promise<void>,
@@ -23,9 +23,11 @@ export default function useDetail(): [
       setloading(true);
       const { data, error } = await supabase
         .from("cerita")
-        .select("*")
+        .select("*, user:user(username)")
         .eq("id", id)
         .single();
+
+        console.log(data);
 
       if (data) {
         setresult({

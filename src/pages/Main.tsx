@@ -16,13 +16,13 @@ import StoryList from "components/Main/ListStory";
 import DetailStory from "components/Main/DetailStory";
 import useRemoveDuplicate from "hooks/helper/useRemoveDuplicate";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import mapboxgl from 'mapbox-gl';
+import mapboxgl from "mapbox-gl";
 
- // The following is required to stop "npm build" from transpiling mapbox code.
-    // notice the exclamation point in the import.
-    // @ts-ignore
-    // eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
-mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
+// The following is required to stop "npm build" from transpiling mapbox code.
+// notice the exclamation point in the import.
+// @ts-ignore
+// eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
+mapboxgl.workerClass =require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
 /*
  *TODO: Fetch location by bounding box ✅
@@ -37,7 +37,6 @@ export default function Main() {
 
   const latParams = searchParams.get("lat");
   const lngParams = searchParams.get("lng");
-  const idParams = searchParams.get("id");
 
   const { showSideNav } = sideNavStore((state) => state);
 
@@ -69,6 +68,8 @@ export default function Main() {
     jml_cerita: 0,
     place_name: "",
   });
+
+  
 
   const _saveCallback = ({ lat, lng, id, place_name }: ApiLocation) => {
     setlistLocation([...listLocation, { lat, lng, id, place_name }]);
@@ -183,13 +184,13 @@ export default function Main() {
               center: [parseFloat(lngParams), parseFloat(latParams)],
               essential: true,
             });
+              mapGlRef.current?.once("moveend", function () {
+                setstoryDetailView(true);
+              });
           }
           _handleGet();
-
-          if (idParams && !loading) {
-            setstoryDetailView(true);
-          }
         }}
+        // reuseMaps={true}
         onMoveEnd={_handleGet}
         onZoomEnd={_handleGet}
         optimizeForTerrain={true}
@@ -259,7 +260,7 @@ export default function Main() {
         variant="danger"
         onClick={_cancelPick}
         className={clsx(
-          "shadow w-max absolute z-10 left-10 bottom-10 md:right-20",
+          "shadow w-max absolute z-10 left-10 bottom-20 md:right-20",
           pickLocation && ["visible opacity-100"],
           !pickLocation && [" invisible opacity-0"]
         )}
@@ -269,7 +270,7 @@ export default function Main() {
 
       <Button
         onClick={_newStory}
-        className="absolute z-10 right-5 bottom-10 md:right-20 shadow"
+        className="absolute z-10 right-5 bottom-20 md:right-20 shadow"
         variant={pickLocation ? "secondary" : "primary"}
       >
         {pickLocation ? "Pilih lokasi " : "Tulis cerita"}
