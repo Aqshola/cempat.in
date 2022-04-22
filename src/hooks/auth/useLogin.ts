@@ -23,6 +23,9 @@ export default function useLogin(): [
 
       if (error) {
         seterror(error);
+        if(error.status===400){
+          error.message="Email atau password tidak ditemukan"
+        }
         setAuthStatus(false, null);
       }
 

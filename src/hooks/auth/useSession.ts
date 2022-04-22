@@ -14,7 +14,9 @@ function useSession(): [() => void, boolean] {
     async () => {
       setloading(true);
       const session = supabase.auth.session();
-      if (session) {
+      
+      
+      if (session?.user) {
         const { data } = await supabase
           .from("user")
           .select("username, email, id, user_id")

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
 import MapGL, { MapRef } from "react-map-gl";
 import { GiHamburgerMenu } from "react-icons/gi";
 
@@ -17,12 +17,15 @@ import DetailStory from "components/Main/DetailStory";
 import useRemoveDuplicate from "hooks/helper/useRemoveDuplicate";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import mapboxgl from "mapbox-gl";
+import { setLocalStorage, getLocalStorage } from "hooks/helper/useLocalStorage";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // The following is required to stop "npm build" from transpiling mapbox code.
 // notice the exclamation point in the import.
 // @ts-ignore
 // eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
-mapboxgl.workerClass =require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
+mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
 /*
  *TODO: Fetch location by bounding box ✅
@@ -53,6 +56,8 @@ export default function Main() {
     long: -6.2,
   });
 
+  const [loadedMap, setloadedMap] = useState<boolean>(false);
+
   const [listLocation, setlistLocation] = useState<ApiLocation[]>([]);
 
   const [getMarker, dataMarker, loading] = useGet();
@@ -68,8 +73,6 @@ export default function Main() {
     jml_cerita: 0,
     place_name: "",
   });
-
-  
 
   const _saveCallback = ({ lat, lng, id, place_name }: ApiLocation) => {
     setlistLocation([...listLocation, { lat, lng, id, place_name }]);
@@ -103,7 +106,21 @@ export default function Main() {
 
   const _newStory = () => {
     if (pickLocation) {
-      setshowEditor(true);
+      if (
+        !pickedLocation ||
+        (pickedLocation.lat === 0 && pickedLocation.lng === 0)
+      ) {
+        toast("Pilih tempat dulu yaa", {
+          position: "bottom-center",
+          hideProgressBar: true,
+          autoClose: 5000,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        setshowEditor(true);
+      }
     } else {
       setpickLocation(true);
     }
@@ -137,6 +154,7 @@ export default function Main() {
     const pushedArray = useRemoveDuplicate(listLocation, dataMarker.data, "id");
     if (pushedArray.length > 0) {
       setlistLocation([...pushedArray]);
+      setLocalStorage<ApiLocation[]>("list_location", listLocation);
     }
   };
 
@@ -146,7 +164,6 @@ export default function Main() {
     bbox: [number, number, number, number],
     type: string
   ) => {
-    console.log(lat, long);
 
     if (type === "poi") {
       mapGlRef.current?.flyTo({
@@ -159,10 +176,44 @@ export default function Main() {
   };
 
   useEffect(() => {
+    let localData = getLocalStorage<ApiLocation[]>("list_location");
+    if (localData != null) {
+      setlistLocation([...localData]);
+    }
+  }, []);
+
+  useEffect(() => {
+    _handleGet();
+  }, []);
+
+  useEffect(() => {
     if (!loading) {
       _loadLocationStory();
     }
   }, [loading]);
+
+  useEffect(() => {
+    if (loadedMap) {
+      if (latParams && lngParams) {
+        let flying = true;
+        mapGlRef.current?.flyTo({
+          center: [parseFloat(lngParams), parseFloat(latParams)],
+          essential: true,
+        });
+
+        mapGlRef.current?.on("flyend", () => {
+          flying = false;
+        });
+
+        mapGlRef.current?.on("moveend", () => {
+          if (flying) {
+            setstoryDetailView(true);
+            flying = false;
+          }
+        });
+      }
+    }
+  }, [loadedMap, latParams, lngParams]);
 
   return (
     <div className="h-screen" id="nav-btn" aria-label="nav-btn">
@@ -178,23 +229,18 @@ export default function Main() {
       <Search handleSearch={viewLocation} />
 
       <MapGL
-        onLoad={() => {
-          if (latParams && lngParams) {
-            mapGlRef.current?.flyTo({
-              center: [parseFloat(lngParams), parseFloat(latParams)],
-              essential: true,
-            });
-              mapGlRef.current?.once("moveend", function () {
-                setstoryDetailView(true);
-              });
-          }
-          _handleGet();
-        }}
-        // reuseMaps={true}
+        onLoad={_handleGet}
+        reuseMaps={true}
         onMoveEnd={_handleGet}
         onZoomEnd={_handleGet}
         optimizeForTerrain={true}
-        ref={mapGlRef}
+        ref={(e) => {
+          mapGlRef.current = e;
+
+          if (mapGlRef.current !== null) {
+            setloadedMap(true);
+          }
+        }}
         onClick={(el) => _pickLocation(el)}
         mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
         initialViewState={{
@@ -275,6 +321,11 @@ export default function Main() {
       >
         {pickLocation ? "Pilih lokasi " : "Tulis cerita"}
       </Button>
+
+      <ToastContainer
+        className="z-50"
+        bodyClassName={" text-xs font-poppins text-red-600"}
+      />
     </div>
   );
 }

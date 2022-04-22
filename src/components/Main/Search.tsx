@@ -42,7 +42,7 @@ export default function Search({ handleSearch }: Props) {
   };
 
   return (
-    <div className="absolute z-10 right-10 top-10">
+    <div className="absolute z-10 right-10 top-10 w-64 md:w-auto">
       <div className="p-2 h-10 md:h-12 flex bg-white shadow rounded relative items-center">
         <div id="search" className="shadow-none" ref={searchBox}></div>
 

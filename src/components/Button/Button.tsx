@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import clsx from "clsx";
 import gsap from "gsap";
 import { time } from "console";
@@ -80,11 +80,14 @@ function Button({
       className={clsx(
         props.className,
         shape === "round" && ["p-2 rounded-full"],
-        shape === "normal" && [" px-3 py-2 rounded-lg"],
+        shape === "normal" && ["  rounded-lg"],
+        size==="md" && shape ==="normal" &&["px-3 py-2 "],
+        size==="sm" && shape ==="normal" &&["px-2 py-1 "],
         size === "md" && ["text-sm md:text-base"],
+        size=== "sm" && ["text-xs"],
         variant === "primary" && ["bg-green-primary text-white"],
         variant === "secondary" && ["bg-white text-green-primary"],
-        variant === "danger" && ["bg-red-500 text-white"],
+        variant === "danger" && ["bg-red-500 text-white hover:text-red-500 hover:bg-white"],
         "font-medium transition-all flex items-center justify-center disabled:bg-white"
       )}
       disabled={loading === null ? props.disabled : loading}

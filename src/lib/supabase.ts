@@ -7,7 +7,10 @@ let SUPA_KEY= process.env.REACT_APP_SUPABASE_KEY
 
 const supabase = createClient(
   SUPA_URL || "",
-  SUPA_KEY || ""
+  SUPA_KEY || "",{
+    autoRefreshToken:true,
+    persistSession:true,
+  }
 );
 
 export default supabase;

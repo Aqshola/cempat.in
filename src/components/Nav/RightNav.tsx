@@ -5,9 +5,11 @@ import { CgClose } from "react-icons/cg";
 type Props = {
   onOutsideEditor: () => void;
   showEditor: boolean;
-  onCloseEditor: () => void;
+  onCloseEditor: (...T:any) => void;
   children: React.ReactNode;
-  title?:React.ReactNode
+  title?: React.ReactNode;
+  leftEvent?:React.ReactNode
+
 };
 
 export default function RightNav({
@@ -16,6 +18,7 @@ export default function RightNav({
   showEditor,
   children,
   title,
+  leftEvent
 }: Props) {
   const rightNavRef = useRef(null);
   useOutsideClick(rightNavRef, () => {
@@ -26,15 +29,16 @@ export default function RightNav({
       ref={rightNavRef}
       id="right-nav"
       className={
-        "transition-all duration-500 min-h-screen w-full md:w-2/5 absolute right-0 top-0 bg-white z-20 py-7 px-4 flex flex-col " +
+        "transition-all duration-500 h-screen overflow-y-scroll w-full md:w-2/5 absolute right-0 top-0 bg-white z-20 px-4 flex flex-col " +
         (showEditor ? "translate-x-0 visible" : " translate-x-full invisible")
       }
     >
-      <div className="flex gap-5 items-center">
+      <div className="flex gap-5 items-center sticky top-0 bg-white py-7 z-30">
         <button className="w-fit h-fit" onClick={onCloseEditor}>
           <CgClose className="w-6 h-6 text-green-primary" />
         </button>
-        {title}
+        <span>{title}</span>
+        <span className="ml-auto">{leftEvent}</span>
       </div>
 
       {children}

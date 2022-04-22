@@ -1,11 +1,11 @@
 import { PostgrestError } from "@supabase/supabase-js";
 import supabase from "lib/supabase";
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { Result } from "types/types";
 
 export default function useDelete(): [
-  (id: string) => void,
+  (id: string, user_id: string) => void,
   Result<any, PostgrestError | null>,
   boolean
 ] {
@@ -15,12 +15,12 @@ export default function useDelete(): [
   });
   const [loading, setloading] = useState<boolean>(false);
   return [
-    async (id: string) => {
+    async (id: string, user_id: string) => {
       setloading(true);
       const { data, error } = await supabase
         .from("cerita")
         .delete()
-        .match({ id: id });
+        .match({ id: id, user_id: user_id });
 
       if (data) {
         setresult({

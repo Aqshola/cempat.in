@@ -27,8 +27,6 @@ export default function useDetail(): [
         .eq("id", id)
         .single();
 
-        console.log(data);
-
       if (data) {
         setresult({
           data: data,

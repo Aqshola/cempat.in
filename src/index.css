@@ -26,15 +26,27 @@
 }
 
 
+.form-input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px white inset !important;
+  
+}
+
 .animate-scale-up {
   animation-duration: 0.2s;
   animation-name: scale-up;
   animation-timing-function: ease-in;
 }
 
+
 .mapboxgl-ctrl{
+  min-width: 0px !important;
   box-shadow: none !important;
-  @apply md:text-base flex items-center text-sm h-10 md:w-full w-36 !important
+  @apply md:text-base flex items-center text-sm h-10 md:w-full !important
+}
+
+.mapboxgl-ctrl-geocoder--icon{
+  top: 10px !important;
+  
 }
 
 .mapboxgl-ctrl input{

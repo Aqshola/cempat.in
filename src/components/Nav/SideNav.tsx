@@ -33,8 +33,8 @@ export default function SideNav() {
       id="side-nav"
       className={
         "transition-all duration-500  min-h-screen   z-50 bg-green-primary py-5 px-6 flex flex-col " +
-        (firstPathname === "main" ? " w-full md:w-80 absolute " : "") +
-        (firstPathname === "main"
+        (firstPathname === "peta" ? " w-full md:w-80 absolute " : "") +
+        (firstPathname === "peta"
           ? sideNav
             ? " translate-x-0 visible "
             : " -translate-x-full invisible"
@@ -53,7 +53,7 @@ export default function SideNav() {
         </p>
       </div>
       <div className="mt-7 flex flex-col gap-2">
-        <LinkSideNav Icon={FaMapMarked} link="/main" children={"Peta"} active={firstPathname==="main"}/>
+        <LinkSideNav Icon={FaMapMarked} link="/peta" children={"Peta"} active={firstPathname==="peta"}/>
         <LinkSideNav Icon={FaEnvelopeOpen} link="/cerita" children={"Cerita"} active={firstPathname==="cerita"}/>
         {/* <LinkSideNav Icon={ImLocation2} link="/kunjungan" children={"Kunjungan"} active={firstPathname==="kunjungan"}/> */}
       </div>

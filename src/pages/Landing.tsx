@@ -14,7 +14,7 @@ function Landing() {
         </h1>
         <p className="mt-5 font-light">Ceritain tempat yang kamu kunjungin</p>
 
-        <Link to={"/main"}>
+        <Link to={"/peta"}>
           <button className="mt-10 md:mt-16 w-fit py-2 px-5 text-sm text-white bg-green-primary font-semibold rounded">
             Tulis Cerita
           </button>

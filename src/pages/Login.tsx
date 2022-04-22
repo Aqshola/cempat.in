@@ -1,9 +1,11 @@
 import Landmark from "components/Icon/Landmark";
 import React, { useState } from "react";
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import useLogin from "hooks/auth/useLogin";
 import ErrorBox from "components/Error/ErrorBox";
 import Button from "components/Button/Button";
+import FormInput from "components/Input/FormInput";
+import {FiMail} from "react-icons/fi"
 
 /**
  * TODO: Add google login
@@ -13,9 +15,7 @@ import Button from "components/Button/Button";
 
 function Login() {
   const [formData, setformData] = useState({ email: "", password: "" });
-  const [login, error,loading] = useLogin();
-      
-
+  const [login, error, loading] = useLogin();
 
   const _setformData = (e: React.ChangeEvent<HTMLInputElement>) => {
     setformData({ ...formData, [e.target.name]: e.target.value });
@@ -28,7 +28,7 @@ function Login() {
 
   return (
     <div className="w-full grid grid-cols-2 h-screen">
-      <div className="col-span-2 md:col-span-1 flex flex-col px-16 py-28 items-center">
+      <div className="col-span-2 md:col-span-1 flex flex-col px-16 py-32 items-center">
         <h1 className=" font-semibold text-green-primary text-center">
           <span className="text-4xl">Halo!</span>
           <br />
@@ -39,10 +39,7 @@ function Login() {
         </div>
         <form className="mt-5 w-80" onSubmit={_handleLogin}>
           <div className="flex flex-col gap-2">
-            <label htmlFor="email" className="text-sm">
-              Email
-            </label>
-            <input
+            <FormInput
               value={formData.email}
               onChange={_setformData}
               type="email"
@@ -50,44 +47,31 @@ function Login() {
               name="email"
               id="email"
               placeholder="Email"
-              className="p-2 border border-green-primary rounded-md placeholder:text-sm text-sm"
+              label="Email"
+              logo={<FiMail className="w-5 h-5 text-gray-500"/>}
             />
           </div>
-          <div className="flex flex-col gap-2 mt-5">
-            <label htmlFor="password" className="text-sm">
-              Password
-            </label>
-            <input
-              value={formData.password}
+          <div className="flex flex-col gap-2 mt-7">
+            <FormInput value={formData.password}
               onChange={_setformData}
               type="password"
               required
               name="password"
               id="password"
-              placeholder="Password"
-              className="p-2 border border-green-primary rounded-md placeholder:text-sm text-sm"
-            />
+              placeholder="Password" label="Password"
+              minLength={6}
+              />
+            
           </div>
           <Button className="mt-5 w-full block mx-auto" loading={loading}>
             Login
           </Button>
-          {/* <button className="text-white py-2 px-3 bg-green-primary rounded-md mt-5 text-sm w-full">
-            {loading ? "loading..." : "Login"}
-          </button> */}
-          {/* <div className="flex justify-between items-center mt-2">
-            <div className="flex items-center ">
-              <input type="checkbox" name="remember-me" id="remember-me" />
-              <label
-                htmlFor="remember-me"
-                className="ml-1 text-gray-400 text-xs"
-              >
-                Ingat saya
-              </label>
-            </div>
-            <a href="/" className="text-xs ">
-              Lupa Password?
-            </a>
-          </div> */}
+
+          <div className="flex justify-between items-center mt-2">
+            <Link to="/lupa-sandi" className="text-xs ">
+              Lupa kata sandi?
+            </Link>
+          </div>
         </form>
 
         {/* <button className="mt-5 border shadow-sm w-80 py-2 px-3 rounded-md flex items-center text-green-primary">
