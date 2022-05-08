@@ -33,7 +33,7 @@ mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worke
  *TODO: Add Toast
  */
 
-export default function Main() {
+export default function Peta() {
   const mapGlRef = useRef<MapRef | null>(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -164,7 +164,6 @@ export default function Main() {
     bbox: [number, number, number, number],
     type: string
   ) => {
-
     if (type === "poi") {
       mapGlRef.current?.flyTo({
         center: [lat, long],
@@ -262,7 +261,11 @@ export default function Main() {
         {listLocation.map((loc, i) => (
           <StoryMarker
             key={i}
-            onClick={() => _handleStoryView(loc.jml_cerita || 0, loc)}
+            onClick={() => {
+              if (!pickLocation) {
+                _handleStoryView(loc.jml_cerita || 0, loc);
+              }
+            }}
             lat={loc.lat}
             lng={loc.lng}
           />

@@ -3,13 +3,13 @@ import useSession from "hooks/auth/useSession";
 import Cerita from "pages/Cerita";
 import Landing from "pages/Landing";
 import Login from "pages/Login";
-import Main from "pages/Main";
+import Main from "pages/Peta";
 import Register from "pages/Register";
 import { useEffect } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { PrivateRoute, PublicRoute } from "components/Route/Route";
 import ForgotPassword from "pages/ForgotPassword";
-
+import NotFound from "pages/404";
 
 function App() {
   const [getSession, loading] = useSession();
@@ -40,6 +40,7 @@ function App() {
                 </PrivateRoute>
               }
             />
+
             <Route
               path="/login"
               element={
@@ -65,6 +66,8 @@ function App() {
                 </PublicRoute>
               }
             />
+            <Route path="/404" element={<NotFound />} />
+            <Route path="*" element={<Navigate to={"/404"} />} />
           </Routes>
         </Layout>
       </BrowserRouter>

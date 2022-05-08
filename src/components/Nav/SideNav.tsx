@@ -7,6 +7,7 @@ import { useLocation } from "react-router-dom";
 import LinkSideNav from "./Link/LinkSideNav";
 import useLogout from "hooks/auth/useLogout";
 import { authStore } from "store/authStore";
+import {ImLocation2} from "react-icons/im"
 
 export default function SideNav() {
   

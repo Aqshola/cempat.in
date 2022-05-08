@@ -3,16 +3,13 @@ import React, { useState } from "react";
 import { Result, ApiLocation, Story } from "types/types";
 import { PostgrestError } from "@supabase/supabase-js";
 
-
 function useUserStory(): [
   (user_id: string) => Promise<void>,
   Result<Story[], PostgrestError | null>,
   boolean
 ] {
   const [loading, setloading] = useState<boolean>(false);
-  const [result, setresult] = useState<
-    Result<Story[], PostgrestError | null>
-  >({
+  const [result, setresult] = useState<Result<Story[], PostgrestError | null>>({
     data: [],
     error: null,
   });
@@ -23,7 +20,8 @@ function useUserStory(): [
       const { data, error } = await supabase
         .from("cerita")
         .select("*")
-        .eq("user_id", user_id);
+        .eq("user_id", user_id)
+        .order("created_at",{ascending:false});
 
       if (data) {
         setresult({
