@@ -17,7 +17,7 @@ import DetailStory from "components/Main/DetailStory";
 import useRemoveDuplicate from "hooks/helper/useRemoveDuplicate";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import mapboxgl from "mapbox-gl";
-import { setLocalStorage, getLocalStorage } from "hooks/helper/useLocalStorage";
+import { setLocalStorage, getLocalStorage, removeLocalStorage } from "hooks/helper/useLocalStorage";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -228,7 +228,10 @@ export default function Peta() {
       <Search handleSearch={viewLocation} />
 
       <MapGL
-        onLoad={_handleGet}
+        onLoad={() => {
+          removeLocalStorage("list_location");
+          _handleGet();
+        }}
         reuseMaps={true}
         onMoveEnd={_handleGet}
         onZoomEnd={_handleGet}

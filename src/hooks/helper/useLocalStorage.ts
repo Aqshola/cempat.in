@@ -11,3 +11,8 @@ export function getLocalStorage<T>(storageName:string):T|null{
     }
     return null;
 }
+
+export function removeLocalStorage(storageName:string){
+     localStorage.removeItem(storageName)
+}
+

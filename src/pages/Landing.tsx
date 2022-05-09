@@ -75,7 +75,7 @@ function Landing() {
           </h1>
           <p className="mt-5 md:text-base text-sm">
             <span className="inline-block overflow-hidden">
-              Ceritain tiap 
+              Ceritain
             </span>{" "}
             <span
               id="type-animate"
