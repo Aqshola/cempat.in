@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { EditorState } from "draft-js";
+import { toast } from "react-toastify";
+import { convertToRaw, EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import RightNav from "components/Nav/RightNav";
 import useInfoLatLong from "hooks/helper/useInfoLatLong";
@@ -12,7 +13,7 @@ type Props = {
   onOutsideEditor: () => void;
   showEditor: boolean;
   onCloseEditor: () => void;
-  infoLocation: Location| null;
+  infoLocation: Location | null;
   onSaveEditor: (T: any) => void;
 };
 
@@ -46,34 +47,49 @@ export default function EditorSection({
     setformData({ ...formData, content: editorState });
   };
 
-  const _createStory = () => {
+  const _createStory = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (user) {
-      create(
-        {
-          lat: infoLocation?.lat || 0,
-          lng: infoLocation?.lng || 0,
-          place_name: infoLocation?.place_name || placeName,
-        },
-        formData.title,
-        formData.content,
-        user.user_id
-      );
+      if (
+        convertToRaw(formData.content.getCurrentContent()).blocks.every(
+          (b) => b.text.trim() === ""
+        )
+      ) {
+        toast("Tulis cerita dulu ya", {
+          position: "bottom-right",
+          hideProgressBar: true,
+          autoClose: 1000,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        create(
+          {
+            lat: infoLocation?.lat || 0,
+            lng: infoLocation?.lng || 0,
+            place_name: infoLocation?.place_name || placeName,
+          },
+          formData.title,
+          formData.content,
+          user.user_id
+        );
+      }
     }
   };
 
   useEffect(() => {
     if (!loading && !result.error) {
-      if(result.data){
+      if (result.data) {
         showSideNav(false);
-        let res=result.data[0]
-        console.log(result.data)
-        onSaveEditor({...res});
+        let res = result.data[0];
+        console.log(result.data);
+        onSaveEditor({ ...res });
         props.onCloseEditor();
         setformData({
           title: "",
           content: EditorState.createEmpty(),
         });
-
       }
     }
   }, [loading, result.error]);
@@ -96,32 +112,30 @@ export default function EditorSection({
         {infoLocation?.place_name ? infoLocation.place_name : placeName}
       </h1>
 
-      <div className="mt-10 w-full border-t py-5">
-        <input
-          aria-label="judul cerita"
-          name="title"
-          type="text"
-          placeholder="Judul Cerita..."
-          className="text-green-primary text-lg placeholder:text-lg  w-full"
-          onChange={_setTitle}
-          value={formData.title}
-        />
-        <Editor
-          ariaLabel="isi cerita"
-          placeholder="Tulis ceritamu disini"
-          editorState={formData.content}
-          onEditorStateChange={_setContent}
-          toolbarHidden={true}
-        />
-      </div>
-
-      <Button
-        loading={loading}
-        onClick={_createStory}
-        className="self-end mt-20"
-      >
-        Simpan
-      </Button>
+      <form onSubmit={_createStory}>
+        <div className="mt-10 w-full border-t py-5">
+          <input
+            required
+            aria-label="judul cerita"
+            name="title"
+            type="text"
+            placeholder="Judul Cerita..."
+            className="text-green-primary text-lg placeholder:text-lg  w-full"
+            onChange={_setTitle}
+            value={formData.title}
+          />
+          <Editor
+            ariaLabel="isi cerita"
+            placeholder="Tulis ceritamu disini"
+            editorState={formData.content}
+            onEditorStateChange={_setContent}
+            toolbarHidden={true}
+          />
+        </div>
+        <Button loading={loading} className="self-end mt-20">
+          Simpan
+        </Button>
+      </form>
     </RightNav>
   );
 }

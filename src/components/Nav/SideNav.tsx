@@ -28,9 +28,9 @@ export default function SideNav() {
   }, [route.pathname]);
 
   if (
-    route.pathname === "/" ||
-    route.pathname === "/login" ||
-    route.pathname === "/register"
+    route.pathname !== "/" &&
+    route.pathname !== "/login" &&
+    route.pathname !== "/register"
   ) {
     return (
       <div

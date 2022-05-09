@@ -7,21 +7,20 @@ import gsap, { SteppedEase } from "gsap";
 function Landing() {
   const refTyping = useRef<HTMLSpanElement>(null);
   const [wordIndex, setwordIndex] = useState<number>(0);
-  const [wordList, setwordList] = useState(["Tempat", "Lokasi", "Wisata"]);
-  
+  const [wordList, setwordList] = useState(["Tempat", "Lokasi", "Wisata",]);
 
   useEffect(() => {
-    let index=0;
+    let index = 0;
     let typeTl = gsap.timeline({
       repeat: -1,
-      onRepeat:()=>{
-        if(index===wordList.length-1){
-          index=0;
-        }else{
-          index++;  
+      onRepeat: () => {
+        if (index === wordList.length - 1) {
+          index = 0;
+        } else {
+          index++;
         }
-        setwordIndex(index)
-      }
+        setwordIndex(index);
+      },
     });
 
     typeTl.fromTo(
@@ -39,10 +38,8 @@ function Landing() {
     typeTl.to(refTyping.current, 2, {
       width: "0",
       ease: SteppedEase.config(37),
-      delay:5
+      delay: 10,
     });
-
-    
   }, []);
 
   return (
@@ -56,7 +53,7 @@ function Landing() {
         </Link>
         <div className="ml-auto flex gap-5 items-center  h-fit ">
           <Link
-            to={"/login"}
+            to={"/register"}
             className="text-sm hover:shadow transition-shadow py-1 px-2"
           >
             Gabung
@@ -81,19 +78,23 @@ function Landing() {
               Tulis cerita di tiap{" "}
             </span>{" "}
             <span
-              className="inline-block  text-green-primary overflow-hidden"
+              id="type-animate"
+              className="inline-block border-r-2 text-green-primary overflow-hidden"
               ref={refTyping}
             >
               {wordList[wordIndex]}
-            </span>
-            {" "}
-
+            </span>{" "}
             <span className="inline-block overflow-hidden">
               yang kamu kunjungin
             </span>
           </p>
           <div className="flex gap-2 md:gap-5 flex-col md:flex-row md:items-center h-fit mt-10 md:mt-5">
-            <Link to={"/peta"} className="text-center bg-transparent border rounded border-green-primary text-green-primary px-2 py-1">Tulis cerita</Link>
+            <Link
+              to={"/peta"}
+              className="text-center bg-transparent border rounded border-green-primary text-green-primary px-2 py-1"
+            >
+              Tulis cerita
+            </Link>
             {/* <a href="#how" className="text-xs md:text-sm font-light hover:underline transition">Cara tulisnya?</a> */}
           </div>
         </div>

@@ -57,6 +57,12 @@
   @apply w-5 h-5 m-auto !important
 }
 
+#type-animate{
+  animation-name: word-ping;
+  animation-duration: 0.5s;
+  animation-iteration-count: infinite;
+}
+
 @keyframes scale-up {
     from{
       transform:scale(0)
@@ -68,4 +74,13 @@
     to{
       to:scale(1)
     }
+}
+
+@keyframes word-ping{
+  from{
+    border-right-color: #03C88E;
+  }
+  to{
+    border-right-color: black;
+  }
 }

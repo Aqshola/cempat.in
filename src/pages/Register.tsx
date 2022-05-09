@@ -109,7 +109,7 @@ function Register() {
         <div id="Logo">
           <Landmark className="fill-white" />
         </div>
-        <h1 className="text-3xl text-white font-medium mt-5">Cempat.in</h1>
+        <Link to={"/"} className="text-3xl text-white font-medium mt-5">Cempat.in</Link>
         <p className="text-white mt-2">
           Gabung dan bagikan cerita tiap tempat yang kamu kunjungi
         </p>
