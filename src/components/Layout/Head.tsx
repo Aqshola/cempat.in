@@ -34,6 +34,24 @@ export default function Head() {
         <meta name="msapplication-config" content="/browserconfig.xml" />
         <meta name="msapplication-TileColor" content="#03C88E" />
         <meta name="theme-color" content="#03C88E" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://cempat-in.vercel.app/" />
+        <meta property="og:title" content="Cempat.in" />
+        <meta
+          property="og:description"
+          content="Platform untuk menulis cerita tiap tempat yang dikunjungi"
+        />
+        <meta property="og:image" content="/landing.png" />
+
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://cempat-in.vercel.app/" />
+        <meta property="twitter:title" content="Cempat.in" />
+        <meta
+          property="twitter:description"
+          content="Platform untuk menulis cerita tiap tempat yang dikunjungi"
+        />
+        <meta property="twitter:image" content="/landing.png"></meta>
       </Helmet>
     </div>
   );
