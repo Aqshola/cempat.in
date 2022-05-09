@@ -30,7 +30,7 @@ mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worke
 /*
  *TODO: Fetch location by bounding box ✅
  *TODO: Get story detail ✅
- *TODO: Add Toast
+ *TODO: Add Toast ✅
  */
 
 export default function Peta() {

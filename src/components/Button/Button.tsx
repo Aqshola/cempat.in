@@ -4,7 +4,7 @@ import gsap from "gsap";
 import { time } from "console";
 
 type ButtonProps = {
-  variant?: "primary" | "secondary" | "danger";
+  variant?: "primary" | "secondary" | "danger" |"outline";
   size?: "sm" | "md" | "lg";
   shape?: "normal" | "round";
   loading?: boolean;
@@ -88,6 +88,7 @@ function Button({
         variant === "primary" && ["bg-green-primary text-white"],
         variant === "secondary" && ["bg-white text-green-primary"],
         variant === "danger" && ["bg-red-500 text-white hover:text-red-500 hover:bg-white"],
+        variant === "outline" && ["bg-transparent border rounded border-green-primary text-green-primary"],
         "font-medium transition-all flex items-center justify-center disabled:bg-white"
       )}
       disabled={loading === null ? props.disabled : loading}
