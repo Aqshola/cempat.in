@@ -10,6 +10,7 @@ import Button from "components/Button/Button";
 import { authStore } from "store/authStore";
 import useUpdate from "hooks/cerita/useUpdate";
 import { getLocalStorage, setLocalStorage } from "hooks/helper/useLocalStorage";
+import splitbee from '@splitbee/web';
 
 type Props = {
   onOutsideEditor: () => void;
@@ -71,6 +72,16 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
           title: result.data.title,
           content: editorState,
         });
+
+        splitbee.track("view story",{
+          id: result.data.id,
+          title: result.data.title,
+          place_name:result.data.place_name,
+          lat:result.data.lat,
+          lng:result.data.lng,
+        })
+
+
       } else {
         let localData = getLocalStorage<ApiLocation[]>("list_location");
         if (localData) {

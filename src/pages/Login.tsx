@@ -1,11 +1,12 @@
 import Landmark from "components/Icon/Landmark";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useLogin from "hooks/auth/useLogin";
 import ErrorBox from "components/Error/ErrorBox";
 import Button from "components/Button/Button";
 import FormInput from "components/Input/FormInput";
 import {FiMail} from "react-icons/fi"
+import splitbee from '@splitbee/web';
 
 /**
  * TODO: Add google login 
@@ -24,7 +25,18 @@ function Login() {
   const _handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     login(formData.email, formData.password);
+    splitbee.user.set({
+      email: formData.email
+    })
   };
+
+  useEffect(() => {
+    if(!loading && error){
+      splitbee.reset()
+      splitbee.track("Sign In")
+    }
+  }, [loading])
+  
 
   return (
     <div className="w-full grid grid-cols-2 h-screen">

@@ -6,6 +6,7 @@
     "@draft-js-plugins/editor": "^4.1.2",
     "@draft-js-plugins/static-toolbar": "^4.1.2",
     "@mapbox/mapbox-gl-geocoder": "^5.0.0",
+    "@splitbee/web": "^0.3.0",
     "@supabase/supabase-js": "^1.31.2",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.3",

@@ -7,6 +7,7 @@ import ErrorBox from "components/Error/ErrorBox";
 import FormInput from "components/Input/FormInput";
 import {FiMail, FiUser} from "react-icons/fi"
 import Button from "components/Button/Button";
+import splitbee from '@splitbee/web';
 
 /**
  * TODO: Onchange check username and email
@@ -30,11 +31,17 @@ function Register() {
   const _register = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     regis(formData.email, formData.password, formData.username);
-
-    if (error) {
-      console.log(error);
-    }
+    splitbee.user.set({
+      email: formData.email
+    })
   };
+
+  useEffect(() => {
+    if(!loading && error){
+      splitbee.reset()
+      splitbee.track("Sign In")
+    }
+  }, [loading])
 
   return (
     <div className="w-full grid grid-cols-2 h-screen">

@@ -10,11 +10,13 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { PrivateRoute, PublicRoute } from "components/Route/Route";
 import ForgotPassword from "pages/ForgotPassword";
 import NotFound from "pages/404";
+import splitbee from '@splitbee/web';
 
 function App() {
   const [getSession, loading] = useSession();
 
   useEffect(() => {
+    splitbee.init()
     getSession();
   }, []);
 

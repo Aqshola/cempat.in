@@ -7,6 +7,7 @@ import { useLocation } from "react-router-dom";
 import LinkSideNav from "./Link/LinkSideNav";
 import useLogout from "hooks/auth/useLogout";
 import { authStore } from "store/authStore";
+import splitbee from '@splitbee/web';
 
 export default function SideNav() {
   const username = authStore((state) => state.authData?.username);
@@ -21,6 +22,7 @@ export default function SideNav() {
   const _handleLogout = () => {
     logout();
     showSideNav(false);
+    splitbee.reset()
   };
 
   useEffect(() => {
