@@ -9,6 +9,7 @@ import parseDateString from "hooks/helper/parseDateString";
 import Button from "components/Button/Button";
 import { authStore } from "store/authStore";
 import useUpdate from "hooks/cerita/useUpdate";
+import { getLocalStorage, setLocalStorage } from "hooks/helper/useLocalStorage";
 
 type Props = {
   onOutsideEditor: () => void;
@@ -60,15 +61,25 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
   }, [idParams]);
 
   useEffect(() => {
-    if (loading && result.data) {
-      let editorState = EditorState.createWithContent(
-        convertFromRaw(JSON.parse(result.data?.content))
-      );
-      setformData({
-        ...formData,
-        title: result.data.title,
-        content: editorState,
-      });
+    if (!loading) {
+      if (result.data) {
+        let editorState = EditorState.createWithContent(
+          convertFromRaw(JSON.parse(result.data?.content))
+        );
+        setformData({
+          ...formData,
+          title: result.data.title,
+          content: editorState,
+        });
+      } else {
+        let localData = getLocalStorage<ApiLocation[]>("list_location");
+        if (localData) {
+          localData = localData.filter(
+            (location) => location.id !== Number(Number(idParams))
+          );
+          setLocalStorage("list_location", localData);
+        }
+      }
     }
   }, [loading, result.data]);
 
@@ -165,10 +176,15 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
               <Button
                 loading={loadingUpdate}
                 onClick={() => {
+                  
                   updateCerita(viewData.id || 0, user_id || "", {
                     title: formData.title,
                     content: formData.content,
                   });
+
+                  if (result.data?.title) {
+                    result.data.title = formData.title;
+                  }
                 }}
               >
                 Simpan

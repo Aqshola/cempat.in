@@ -1,10 +1,11 @@
 import ListCerita from "components/Cerita/ListCerita";
 import useUserStory from "hooks/cerita/useUserStory";
+import { getLocalStorage, setLocalStorage } from "hooks/helper/useLocalStorage";
 import React, { useEffect, useState } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { authStore } from "store/authStore";
 import { sideNavStore } from "store/navStore";
-import { Story } from "types/types";
+import { Story, ApiLocation } from "types/types";
 
 function Cerita() {
   const { showSideNav, sideNav } = sideNavStore((state) => state);
@@ -24,6 +25,12 @@ function Cerita() {
 
   const deleteCallback = (id: string) => {
     setstoryList(storyList.filter((story) => story.id !== id));
+    let localData = getLocalStorage<ApiLocation[]>("list_location");
+    if (localData) {
+      localData = localData.filter((location) => location.id !== Number(id));
+      setLocalStorage("list_location", localData);
+    }
+
   };
 
   return (

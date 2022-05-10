@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { BiCurrentLocation } from "react-icons/bi";
-
+import { toast } from "react-toastify";
 import geocoder from "lib/MapboxGeocoder";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
@@ -35,9 +35,26 @@ export default function Search({ handleSearch }: Props) {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((e) => {
         handleSearch(e.coords.longitude, e.coords.latitude, [], "poi");
+      },()=>{
+        toast("Yah, kamu gak ngijinin akses lokasi", {
+          position: "bottom-center",
+          hideProgressBar: true,
+          autoClose: 5000,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        });  
       });
     } else {
-      console.log("not allowed");
+      
+      toast("Yah, browser kamu belum support fitur lokasi", {
+        position: "bottom-center",
+        hideProgressBar: true,
+        autoClose: 5000,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 

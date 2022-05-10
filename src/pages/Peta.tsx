@@ -17,7 +17,10 @@ import DetailStory from "components/Main/DetailStory";
 import useRemoveDuplicate from "hooks/helper/useRemoveDuplicate";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import mapboxgl from "mapbox-gl";
-import { setLocalStorage, getLocalStorage, removeLocalStorage } from "hooks/helper/useLocalStorage";
+import {
+  setLocalStorage,
+  getLocalStorage,
+} from "hooks/helper/useLocalStorage";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -25,7 +28,7 @@ import "react-toastify/dist/ReactToastify.css";
 // notice the exclamation point in the import.
 // @ts-ignore
 // eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
-mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
+mapboxgl.workerClass =require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
 /*
  *TODO: Fetch location by bounding box ✅
@@ -137,6 +140,18 @@ export default function Peta() {
       getMarker(ne.lng, sw.lng, ne.lat, sw.lat);
     }
   };
+  const _getCurrentPosition = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((e) => {
+        setinitialLocation({
+          lat: e.coords.longitude,
+          long: e.coords.latitude,
+        });
+      });
+    } else {
+      console.log("not allowed");
+    }
+  };
 
   const _handleStoryView = (count: number, data: ApiLocation) => {
     setviewStory(data);
@@ -175,6 +190,7 @@ export default function Peta() {
   };
 
   useEffect(() => {
+    _getCurrentPosition();
     let localData = getLocalStorage<ApiLocation[]>("list_location");
     if (localData != null) {
       setlistLocation([...localData]);
@@ -229,7 +245,7 @@ export default function Peta() {
 
       <MapGL
         onLoad={() => {
-          removeLocalStorage("list_location");
+          setLocalStorage<ApiLocation[]>("list_location", []);
           _handleGet();
         }}
         reuseMaps={true}

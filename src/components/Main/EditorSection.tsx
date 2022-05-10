@@ -83,7 +83,6 @@ export default function EditorSection({
       if (result.data) {
         showSideNav(false);
         let res = result.data[0];
-        console.log(result.data);
         onSaveEditor({ ...res });
         props.onCloseEditor();
         setformData({
