@@ -77,8 +77,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
           id: result.data.id,
           title: result.data.title,
           place_name:result.data.place_name,
-          lat:result.data.lat,
-          lng:result.data.lng,
+          coordinat:result.data.lat+" - "+result.data.lng,
         })
 
 
