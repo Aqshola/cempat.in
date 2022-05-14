@@ -1,8 +1,10 @@
 import Button from "components/Button/Button";
 import FormInput from "components/Input/FormInput";
-import { useFinishRegisGoogle } from "hooks/auth/useOAuthGoogle";
+import { useFinishRegisGoogle, redirectLogin } from "hooks/auth/useOAuthGoogle";
+import useSession from "hooks/auth/useSession";
 import React, { useEffect } from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function RegisUsername() {
   const [username, setusername] = useState<string>("");
@@ -12,6 +14,27 @@ export default function RegisUsername() {
     e.preventDefault();
     finishGoogle(username);
   };
+  const navigate = useNavigate();
+  const [getSession] = useSession();
+
+  const checkUserStatus = async () => {
+    setTimeout(async () => {
+      const result = await redirectLogin();
+
+      if (result === "login") {
+        getSession();
+        setTimeout(() => {
+          navigate("/peta");
+        }, 500);
+      } else if (result === "unregister") {
+        navigate("/");
+      }
+    }, 500);
+  };
+
+  useEffect(() => {
+    checkUserStatus();
+  }, []);
 
   return (
     <div className="h-screen px-16 py-28 w-full">

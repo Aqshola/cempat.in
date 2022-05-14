@@ -7,16 +7,19 @@ import Button from "components/Button/Button";
 import FormInput from "components/Input/FormInput";
 import {FiMail} from "react-icons/fi"
 import splitbee from '@splitbee/web';
+import {googleProvider} from "hooks/auth/useOAuthGoogle"
+import {BsGoogle} from "react-icons/bs"
 
 /**
  * TODO: Add google login 
  * TODO: Forget Password ✅
- * TODO: Rememmber me
+ * 
  */
 
 function Login() {
   const [formData, setformData] = useState({ email: "", password: "" });
   const [login, error, loading] = useLogin();
+  
 
   const _setformData = (e: React.ChangeEvent<HTMLInputElement>) => {
     setformData({ ...formData, [e.target.name]: e.target.value });
@@ -29,6 +32,8 @@ function Login() {
       email: formData.email
     })
   };
+
+  
 
   useEffect(() => {
     if(!loading && error){
@@ -86,12 +91,12 @@ function Login() {
           </div>
         </form>
 
-        {/* <button className="mt-5 border shadow-sm w-80 py-2 px-3 rounded-md flex items-center text-green-primary">
+        <button className="mt-5 border shadow-sm w-80 py-2 px-3 rounded-md flex items-center text-green-primary" type="button" onClick={googleProvider}>
           <BsGoogle />
           <span className="ml-2 text-sm text-center w-full">
             Login dengan Google
           </span>
-        </button> */}
+        </button>
         <p className="mt-auto text-sm text-gray-500">
           belum punya akun?{" "}
           <Link to="/register" className="font-semibold text-green-primary">

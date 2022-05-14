@@ -8,7 +8,7 @@ import FormInput from "components/Input/FormInput";
 import {FiMail, FiUser} from "react-icons/fi"
 import Button from "components/Button/Button";
 import splitbee from '@splitbee/web';
-import {useInitRegistGoogle} from "hooks/auth/useOAuthGoogle"
+import {googleProvider} from "hooks/auth/useOAuthGoogle"
 
 /**
  * TODO: Onchange check username and email
@@ -21,7 +21,7 @@ function Register() {
   });
 
   const [regis, error, loading] = useRegis();
-  const [initRegisGoogle,loadingGoogle]=useInitRegistGoogle()
+  
 
   const _setformData = (e: React.ChangeEvent<HTMLInputElement>) => {
     setformData({
@@ -104,7 +104,7 @@ function Register() {
           </div>
         </form>
 
-        <button className="mt-5 border shadow-sm w-80 py-2 px-3 rounded-md flex items-center text-green-primary" onClick={initRegisGoogle}>
+        <button className="mt-5 border shadow-sm w-80 py-2 px-3 rounded-md flex items-center text-green-primary" onClick={googleProvider}>
           <BsGoogle />
           <span className="ml-2 text-sm text-center w-full">
             Register dengan Google
