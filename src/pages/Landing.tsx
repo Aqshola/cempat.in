@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import MapGL from "react-map-gl";
 import gsap, { SteppedEase } from "gsap";
+import Navbar from "components/Nav/Navbar";
 
 function Landing() {
   const refTyping = useRef<HTMLSpanElement>(null);
@@ -44,30 +45,7 @@ function Landing() {
 
   return (
     <div className="min-h-screen w-full">
-      <div className="w-full flex px-5 md:px-10  p-5">
-        <Link
-          to={"/"}
-          className="font-bold text-green-primary text-xl overflow-hidden"
-        >
-          CempatIn
-        </Link>
-        <div className="ml-auto flex gap-5 items-center  h-fit ">
-          <Link
-            to={"/register"}
-            className="text-sm hover:shadow transition-shadow py-1 px-2"
-          >
-            Gabung
-          </Link>
-
-          <Link
-            to={"/login"}
-            className="hover:shadow transition-shadow text-sm py-1 px-2 btn bg-green-primary text-white rounded"
-          >
-            Masuk
-          </Link>
-        </div>
-      </div>
-
+      <Navbar/>
       <div className="grid grid-cols-12 w-full h-screen relative">
         <div className="col-span-4 absolute h-96 md:h-auto md:relative w-fit mx-5 md:mx-0 z-30 bg-white mt-28 py-10 md:py-28 px-10">
           <h1 className="bg-green-primary text-4xl w-fit p-4 text-white ">
