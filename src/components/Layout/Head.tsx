@@ -9,6 +9,7 @@ export default function Head() {
     <div className="application">
       <Helmet>
         <title>Cempat.in {currentPage !== "" ? `| ${currentPage}` : ""} </title>
+        <meta name="google-site-verification" content="RY2HgnHgyC1yMJw8lzudKTK5vxraRtHxYBhTNUYF000" />
         <meta
           name="description"
           content="Platform untuk menulis cerita tiap tempat yang dikunjungi"
