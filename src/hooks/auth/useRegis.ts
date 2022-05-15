@@ -1,3 +1,4 @@
+import splitbee from "@splitbee/web";
 import { ApiError, PostgrestError } from "@supabase/supabase-js";
 import supabase from "lib/supabase";
 import React, { useState } from "react";
@@ -61,6 +62,7 @@ function useRegis(): [
               username,
               user_id: user.id,
             });
+            splitbee.track("Sign up")
           }
         }
       }

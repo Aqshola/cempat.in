@@ -9,6 +9,7 @@ import useCreate from "hooks/cerita/useCreate";
 import { authStore } from "store/authStore";
 import { sideNavStore } from "store/navStore";
 import { Location } from "types/types";
+
 type Props = {
   onOutsideEditor: () => void;
   showEditor: boolean;
@@ -16,6 +17,7 @@ type Props = {
   infoLocation: Location | null;
   onSaveEditor: (T: any) => void;
 };
+
 
 export default function EditorSection({
   infoLocation,

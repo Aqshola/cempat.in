@@ -1,9 +1,7 @@
 import { ApiError, PostgrestError } from "@supabase/supabase-js";
 import supabase from "lib/supabase";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { authStore } from "store/authStore";
-import { Result } from "types/types";
 import checkUsername from "./useCheckUsername";
 
 
@@ -15,6 +13,7 @@ export function useFinishRegisGoogle(): [
   const { setAuthStatus } = authStore((state) => state);
   const [error, seterror] = useState<ApiError | PostgrestError | null>(null);
   const [loading, setloading] = useState<boolean>(false);
+  
 
   return [
     async (username: string) => {
@@ -66,12 +65,13 @@ export function useFinishRegisGoogle(): [
 }
 
 export async function googleProvider() {
+  const urlOrigin=window.location.origin
   await supabase.auth.signIn(
     {
       provider: "google",
     },
     {
-      redirectTo: "http://localhost:3000/register/username",
+      redirectTo: `${urlOrigin}/register/username`,
     }
   );
 }
@@ -80,7 +80,6 @@ export async function redirectLogin(): Promise<
   "username" | "login" | "unregister"
 > {
   const user = supabase.auth.user();
-  console.log(user);
   if (user) {
     const { data} = await supabase
       .from("user")

@@ -43,7 +43,6 @@ function Register() {
   useEffect(() => {
     if(!loading && error){
       splitbee.reset()
-      splitbee.track("Sign In")
     }
   }, [loading])
 

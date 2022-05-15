@@ -11,7 +11,7 @@ import { PrivateRoute, PublicRoute } from "components/Route/Route";
 import ForgotPassword from "pages/ForgotPassword";
 import NotFound from "pages/404";
 import splitbee from "@splitbee/web";
-import teleAnalytic from "hooks/helper/tele-analytic";
+import {teleAnalytic} from "hooks/helper/useTele";
 import RegisUsername from "pages/RegisUsername";
 
 function App() {

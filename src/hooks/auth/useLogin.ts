@@ -2,6 +2,7 @@ import supabase from "lib/supabase";
 import React, { useState } from "react";
 import { ApiError, PostgrestError } from "@supabase/supabase-js";
 import { authStore } from "store/authStore";
+import splitbee from "@splitbee/web";
 
 export default function useLogin(): [
   (email: string, password: string) => Promise<void>,
@@ -11,6 +12,7 @@ export default function useLogin(): [
   const [loading, setloading] = useState<boolean>(false);
   const { setAuthStatus } = authStore((state) => state);
   const [error, seterror] = useState<ApiError | PostgrestError | null>(null);
+
 
   return [
     async (email: string, password: string) => {
@@ -37,6 +39,7 @@ export default function useLogin(): [
           .single();
         if (data) {
           setAuthStatus(true, data);
+          splitbee.track("Sign In")
         } else {
           seterror(ErrorSelect);
           setAuthStatus(false, null);

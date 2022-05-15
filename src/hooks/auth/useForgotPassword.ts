@@ -2,6 +2,7 @@ import { ApiError } from "@supabase/supabase-js";
 import supabase from "lib/supabase";
 import React, { useState } from "react";
 
+
 export function useForgotPassword(): [
   (email: string) => Promise<void>,
   ApiError | null,
@@ -9,12 +10,15 @@ export function useForgotPassword(): [
 ] {
   const [loading, setloading] = useState<boolean>(false);
   const [error, seterror] = useState<ApiError | null>(null);
+  
 
   return [
     async (email: string) => {
       setloading(true);
+
+      const urlOrigin=window.location.origin
       const { error } = await supabase.auth.api.resetPasswordForEmail(email, {
-        redirectTo: "http://localhost:3000/lupa-sandi",
+        redirectTo: `${urlOrigin}/lupa-sandi`,
       });
 
       if (error) {
