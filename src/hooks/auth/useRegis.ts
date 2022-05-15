@@ -2,6 +2,7 @@ import { ApiError, PostgrestError } from "@supabase/supabase-js";
 import supabase from "lib/supabase";
 import React, { useState } from "react";
 import { authStore } from "store/authStore";
+import checkUsername from "./useCheckUsername";
 
 function useRegis(): [
   (email: string, password: string, username: string) => Promise<void>,
@@ -18,12 +19,7 @@ function useRegis(): [
       seterror(null);
 
       //check if username exist
-      const { data: checkUser } = await supabase
-        .from("user")
-        .select("username")
-        .eq("username", username)
-        .single();
-
+      const checkUser = await checkUsername(username);
       if (checkUser) {
         seterror({
           code: "409",
