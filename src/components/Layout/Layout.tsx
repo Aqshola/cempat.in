@@ -15,7 +15,7 @@ export default function Layout({ children }: Props) {
   return (
     <HelmetProvider>
       <Head />
-      <div className="max-w-screen-2xl  mx-auto min-h-screen">
+      <div className="max-w-screen-2xl  mx-auto min-h-screen relative">
         <Navbar />
         {/* <SideNav /> */}
         {children}

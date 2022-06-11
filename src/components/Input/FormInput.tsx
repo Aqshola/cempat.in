@@ -19,62 +19,80 @@ export default function FormInput({
   >) {
   const [passwordVisible, setpasswordVisible] = useState<boolean>(false);
   const [typeInput, settypeInput] = useState(props.type);
+
+  const [inputInvalid, setinputInvalid] = useState<boolean>(false);
+
+  const validate_email = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const emailPattern =
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    const isValid = e.target.value.match(emailPattern);
+    setinputInvalid(isValid ? false : true);
+    e.target.setCustomValidity(
+      inputInvalid ? "" : "Masukin email yang valid ya"
+    );
+  };
+
   return (
-    <span className="relative flex items-center">
-      <input
-        {...props}
-        type={typeInput}
-        className={`
-                peer
-                py-2
-                text-sm
-                w-full
-                border-b-2 
-                border-gray-300
-                outline-none
-                focus:outline-none
-                placeholder-transparent
-                focus:border-green-primary
-                font-medium 
-                transition-all
-                autofill:!bg-white
-                form-input
-                focus:invalid:border-red-600
-                
-               ${className}`}
-      />
-      <label
-        htmlFor={props.id}
-        className="transition-all text-sm absolute left-0 peer-placeholder-shown:top-2 -top-4  peer-placeholder-shown:text-gray-400 text-black"
+    <span className="flex flex-col space-y-2">
+      <label htmlFor={props.id}>{label}</label>
+      <div
+        className={
+          "px-3 py-4 border border-gray-300 rounded-lg flex items-center " +
+          (inputInvalid
+            ? " focus-within:border-red-primary "
+            : " focus-within:border-green-primary")
+        }
       >
-        {label}
-      </label>
+        <input
+          {...props}
+          type={typeInput}
+          onChange={(e) => {
+            if (props.type === "email") {
+              validate_email(e);
+            }
 
-      {typeInput === "password" && !logo && (
-        <button
-          type="button"
-          onClick={() => {
-            settypeInput("text");
-            setpasswordVisible(true);
+            if (props.onChange) {
+              props.onChange(e);
+            }
           }}
-        >
-          <FiEye className="w-5 h-5 text-gray-500" />
-        </button>
-      )}
+          className="form-input md:placeholder:text-base placeholder:text-sm border-none outline-none focus:border-none focus:outline-none w-full"
+        />
+        {typeInput === "email" && (
+          <label htmlFor={props.id}>
+            <img src="/icon/filled/mail-logo-filled.svg" alt="email" />
+          </label>
+        )}
+        {typeInput === "password" && !passwordVisible && (
+          <button
+            onClick={() => {
+              settypeInput("text");
+              setpasswordVisible(true)
+              
+            }}
+            aria-label="password visible"
+          >
+            <img
+              src="/icon/filled/eye-logo-filled.svg"
+              alt="password visible"
+            />
+          </button>
+        )}
 
-      {passwordVisible && !logo && (
-        <button
-          type="button"
-          onClick={() => {
-            settypeInput("password");
-            setpasswordVisible(false);
-          }}
-        >
-          <FiEyeOff className="w-5 h-5 text-gray-500" />
-        </button>
-      )}
-
-      {logo}
+        {typeInput === "text" && passwordVisible && (
+          <button
+            onClick={() => {
+              settypeInput("password");
+              setpasswordVisible(false)
+            }}
+            aria-label="password invisible"
+          >
+            <img
+              src="/icon/filled/eye-closed-logo-filled.svg"
+              alt="password invisible"
+            />
+          </button>
+        )}
+      </div>
     </span>
   );
 }

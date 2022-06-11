@@ -26,7 +26,9 @@
   transform: translateY(5px);
 }
 
-
+.shadow-auth-box{
+  box-shadow: -10px 15px 0px #116530;
+}
 
 
 .form-input:-webkit-autofill {

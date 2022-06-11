@@ -5,7 +5,7 @@ import { time } from "console";
 
 
 type ButtonProps = {
-  variant?: "primary" | "secondary" | "danger" |"outline-primary" | "outline-secondary";
+  variant?: "primary" | "secondary" | "danger" |"outline-primary" | "outline-secondary" | "outline-gray";
   size?: "sm" | "md" | "lg" |"xs";
   shape?: "normal" | "round";
   loading?: boolean;
@@ -20,6 +20,7 @@ const ButtonType:{
   danger:"bg-red-primary text-white font-semibold rounded-lg",
   "outline-primary":"bg-transparent text-green-primary font-semibold rounded-lg",
   "outline-secondary":"bg-transparent text-blue-primary font-semibold rounded-lg",
+  "outline-gray":"border bg-transparent border-gray-300 font-semibold rounded-lg"
 }
 
 const ButtonSize:{
