@@ -3,100 +3,114 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import MapGL from "react-map-gl";
 import gsap, { SteppedEase } from "gsap";
-import Navbar from "components/Nav/Navbar";
+
+import "mapbox-gl/dist/mapbox-gl.css";
 
 function Landing() {
-  const refTyping = useRef<HTMLSpanElement>(null);
-  const [wordIndex, setwordIndex] = useState<number>(0);
-  const [wordList, setwordList] = useState(["Tempat", "Lokasi", "Wisata",]);
+  // const refTyping = useRef<HTMLSpanElement>(null);
+  // const [wordIndex, setwordIndex] = useState<number>(0);
+  // const [wordList, setwordList] = useState(["Tempat", "Lokasi", "Wisata"]);
 
-  useEffect(() => {
-    let index = 0;
-    let typeTl = gsap.timeline({
-      repeat: -1,
-      onRepeat: () => {
-        if (index === wordList.length - 1) {
-          index = 0;
-        } else {
-          index++;
-        }
-        setwordIndex(index);
-      },
-    });
+  // useEffect(() => {
+  //   let index = 0;
+  //   let typeTl = gsap.timeline({
+  //     repeat: -1,
+  //     onRepeat: () => {
+  //       if (index === wordList.length - 1) {
+  //         index = 0;
+  //       } else {
+  //         index++;
+  //       }
+  //       setwordIndex(index);
+  //     },
+  //   });
 
-    typeTl.fromTo(
-      refTyping.current,
-      2,
-      {
-        width: "0",
-      },
-      {
-        width: "4em",
-        ease: SteppedEase.config(37),
-      }
-    );
+  //   typeTl.fromTo(
+  //     refTyping.current,
+  //     2,
+  //     {
+  //       width: "0",
+  //     },
+  //     {
+  //       width: "4em",
+  //       ease: SteppedEase.config(37),
+  //     }
+  //   );
 
-    typeTl.to(refTyping.current, 2, {
-      width: "0",
-      ease: SteppedEase.config(37),
-      delay: 10,
-    });
-  }, []);
+  //   typeTl.to(refTyping.current, 2, {
+  //     width: "0",
+  //     ease: SteppedEase.config(37),
+  //     delay: 10,
+  //   });
+  // }, []);
 
   return (
-    <div className="min-h-screen w-full">
-      <Navbar/>
-      <div className="grid grid-cols-12 w-full h-screen relative">
-        <div className="col-span-4 absolute h-96 md:h-auto md:relative w-fit mx-5 md:mx-0 z-30 bg-white mt-28 py-10 md:py-28 px-10">
-          <h1 className="bg-green-primary text-4xl w-fit p-4 text-white ">
-            Cempat.in
+    <>
+      <section
+        className="grid grid-cols-12 md:mt-14 py-8 mx-7 md:mx-32"
+        id="header"
+      >
+        <div className="col-span-12 md:col-span-6">
+          <h1 className="font-extrabold text-3xl font-nunito md:leading-snug md:text-6xl">
+            Ceritain <br /> tiap{" "}
+            <span className="text-green-primary">Tempat</span> <br /> yang kamu{" "}
+            <span className="text-green-primary">kunjungin</span>
           </h1>
-          <p className="mt-5 md:text-base text-sm">
-            <span className="inline-block overflow-hidden">
-              Ceritain
-            </span>{" "}
-            <span
-              id="type-animate"
-              className="inline-block border-r-2 text-green-primary overflow-hidden"
-              ref={refTyping}
-            >
-              {wordList[wordIndex]}
-            </span>{" "}
-            <span className="inline-block overflow-hidden">
-              yang kamu kunjungin
-            </span>
-          </p>
-          <div className="flex gap-2 md:gap-5 flex-col md:flex-row md:items-center h-fit mt-10 md:mt-5">
-            <Link
-              to={"/peta"}
-              className="text-center bg-transparent border rounded border-green-primary text-green-primary px-2 py-1"
-            >
-              Tulis cerita
-            </Link>
-            {/* <a href="#how" className="text-xs md:text-sm font-light hover:underline transition">Cara tulisnya?</a> */}
+          <Link to={"/peta"}>
+            <Button className="mt-7 shadow-btn-landing" size="lg">
+              Tulis Cerita
+            </Button>
+          </Link>
+        </div>
+        <div className="col-span-12 md:col-span-4 md:col-start-9">
+          {/* <div className="block w-[400px] h-[600px] rounded-[50px] "></div> */}
+          <div className="w-full h-[300px] mt-10 md:mt-0  md:h-[600px] relative rounded-[50px] overflow-hidden   shadow-map-card ">
+            <MapGL
+              reuseMaps={true}
+              optimizeForTerrain={true}
+              mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
+              initialViewState={{
+                longitude: 106.816666,
+                latitude: -6.2,
+                zoom: 15,
+              }}
+              attributionControl={false}
+              mapStyle="mapbox://styles/mapbox/streets-v9"
+              style={{
+                width: "100%",
+                height: "100%",
+              }}
+            ></MapGL>
           </div>
         </div>
-        <div className="md:col-span-8 col-span-12 relative rounded h-full flex overflow-hidden">
-          <MapGL
-            reuseMaps={true}
-            optimizeForTerrain={true}
-            mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
-            initialViewState={{
-              longitude: 106.816666,
-              latitude: -6.2,
-              zoom: 10,
-            }}
-            minZoom={10}
-            attributionControl={false}
-            mapStyle="mapbox://styles/mapbox/streets-v11"
-            style={{
-              width: "100%",
-              height: "100%",
-            }}
-          />
+      </section>
+      <section className="bg-green-primary md:py-36" id="info">
+        <div className="grid grid-cols-12 mt-5 md:mt-14 py-8 mx-7 md:mx-32">
+          <div className="col-span-12 md:order-1 order-2 md:col-span-3 grid grid-cols-3 md:grid-cols-2 gap-5 mt-11 md:mt-0">
+            <div className="col-span-1 flex justify-center md:order-2">
+              <img className="flex w-[70px] h-[70px] md:w-[100px] md:h-[100px]" src="/icon/filled/location-logo-filled.svg" alt="pick location"  />
+            </div>
+            <div className="col-span-1 md:col-span-2 flex justify-center ">
+              <img className="flex w-[70px] h-[70px] md:w-[100px] md:h-[100px]" src="/icon/filled/write-logo-filled.svg"  alt="write" />
+            </div>
+            
+            <div className="flex justify-center md:order-3">
+              <img className="flex w-[70px] h-[70px] md:w-[100px] md:h-[100px]" src="/icon/filled/upload-logo-filled.svg" alt="upload" />
+            </div>
+          </div>
+          <div className="col-span-12 order-1  md:col-start-5 md:col-span-7 md:order-3">
+            <h2 className="font-nunito text-2xl md:text-6xl md:leading-snug text-white font-light">
+              <span className="font-extrabold">Pilih</span>  Lokasi <br /> <span className="font-extrabold">Tulis</span>  dan <span className="font-extrabold">Bagikan</span>  <br /> Cerita yang kamu
+              miliki
+            </h2>
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
+      <section id="quotes" className="mt-5 md:mt-14 py-32 mx-7 md:mx-32">
+              <h1 className="font-extrabold text-2xl md:text-6xl text-center font-nunito">“Tempat juga punya Cerita”</h1>
+              <h2 className="text-center md:mt-5 text-lg md:text-4xl font-nunito">yuk ceritain di <span className="font-extrabold text-green-primary">Cempat.in</span></h2>
+      </section>
+    </>
   );
 }
 

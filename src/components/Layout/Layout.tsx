@@ -1,8 +1,9 @@
-import SideNav from "components/Nav/SideNav";
 import React from "react";
 import { useLocation } from "react-router-dom";
 import Head from "./Head";
-import {HelmetProvider} from "react-helmet-async"
+import { HelmetProvider } from "react-helmet-async";
+import Navbar from "components/Nav/Navbar";
+import Footer from "components/Footer/Footer";
 
 type Props = {
   children: React.ReactNode;
@@ -14,14 +15,11 @@ export default function Layout({ children }: Props) {
   return (
     <HelmetProvider>
       <Head />
-      <div
-        className={
-          "max-w-screen-2xl min-h-screen mx-auto relative overflow-x-hidden " +
-          (route.pathname === "/peta" ? "" : "flex")
-        }
-      >
-        <SideNav />
+      <div className="max-w-screen-2xl  mx-auto min-h-screen">
+        <Navbar />
+        {/* <SideNav /> */}
         {children}
+       <Footer/>
       </div>
     </HelmetProvider>
   );

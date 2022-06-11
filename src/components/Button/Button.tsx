@@ -3,12 +3,34 @@ import clsx from "clsx";
 import gsap from "gsap";
 import { time } from "console";
 
+
 type ButtonProps = {
-  variant?: "primary" | "secondary" | "danger" |"outline";
-  size?: "sm" | "md" | "lg";
+  variant?: "primary" | "secondary" | "danger" |"outline-primary" | "outline-secondary";
+  size?: "sm" | "md" | "lg" |"xs";
   shape?: "normal" | "round";
   loading?: boolean;
 };
+
+
+const ButtonType:{
+  [key: string]: string;
+}={
+  primary:"bg-green-primary font-semibold text-white rounded-lg ",
+  secondary:"bg-blue-primary text-white font-semibold rounded-lg",
+  danger:"bg-red-primary text-white font-semibold rounded-lg",
+  "outline-primary":"bg-transparent text-green-primary font-semibold rounded-lg",
+  "outline-secondary":"bg-transparent text-blue-primary font-semibold rounded-lg",
+}
+
+const ButtonSize:{
+  [key: string]: string;
+}={
+  xl:"py-3 px-6 text-base",
+  lg:"px-4 py-2 text-base",
+  md:"px-4 py-2 text-sm",
+  sm:"py-2 px-3 text-sm",
+  xs:"py-2 px-3 text-xs"
+}
 
 function Button({
   children,
@@ -22,85 +44,13 @@ function Button({
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     HTMLButtonElement
   >) {
-  const btnRef = useRef<HTMLButtonElement>(null);
-  const loaderRef = useRef<HTMLSpanElement>(null);
-  const childrenRef = useRef<HTMLSpanElement>(null);
-  const timeline = gsap.timeline({ defaults: { duration: 0.4 } });
-
-  const _animateLoading = () => {
-    timeline
-      .to(childrenRef.current, {
-        opacity: 0,
-      })
-      .to(childrenRef.current, {
-        display: "none",
-      })
-      .to(loaderRef.current, {
-        display: "block",
-      })
-      .to(loaderRef.current, {
-        opacity: 1,
-      });
-  };
-
-  const _clearAnimateLoading = () => {
-    timeline
-      .to(loaderRef.current, {
-        opacity: 0,
-      })
-      .to(loaderRef.current, {
-        display: "none",
-      })
-      .to(childrenRef.current, {
-        display: "block",
-      })
-      .to(childrenRef.current, {
-        opacity: 1,
-      });
-  };
-
-  useLayoutEffect(() => {
-    if (loading) {
-      _animateLoading();
-    } else {
-      _clearAnimateLoading();
-    }
-
-    return () => {
-      timeline.clear(true);
-      timeline.kill();
-      _clearAnimateLoading();
-    };
-  }, [loading]);
-
+  
+    
   return (
-    <button
-      ref={btnRef}
-      {...props}
-      className={clsx(
-        props.className,
-        shape === "round" && ["p-2 rounded-full"],
-        shape === "normal" && ["  rounded-lg"],
-        size==="md" && shape ==="normal" &&["px-3 py-2 "],
-        size==="sm" && shape ==="normal" &&["px-2 py-1 "],
-        size === "md" && ["text-sm md:text-base"],
-        size=== "sm" && ["text-xs"],
-        variant === "primary" && ["bg-green-primary text-white"],
-        variant === "secondary" && ["bg-white text-green-primary"],
-        variant === "danger" && ["bg-red-500 text-white hover:text-red-500 hover:bg-white"],
-        variant === "outline" && ["bg-transparent border rounded border-green-primary text-green-primary"],
-        "font-medium transition-all flex items-center justify-center disabled:bg-white"
-      )}
-      disabled={loading === null ? props.disabled : loading}
-    >
-      <span
-        aria-label="loading"
-        ref={loaderRef}
-        className="opacity-0 hidden absolute border-t-4 border-t-green-primary animate-spin rounded-full w-8 h-8  border-4"
-      ></span>
-
-      <span ref={childrenRef}>{children}</span>
+    <button className={clsx(ButtonType[variant],ButtonSize[size], props.className)}>
+        {children}
     </button>
+    
   );
 }
 
