@@ -22,14 +22,14 @@ export default function Navbar() {
           </Link>
         </div>
         <div className={"col-span-5 flex justify-end col-start-8 md:col-start-11 "+(isAuthPage && "hidden")}>
-          <Link to={"/gabung"} aria-label="gabung">
+          <Link to={"/register"} aria-label="register">
             <Button size="xs" variant="outline-secondary">
-              Gabung
+              Register
             </Button>
           </Link>
           <Link to={"/login"} aria-label="login">
             <Button size="xs" variant="secondary">
-              Sign In
+              Login
             </Button>
           </Link>
         </div>

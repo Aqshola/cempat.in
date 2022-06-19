@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import useLogout from "hooks/auth/useLogout";
 import { Link } from "react-router-dom";
 import supabase from "lib/supabase";
+import FormInput from "components/Input/FormInput";
 
 export default function ForgotPassword() {
   const [forgotPassword, error, loading] = useForgotPassword();
@@ -112,24 +113,14 @@ export default function ForgotPassword() {
 
   return (
     <form
-      className="min h-screen w-full flex items-center justify-center flex-col"
+      className="min-h-screen w-full flex items-center flex-col"
       onSubmit={_handleForgot}
     >
       {stepForgot === "email" && (
-        <>
-          <h1 className="text-xl md:text-2xl">
-            Ketik email untuk setel ulang sandi{" "}
-          </h1>
-          <input
-            type="email"
-            className="mt-10 border-2 p-2 w-80  md:w-96 border-green-primary rounded-md"
-            placeholder="email"
-            onChange={(e) => setemail(e.target.value)}
-          />
-          <Button loading={loading} className="mt-5">
-            Kirim email
-          </Button>
-        </>
+        <EmailStep
+          loading={loading}
+          emailChange={(e) => setemail(e.target.value)}
+        />
       )}
 
       {stepForgot === "email-sent" && (
@@ -195,5 +186,40 @@ export default function ForgotPassword() {
 
       <ToastContainer bodyClassName={"font-semibold text-red-500"} />
     </form>
+  );
+}
+
+//Email Step
+type propsEmailStep = {
+  loading: boolean;
+  emailChange: (e: any) => any;
+};
+function EmailStep({ ...props }: propsEmailStep) {
+  return (
+    <>
+      <img
+        src="/illust/forgot-password-illust.png"
+        aria-label="Lupa password"
+      />
+      <h1 className="text-xl font-bold font-nunito md:text-3xl">
+        Lupa Password?
+      </h1>
+      <p className=" md:text-xl font-nunito font-light mt-3">
+        Yuk tulis <span className="font-bold">email</span> yang kamu pake
+      </p>
+
+      <FormInput
+        hideLabel={true}
+        onChange={props.emailChange}
+        className="w-80  md:w-96 mt-5"
+        placeholder="email@email.com"
+        id="email"
+        type={"email"}
+        label="Email"
+      />
+      <Button loading={props.loading} className="mt-5">
+        Kirim email
+      </Button>
+    </>
   );
 }

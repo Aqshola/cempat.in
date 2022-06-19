@@ -6,7 +6,7 @@ import { time } from "console";
 
 type ButtonProps = {
   variant?: "primary" | "secondary" | "danger" |"outline-primary" | "outline-secondary" | "outline-gray";
-  size?: "sm" | "md" | "lg" |"xs";
+  size?: "sm" | "md" | "lg" |"xs" |"xl";
   shape?: "normal" | "round";
   loading?: boolean;
 };
@@ -48,7 +48,7 @@ function Button({
   
     
   return (
-    <button className={clsx(ButtonType[variant],ButtonSize[size], props.className)}>
+    <button {...props} className={clsx(ButtonType[variant],ButtonSize[size], props.className)}>
         {children}
     </button>
     

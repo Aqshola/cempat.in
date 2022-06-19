@@ -5,12 +5,15 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 type Props = {
   logo?: React.ReactNode;
   label: string;
+  leftButton?: React.ReactNode;
+  hideLabel?:boolean
 };
 
 export default function FormInput({
   logo,
   label,
   className,
+  hideLabel=false,
   ...props
 }: Props &
   React.DetailedHTMLProps<
@@ -34,13 +37,13 @@ export default function FormInput({
 
   return (
     <span className="flex flex-col space-y-2">
-      <label htmlFor={props.id}>{label}</label>
+      {!hideLabel && <label htmlFor={props.id}>{label}</label>}
       <div
         className={
           "px-3 py-4 border border-gray-300 rounded-lg flex items-center " +
           (inputInvalid
             ? " focus-within:border-red-primary "
-            : " focus-within:border-green-primary")
+            : " focus-within:border-green-primary") +" "+className
         }
       >
         <input
@@ -57,17 +60,19 @@ export default function FormInput({
           }}
           className="form-input md:placeholder:text-base placeholder:text-sm border-none outline-none focus:border-none focus:outline-none w-full"
         />
-        {typeInput === "email" && (
+        {props.leftButton && (
+          props.leftButton
+        )}
+        {typeInput === "email" && !props.leftButton && (
           <label htmlFor={props.id}>
             <img src="/icon/filled/mail-logo-filled.svg" alt="email" />
           </label>
         )}
-        {typeInput === "password" && !passwordVisible && (
+        {typeInput === "password" && !passwordVisible && !props.leftButton && (
           <button
             onClick={() => {
               settypeInput("text");
-              setpasswordVisible(true)
-              
+              setpasswordVisible(true);
             }}
             aria-label="password visible"
           >
@@ -78,11 +83,11 @@ export default function FormInput({
           </button>
         )}
 
-        {typeInput === "text" && passwordVisible && (
+        {typeInput === "text" && passwordVisible && !props.leftButton && (
           <button
             onClick={() => {
               settypeInput("password");
-              setpasswordVisible(false)
+              setpasswordVisible(false);
             }}
             aria-label="password invisible"
           >
