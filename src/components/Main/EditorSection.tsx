@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { convertToRaw, EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
@@ -9,6 +9,10 @@ import useCreate from "hooks/cerita/useCreate";
 import { authStore } from "store/authStore";
 import { sideNavStore } from "store/navStore";
 import { Location } from "types/types";
+import useScreenSize from "hooks/helper/useScreenSize";
+import { BottomSheet, BottomSheetRef } from "react-spring-bottom-sheet";
+import "react-spring-bottom-sheet/dist/style.css";
+import { CgClose } from "react-icons/cg";
 
 type Props = {
   onOutsideEditor: () => void;
@@ -17,7 +21,6 @@ type Props = {
   infoLocation: Location | null;
   onSaveEditor: (T: any) => void;
 };
-
 
 export default function EditorSection({
   infoLocation,
@@ -33,23 +36,25 @@ export default function EditorSection({
   const [create, result, loading] = useCreate();
   const user = authStore((state) => state.authData);
   const showSideNav = sideNavStore((state) => state.showSideNav);
+  const [getSize, screenSize] = useScreenSize();
+  const sheetRef = useRef<BottomSheetRef>(null);
 
-  const gettingInfo = async () => {
+  async function gettingInfo() {
     if (infoLocation) {
       let info = await getInfo(infoLocation.lng, infoLocation.lat);
       setplaceName(info.features[0].text);
     }
-  };
+  }
 
-  const _setTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+  function _setTitle(e: React.ChangeEvent<HTMLInputElement>) {
     setformData({ ...formData, title: e.target.value });
-  };
+  }
 
-  const _setContent = (editorState: EditorState) => {
+  function _setContent(editorState: EditorState) {
     setformData({ ...formData, content: editorState });
-  };
+  }
 
-  const _createStory = (e: React.FormEvent<HTMLFormElement>) => {
+  function _createStory(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (user) {
       if (
@@ -78,7 +83,7 @@ export default function EditorSection({
         );
       }
     }
-  };
+  }
 
   useEffect(() => {
     if (!loading && !result.error) {
@@ -101,42 +106,109 @@ export default function EditorSection({
     }
   }, [props.showEditor]);
 
+  useEffect(() => {
+    getSize();
+  });
+
+  if (screenSize >= 768) {
+    return (
+      <>
+        <RightNav
+          title={
+            <h2 className="text-center font-nunito text-2xl font-bold">
+              {infoLocation?.place_name ? infoLocation.place_name : placeName}
+            </h2>
+          }
+          {...props}
+          onCloseEditor={() => {
+            setplaceName(null);
+            props.onCloseEditor();
+          }}
+        >
+          <form onSubmit={_createStory}>
+            <div className="w-full mt-5">
+              <input
+                required
+                aria-label="judul cerita"
+                name="title"
+                type="text"
+                placeholder="Judul Cerita"
+                className="text-green-primary outline-none border-none text-2xl placeholder:text-2xl  w-full font-medium"
+                onChange={_setTitle}
+                value={formData.title}
+              />
+              <Editor
+                ariaLabel="isi cerita"
+                placeholder="Yuk tulis ceritamu disini"
+                editorState={formData.content}
+                onEditorStateChange={_setContent}
+                toolbarHidden={true}
+              />
+            </div>
+            <Button loading={loading} className="float-right mt-20">
+              Simpan
+            </Button>
+          </form>
+        </RightNav>
+      </>
+    );
+  }
+
   return (
-    <RightNav
-      {...props}
-      onCloseEditor={() => {
-        setplaceName(null);
-        props.onCloseEditor();
+    <BottomSheet
+      snapPoints={({ maxHeight }) => [
+        maxHeight - maxHeight / 10,
+        maxHeight / 4,
+        maxHeight * 0.6,
+      ]}
+      open={props.showEditor}
+      className="w-full z-30"
+      blocking={true}
+      ref={sheetRef}
+      onAuxClick={() => {
+        console.log("sss");
       }}
     >
-      <h1 className="text-green-primary font-semibold mt-10 text-2xl">
+      <div className="px-6 flex items-center">
+        <button
+          className="w-fit h-fit"
+          onClick={() => {
+            props.onCloseEditor();
+          }}
+        >
+          <CgClose className="w-6 h-6" />
+        </button>
+        <h1 className="w-full text-center font-nunito font-bold text-lg">
         {infoLocation?.place_name ? infoLocation.place_name : placeName}
-      </h1>
+        </h1>
+      </div>
 
-      <form onSubmit={_createStory}>
-        <div className="mt-10 w-full border-t py-5">
-          <input
-            required
-            aria-label="judul cerita"
-            name="title"
-            type="text"
-            placeholder="Judul Cerita..."
-            className="text-green-primary text-lg placeholder:text-lg  w-full"
-            onChange={_setTitle}
-            value={formData.title}
-          />
-          <Editor
-            ariaLabel="isi cerita"
-            placeholder="Tulis ceritamu disini"
-            editorState={formData.content}
-            onEditorStateChange={_setContent}
-            toolbarHidden={true}
-          />
-        </div>
-        <Button loading={loading} className="self-end mt-20">
-          Simpan
-        </Button>
-      </form>
-    </RightNav>
+      <div className="px-6">
+        <form onSubmit={_createStory}>
+          <div className="w-full mt-5">
+            <input
+              required
+              aria-label="judul cerita"
+              name="title"
+              type="text"
+              placeholder="Judul Cerita"
+              className="text-green-primary outline-none border-none text-2xl placeholder:text-2xl  w-full font-medium"
+              onChange={_setTitle}
+              value={formData.title}
+            />
+            <Editor
+              ariaLabel="isi cerita"
+              placeholder="Yuk tulis ceritamu disini"
+              editorState={formData.content}
+              onEditorStateChange={_setContent}
+              toolbarHidden={true}
+            />
+          </div>
+          <Button loading={loading} className="float-right mt-20">
+            Simpan
+          </Button>
+        </form>
+      </div>
+    </BottomSheet>
   );
 }

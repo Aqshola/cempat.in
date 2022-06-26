@@ -1,7 +1,5 @@
 import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
 import MapGL, { MapRef } from "react-map-gl";
-import { GiHamburgerMenu } from "react-icons/gi";
-
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { sideNavStore } from "store/navStore";
@@ -17,18 +15,18 @@ import DetailStory from "components/Main/DetailStory";
 import useRemoveDuplicate from "hooks/helper/useRemoveDuplicate";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import mapboxgl from "mapbox-gl";
-import {
-  setLocalStorage,
-  getLocalStorage,
-} from "hooks/helper/useLocalStorage";
+
+import { setLocalStorage, getLocalStorage } from "hooks/helper/useLocalStorage";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 
 // The following is required to stop "npm build" from transpiling mapbox code.
 // notice the exclamation point in the import.
 // @ts-ignore
 // eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
-mapboxgl.workerClass =require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
+// mapboxgl.workerClass =
+//   require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
 /*
  *TODO: Fetch location by bounding box ✅
@@ -77,12 +75,14 @@ export default function Peta() {
     place_name: "",
   });
 
-  const _saveCallback = ({ lat, lng, id, place_name }: ApiLocation) => {
+ 
+
+  function _saveCallback({ lat, lng, id, place_name }: ApiLocation) {
     setlistLocation([...listLocation, { lat, lng, id, place_name }]);
     setpickLocation(false);
-  };
+  }
 
-  const _pickLocation = (obj: any) => {
+  function _pickLocation(obj: any) {
     const { lng, lat } = obj.lngLat;
 
     mapGlRef.current?.flyTo({
@@ -99,15 +99,15 @@ export default function Peta() {
         place_name: detail ? detail[0]?.properties?.name : null,
       });
     }
-  };
+  }
 
-  const _cancelPick = () => {
+  function _cancelPick() {
     setshowEditor(false);
     setpickedLocation(null);
     setpickLocation(false);
-  };
+  }
 
-  const _newStory = () => {
+  function _newStory() {
     if (pickLocation) {
       if (
         !pickedLocation ||
@@ -127,9 +127,9 @@ export default function Peta() {
     } else {
       setpickLocation(true);
     }
-  };
+  }
 
-  const _handleGet = () => {
+  function _handleGet() {
     const bound = mapGlRef.current?.getBounds();
     let zoomLevel = mapGlRef.current?.getZoom() || 0;
 
@@ -139,8 +139,9 @@ export default function Peta() {
 
       getMarker(ne.lng, sw.lng, ne.lat, sw.lat);
     }
-  };
-  const _getCurrentPosition = () => {
+  }
+
+  function _getCurrentPosition() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((e) => {
         setinitialLocation({
@@ -151,9 +152,9 @@ export default function Peta() {
     } else {
       console.log("not allowed");
     }
-  };
+  }
 
-  const _handleStoryView = (count: number, data: ApiLocation) => {
+  function _handleStoryView(count: number, data: ApiLocation) {
     setviewStory(data);
     if (count > 1) {
       setstoryListView(true);
@@ -163,22 +164,22 @@ export default function Peta() {
       setstoryDetailView(true);
       setstoryListView(false);
     }
-  };
+  }
 
-  const _loadLocationStory = () => {
+  function _loadLocationStory() {
     const pushedArray = useRemoveDuplicate(listLocation, dataMarker.data, "id");
     if (pushedArray.length > 0) {
       setlistLocation([...pushedArray]);
       setLocalStorage<ApiLocation[]>("list_location", listLocation);
     }
-  };
+  }
 
-  const viewLocation = (
+  function viewLocation(
     lat: number,
     long: number,
     bbox: [number, number, number, number],
     type: string
-  ) => {
+  ) {
     if (type === "poi") {
       mapGlRef.current?.flyTo({
         center: [lat, long],
@@ -187,7 +188,7 @@ export default function Peta() {
     } else {
       mapGlRef.current?.fitBounds(bbox);
     }
-  };
+  }
 
   // useEffect(() => {
   //   _getCurrentPosition();
@@ -232,8 +233,6 @@ export default function Peta() {
 
   return (
     <div className="h-screen " id="nav-btn" aria-label="nav-btn">
-     
-
       <Search handleSearch={viewLocation} />
 
       <MapGL
@@ -317,11 +316,13 @@ export default function Peta() {
         }}
       />
 
+
+
       <Button
         variant="danger"
         onClick={_cancelPick}
         className={clsx(
-          "shadow w-max absolute z-10 left-10 bottom-20 md:right-20",
+          "shadow w-max absolute left-10 md:left-40 bottom-20 md:right-20",
           pickLocation && ["visible opacity-100"],
           !pickLocation && [" invisible opacity-0"]
         )}
@@ -331,10 +332,10 @@ export default function Peta() {
 
       <Button
         onClick={_newStory}
-        className="absolute z-10 right-5 bottom-20 md:right-20 shadow"
+        className="absolute  right-5 bottom-20 md:right-20 shadow"
         variant={pickLocation ? "secondary" : "primary"}
       >
-        {pickLocation ? "Pilih lokasi " : "Tulis cerita"}
+        {pickLocation ? "Pilih lokasi " : "Buat Cerita"}
       </Button>
 
       <ToastContainer
