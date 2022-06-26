@@ -17,11 +17,11 @@ import RegisUsername from "pages/RegisUsername";
 function App() {
   const [getSession, loading] = useSession();
 
-  useEffect(() => {
-    teleAnalytic();
-    splitbee.init();
-    getSession();
-  }, []);
+  // useEffect(() => {
+  //   teleAnalytic();
+  //   splitbee.init();
+  //   getSession();
+  // }, []);
 
   return (
     <>
@@ -31,17 +31,17 @@ function App() {
           <Route
             path="/peta"
             element={
-              <PrivateRoute loading={loading}>
+              // <PrivateRoute loading={loading}>
                 <Main />
-              </PrivateRoute>
+              // </PrivateRoute>
             }
           />
           <Route
             path="/cerita"
             element={
-              <PrivateRoute loading={loading}>
+              // <PrivateRoute loading={loading}>
                 <Cerita />
-              </PrivateRoute>
+              // </PrivateRoute>
             }
           />
 

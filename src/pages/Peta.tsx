@@ -189,68 +189,61 @@ export default function Peta() {
     }
   };
 
-  useEffect(() => {
-    _getCurrentPosition();
-    let localData = getLocalStorage<ApiLocation[]>("list_location");
-    if (localData != null) {
-      setlistLocation([...localData]);
-    }
-  }, []);
+  // useEffect(() => {
+  //   _getCurrentPosition();
+  //   let localData = getLocalStorage<ApiLocation[]>("list_location");
+  //   if (localData != null) {
+  //     setlistLocation([...localData]);
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    _handleGet();
-  }, []);
+  // useEffect(() => {
+  //   _handleGet();
+  // }, []);
 
-  useEffect(() => {
-    if (!loading) {
-      _loadLocationStory();
-    }
-  }, [loading]);
+  // useEffect(() => {
+  //   if (!loading) {
+  //     _loadLocationStory();
+  //   }
+  // }, [loading]);
 
-  useEffect(() => {
-    if (loadedMap) {
-      if (latParams && lngParams) {
-        let flying = true;
-        mapGlRef.current?.flyTo({
-          center: [parseFloat(lngParams), parseFloat(latParams)],
-          essential: true,
-        });
+  // useEffect(() => {
+  //   if (loadedMap) {
+  //     if (latParams && lngParams) {
+  //       let flying = true;
+  //       mapGlRef.current?.flyTo({
+  //         center: [parseFloat(lngParams), parseFloat(latParams)],
+  //         essential: true,
+  //       });
 
-        mapGlRef.current?.on("flyend", () => {
-          flying = false;
-        });
+  //       mapGlRef.current?.on("flyend", () => {
+  //         flying = false;
+  //       });
 
-        mapGlRef.current?.on("moveend", () => {
-          if (flying) {
-            setstoryDetailView(true);
-            flying = false;
-          }
-        });
-      }
-    }
-  }, [loadedMap, latParams, lngParams]);
+  //       mapGlRef.current?.on("moveend", () => {
+  //         if (flying) {
+  //           setstoryDetailView(true);
+  //           flying = false;
+  //         }
+  //       });
+  //     }
+  //   }
+  // }, [loadedMap, latParams, lngParams]);
 
   return (
-    <div className="h-screen" id="nav-btn" aria-label="nav-btn">
-      <Button
-        id="nav-btn"
-        shape="round"
-        className="p-2 absolute top-10 left-5 md:left-10 z-20"
-        onClick={() => showSideNav(true)}
-      >
-        <GiHamburgerMenu className="w-5 h-5 md:w-6 md:h-6 text-white" />
-      </Button>
+    <div className="h-screen " id="nav-btn" aria-label="nav-btn">
+     
 
       <Search handleSearch={viewLocation} />
 
       <MapGL
         onLoad={() => {
-          setLocalStorage<ApiLocation[]>("list_location", []);
-          _handleGet();
+          // setLocalStorage<ApiLocation[]>("list_location", []);
+          // _handleGet();
         }}
         reuseMaps={true}
-        onMoveEnd={_handleGet}
-        onZoomEnd={_handleGet}
+        // onMoveEnd={_handleGet}
+        // onZoomEnd={_handleGet}
         optimizeForTerrain={true}
         ref={(e) => {
           mapGlRef.current = e;

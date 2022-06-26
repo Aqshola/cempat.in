@@ -13,29 +13,30 @@ function Cerita() {
   const [getUserStory, data, loading] = useUserStory();
   const user_id = authStore((state) => state.authData?.user_id);
 
-  useEffect(() => {
-    getUserStory(user_id || "");
-  }, []);
+  // useEffect(() => {
+  //   getUserStory(user_id || "");
+  // }, []);
 
-  useEffect(() => {
-    if (!loading) {
-      setstoryList(data.data);
-    }
-  }, [loading]);
+  // useEffect(() => {
+  //   if (!loading) {
+  //     setstoryList(data.data);
+  //   }
+  // }, [loading]);
 
-  const deleteCallback = (id: string) => {
-    setstoryList(storyList.filter((story) => story.id !== id));
-    let localData = getLocalStorage<ApiLocation[]>("list_location");
-    if (localData) {
-      localData = localData.filter((location) => location.id !== Number(id));
-      setLocalStorage("list_location", localData);
-    }
+  // const deleteCallback = (id: string) => {
+  //   setstoryList(storyList.filter((story) => story.id !== id));
+  //   let localData = getLocalStorage<ApiLocation[]>("list_location");
+  //   if (localData) {
+  //     localData = localData.filter((location) => location.id !== Number(id));
+  //     setLocalStorage("list_location", localData);
+  //   }
 
-  };
+  // };
 
   return (
-    <div className="relative md:px-10 px-5 pb-5 w-full">
-      <div className={"py-5 transition-all flex items-center"}>
+    <div className="h-screen">
+      ss
+      {/* <div className={"py-5 transition-all flex items-center"}>
         <button
           className={sideNav ? "opacity-0 invisible" : " opacity-100 visible"}
           onClick={() => showSideNav(true)}
@@ -89,7 +90,7 @@ function Cerita() {
             )}
           </div>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }
