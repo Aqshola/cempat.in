@@ -143,7 +143,7 @@ export default function SideNav() {
           {spanSideNav && (
             <span
               className={clsx(
-                "font-semibold w-full text-left",
+                "font-semibold w-full text-left ",
                 route.pathname === "/pengaturan"
                   ? ["text-white"]
                   : ["text-black"]
@@ -153,7 +153,7 @@ export default function SideNav() {
             </span>
           )}
         </LinkSideNav>
-        <button className="flex items-center justify-center gap-5 w-full">
+        <button className="px-4 flex items-center justify-center gap-5  w-fit h-fit">
           <img src={`/icon/outline/exit-logo-outline.svg`} alt="exit-logo" />
           {spanSideNav && (
             <span className={clsx("font-semibold w-full text-left text-black")}>
