@@ -20,7 +20,7 @@ export default function Layout({ children }: Props) {
         <Navbar />
         <div className="relative overflow-hidden">
           
-            <SideNav />
+            <SideNav key={route.pathname}/>
           
           
             {children}

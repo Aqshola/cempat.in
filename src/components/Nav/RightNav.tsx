@@ -21,9 +21,6 @@ export default function RightNav({
   leftEvent
 }: Props) {
   const rightNavRef = useRef(null);
-  useOutsideClick(rightNavRef, () => {
-    onOutsideEditor();
-  });
   return (
     <div
       ref={rightNavRef}

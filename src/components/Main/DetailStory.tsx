@@ -63,6 +63,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
   };
   const [getSize, screenSize] = useScreenSize();
 
+  
   useEffect(() => {
     getDetail(Number(idParams) || 0);
   }, [idParams]);
@@ -79,12 +80,12 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
           content: editorState,
         });
 
-        splitbee.track("view story", {
-          id: result.data.id,
-          title: result.data.title,
-          place_name: result.data.place_name,
-          coordinat: result.data.lat + " - " + result.data.lng,
-        });
+        // splitbee.track("view story", {
+        //   id: result.data.id,
+        //   title: result.data.title,
+        //   place_name: result.data.place_name,
+        //   coordinat: result.data.lat + " - " + result.data.lng,
+        // });
       } else {
         let localData = getLocalStorage<ApiLocation[]>("list_location");
         if (localData) {

@@ -38,7 +38,6 @@ export default function EditorSection({
   const showSideNav = sideNavStore((state) => state.showSideNav);
   const [getSize, screenSize] = useScreenSize();
   const sheetRef = useRef<BottomSheetRef>(null);
-  console.log(infoLocation);
   async function gettingInfo() {
     if (infoLocation) {
       let info = await getInfo(infoLocation.lng, infoLocation.lat);

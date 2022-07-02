@@ -7,14 +7,14 @@ import gsap from "gsap";
 type PickedMarkerProps = {
   lng: number;
   lat: number;
-  classnames?: string;
+  className?: string;
 };
 
-const PickedMarker = ({ lng, lat, classnames }: PickedMarkerProps) => {
+const PickedMarker = ({ lng, lat, className }: PickedMarkerProps) => {
   return (
     <>
       <Marker longitude={lng} latitude={lat} anchor="bottom">
-        <MarkerPicked className="animate-scale-up w-14 h-14" />
+        <MarkerPicked className={"animate-scale-up w-14 h-14 "+className} />
       </Marker>
     </>
   );

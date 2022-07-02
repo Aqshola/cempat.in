@@ -55,13 +55,6 @@ export default function SideNav() {
     setspanSideNav(!spanSideNav);
   }
 
-  useEffect(() => {
-    let hideSideNav = setTimeout(() => {
-      setspanSideNav(false);
-      clearTimeout(hideSideNav);
-    }, 500);
-  }, [route.pathname]);
-
   
   
 
@@ -125,6 +118,7 @@ export default function SideNav() {
             let active = route.pathname === link.link;
             return (
               <LinkSideNav
+              key={link.link}
                 link={link.link}
                 active={active}
                 className="flex items-center justify-center gap-5"

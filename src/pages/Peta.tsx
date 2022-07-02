@@ -274,7 +274,7 @@ export default function Peta() {
         }}
       >
         {pickedLocation && (
-          <PickedMarker lat={pickedLocation.lat} lng={pickedLocation.lng} />
+          <PickedMarker className="z-10" lat={pickedLocation.lat} lng={pickedLocation.lng} />
         )}
 
         {listLocation.map((loc, i) => (
