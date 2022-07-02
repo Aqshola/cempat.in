@@ -14,7 +14,7 @@ const PickedMarker = ({ lng, lat, classnames }: PickedMarkerProps) => {
   return (
     <>
       <Marker longitude={lng} latitude={lat} anchor="bottom">
-        <MarkerPicked className="animate-scale-up w-10 h-10" />
+        <MarkerPicked className="animate-scale-up w-14 h-14" />
       </Marker>
     </>
   );

@@ -38,7 +38,7 @@ export default function EditorSection({
   const showSideNav = sideNavStore((state) => state.showSideNav);
   const [getSize, screenSize] = useScreenSize();
   const sheetRef = useRef<BottomSheetRef>(null);
-
+  console.log(infoLocation);
   async function gettingInfo() {
     if (infoLocation) {
       let info = await getInfo(infoLocation.lng, infoLocation.lat);
@@ -162,12 +162,9 @@ export default function EditorSection({
         maxHeight * 0.6,
       ]}
       open={props.showEditor}
-      className="w-full z-30"
+      className="w-full z-50 absolute bottom-0"
       blocking={true}
       ref={sheetRef}
-      onAuxClick={() => {
-        console.log("sss");
-      }}
     >
       <div className="px-6 flex items-center">
         <button
@@ -179,7 +176,7 @@ export default function EditorSection({
           <CgClose className="w-6 h-6" />
         </button>
         <h1 className="w-full text-center font-nunito font-bold text-lg">
-        {infoLocation?.place_name ? infoLocation.place_name : placeName}
+          {infoLocation?.place_name ? infoLocation.place_name : placeName}
         </h1>
       </div>
 

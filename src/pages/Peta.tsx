@@ -59,7 +59,15 @@ export default function Peta() {
 
   const [loadedMap, setloadedMap] = useState<boolean>(false);
 
-  const [listLocation, setlistLocation] = useState<ApiLocation[]>([]);
+  const [listLocation, setlistLocation] = useState<ApiLocation[]>([
+    {lng:107.1414549333428,
+      lat:-6.363208404137197,
+      id:1,
+      jml_cerita:1,
+      place_name:"kiki"
+
+  }
+  ]);
 
   const [getMarker, dataMarker, loading] = useGet();
 
@@ -295,15 +303,6 @@ export default function Peta() {
         infoLocation={pickedLocation}
       />
 
-      <StoryList
-        showEditor={storyListView}
-        onCloseEditor={() => {
-          setstoryListView(false);
-        }}
-        onOutsideEditor={() => {
-          setstoryListView(false);
-        }}
-      />
 
       <DetailStory
         viewData={viewStory}

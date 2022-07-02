@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 
 
 export default function useScreenSize():[Function,number] {
-const [screenSize, setscreenSize] = useState<number>(0)
+const [screenSize, setscreenSize] = useState<number>(window.innerWidth)
   return [
     function(){
         if(window){
