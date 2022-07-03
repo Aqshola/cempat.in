@@ -35,7 +35,6 @@ function Cerita() {
 
   return (
     <div className="h-screen">
-      ss
       {/* <div className={"py-5 transition-all flex items-center"}>
         <button
           className={sideNav ? "opacity-0 invisible" : " opacity-100 visible"}

@@ -29,11 +29,8 @@ export default function SideNav() {
   const username = authStore((state) => state.authData?.username);
   const { sideNav, showSideNav } = sideNavStore((state) => state);
   const [spanSideNav, setspanSideNav] = useState<boolean>(false);
-  
 
   const route = useLocation();
-
-  const firstPathname = route.pathname.split("/")[1];
 
   const isNotMainRoute =
     route.pathname === "/" ||
@@ -55,29 +52,41 @@ export default function SideNav() {
     setspanSideNav(!spanSideNav);
   }
 
-  
-  
-
   return isNotMainRoute ? (
     <></>
   ) : (
     <>
-      <button
-        aria-label="side nav"
-        className={clsx(
-          "h-fit w-fit transition-transform bg-white p-3 rounded-xl z-10 md:hidden absolute top-10 left-5",
-          spanSideNav ? ["rotate-90"] : [""]
-        )}
-        onClick={_handleSpan}
-      >
-        <img src="/icon/outline/navbar-logo-outline.svg" alt="side nav logo" />
-      </button>
+      <div className="absolute top-10 left-0 right-0 w-full grid md:hidden px-3 items-center grid-cols-9 z-10">
+        <div className="col-span-1">
+          <button
+            aria-label="side nav"
+            className={clsx(
+              "h-fit w-fit transition-transform bg-white p-3 rounded-xl  md:hidden",
+              spanSideNav ? ["rotate90"] : [""],
+              route.pathname !== "/peta" && ["border-2 border-green-primary"]
+            )}
+            onClick={_handleSpan}
+          >
+            <img
+              src="/icon/outline/navbar-logo-outline.svg"
+              alt="side nav logo"
+            />
+          </button>
+        </div>
+        <div className="col-span-7">
+          <h1 className="top-12 text-xl font-semibold font-nunito  capitalize text-black w-full text-center">
+            {route.pathname.slice(1, route.pathname.length)}
+          </h1>
+        </div>
+      </div>
       <aside
         className={clsx(
-          "h-full transition-all   px-2 min-h-screen rounded-tb-3xl rounded-tr-3xl absolute bg-white z-50 pt-12 flex flex-col ",
+          "h-full transition-all   px-2 min-h-screen rounded-tb-3xl rounded-tr-3xl bg-white z-50 pt-12 flex flex-col ",
           spanSideNav
-            ? ["md:w-64 w-full"]
-            : ["md:w-20 w-0 overflow-hidden px-0 md:px-2"]
+            ? ["md:w-64 w-full absolute"]
+            : ["md:w-20 w-0 overflow-hidden px-0 md:px-2 absolute"],
+          route.pathname === "/peta" && ["absolute"],
+          route.pathname !== "/peta" && ["absolute md:relative"]
         )}
       >
         <button
@@ -118,7 +127,7 @@ export default function SideNav() {
             let active = route.pathname === link.link;
             return (
               <LinkSideNav
-              key={link.link}
+                key={link.link}
                 link={link.link}
                 active={active}
                 className="flex items-center justify-center gap-5"
@@ -172,7 +181,10 @@ export default function SideNav() {
             </span>
           </LinkSideNav>
 
-          <button className="px-4 flex items-center justify-center gap-5  w-fit h-fit" onClick={_handleLogout}>
+          <button
+            className="px-4 flex items-center justify-center gap-5  w-fit h-fit"
+            onClick={_handleLogout}
+          >
             <img src={`/icon/outline/exit-logo-outline.svg`} alt="exit-logo" />
             <span
               className={clsx(

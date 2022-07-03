@@ -11,8 +11,9 @@ import { PrivateRoute, PublicRoute } from "components/Route/Route";
 import ForgotPassword from "pages/ForgotPassword";
 import NotFound from "pages/404";
 import splitbee from "@splitbee/web";
-import {teleAnalytic} from "hooks/helper/useTele";
+import { teleAnalytic } from "hooks/helper/useTele";
 import RegisUsername from "pages/RegisUsername";
+import Timeline from "pages/Timeline";
 
 function App() {
   const [getSession, loading] = useSession();
@@ -32,7 +33,7 @@ function App() {
             path="/peta"
             element={
               // <PrivateRoute loading={loading}>
-                <Main />
+              <Main />
               // </PrivateRoute>
             }
           />
@@ -40,7 +41,16 @@ function App() {
             path="/cerita"
             element={
               // <PrivateRoute loading={loading}>
-                <Cerita />
+              <Cerita />
+              // </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/timeline"
+            element={
+              // <PrivateRoute loading={loading}>
+              <Timeline />
               // </PrivateRoute>
             }
           />
@@ -79,8 +89,8 @@ function App() {
             }
           />
 
-          <Route path="/404" element={<NotFound />} />
-          <Route path="*" element={<Navigate to={"/404"} />} />
+          {/* <Route path="/404" element={<NotFound />} /> */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>
     </>
