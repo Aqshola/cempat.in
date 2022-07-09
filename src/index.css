@@ -13,6 +13,9 @@
 }
 
 
+.shadow-story-card{
+  box-shadow: 5px 10px 0px #00AA13;
+}
 .shadow-map-card{
   box-shadow: -10px 15px 0px #00AA13;
 }
