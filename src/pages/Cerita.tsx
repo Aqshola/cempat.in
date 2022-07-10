@@ -11,19 +11,14 @@ import {
 
 import { authStore } from "store/authStore";
 import { sideNavStore } from "store/navStore";
-import { Story, ApiLocation } from "types/types";
+import { Story, ApiLocation, Location } from "types/types";
 import StroyCard from "components/Cerita/StroyCard";
-import {
-  ColumnDef,
-  useReactTable,
-  getCoreRowModel,
-  flexRender,
-  getPaginationRowModel,
-} from "@tanstack/react-table";
-import clsx from "clsx";
-import Button from "components/Button/Button";
+import { ColumnDef } from "@tanstack/react-table";
 import useScreenSize from "hooks/helper/useScreenSize";
-import StoryBoxMobile from "components/Cerita/StoryBoxMobile";
+
+import LocationMode from "components/Cerita/LocationMode";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
+import StoryMode from "components/Cerita/StoryMode";
 
 const dummyCerita: Story[] = [
   {
@@ -54,52 +49,16 @@ const dummyCerita: Story[] = [
   },
 ];
 
-const columns: ColumnDef<Story>[] = [
+const dummyLocation: Location[] = [
   {
-    header: "No",
-    accessorFn: (info, index) => index + 1,
-    cell: (info) => info.getValue(),
+    lat: -6.914744,
+    lng: 107.60981,
+    place_name: "Holy Land",
   },
   {
-    accessorKey: "title",
-    header: "Cerita",
-    cell: (info) => info.getValue(),
-    id: "judul",
-  },
-  {
-    accessorKey: "place_name",
-    header: "Lokasi",
-    cell: (info) => info.getValue(),
-  },
-  {
-    header: "Koordinat",
-    accessorFn: (info) => info.lat + "," + info.lng,
-    cell: (info) => info.getValue(),
-  },
-  {
-    accessorKey: "created_at",
-    header: "Tanggal",
-    cell: (info) => info.getValue(),
-  },
-  {
-    header: "Aksi",
-    accessorFn: (info) => (
-      <div className="flex gap-5">
-        <button
-          aria-label="Update"
-          className="w-6 h-6  flex justify-center items-center rounded-lg  bg-blue-primary "
-        >
-          <img src="/icon/filled/update-logo-filled.svg" alt="Edit" />
-        </button>
-        <button
-          aria-label="Delete"
-          className="w-6 h-6  flex justify-center items-center rounded-lg  bg-red-primary "
-        >
-          <img src="/icon/filled/delete-logo-filled.svg" alt="Edit" />
-        </button>
-      </div>
-    ),
-    cell: (info) => info.getValue(),
+    lat: -6.914744,
+    lng: 107.60981,
+    place_name: "Holy Land",
   },
 ];
 
@@ -108,23 +67,20 @@ function Cerita() {
   const [storyList, setstoryList] = useState<Story[]>([]);
   const [getUserStory, data, loading] = useUserStory();
   const user_id = authStore((state) => state.authData?.user_id);
+  const navigate = useNavigate();
 
-  const [dataTable, setDataTable] = React.useState(() => [...dummyCerita]);
+  const [searchParams] = useSearchParams();
+  const listMode = searchParams.get("mode");
+
   const [getSize, screenSize] = useScreenSize();
-  const [listMode, setlistMode] = useState<"cerita" | "lokasi">("cerita");
 
   useEffect(() => {
     getSize();
   });
 
-  const table = useReactTable({
-    data: dataTable,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    pageCount: 10,
-    debugTable: true,
-  });
+  function _handleMode(mode: string) {
+    navigate(`?mode=${mode}`);
+  }
 
   // useEffect(() => {
   //   getUserStory(user_id || "");
@@ -154,9 +110,9 @@ function Cerita() {
       <div className="md:mt-10 flex gap-10 justify-between md:justify-start">
         <StroyCard
           action={() => {
-            setlistMode("cerita");
+            _handleMode("cerita");
           }}
-          active={listMode === "cerita"}
+          active={listMode === "cerita" || !listMode}
           title="Cerita ditulis"
           count={24}
           Icon={
@@ -165,7 +121,9 @@ function Cerita() {
               height="28"
               viewBox="0 0 28 28"
               className={
-                listMode === "cerita" ? "fill-white" : "fill-green-primary"
+                listMode === "cerita" || !listMode
+                  ? "fill-white"
+                  : "fill-green-primary"
               }
               xmlns="http://www.w3.org/2000/svg"
             >
@@ -178,7 +136,7 @@ function Cerita() {
         />
         <StroyCard
           action={() => {
-            setlistMode("lokasi");
+            _handleMode("lokasi");
           }}
           active={listMode === "lokasi"}
           title="Tempat dikunjungi"
@@ -202,94 +160,12 @@ function Cerita() {
         />
       </div>
 
-      <div className="mt-10 md:mt-5 w-full  md:w-fit">
-        <div className="flex border-2 w-full rounded-xl border-[#F1F2F3] md:w-fit py-3 px-5 items-center gap-5 ml-auto">
-          <label htmlFor="search">
-            <img src="/icon/outline/search-logo-outline.svg" alt="" />
-          </label>
-          <input
-            id="search"
-            type="text"
-            className="outline-none focus:outline-none text-sm placeholder:text-sm"
-            placeholder="Cari judul atau tempat"
-          />
-        </div>
-        {screenSize >= 720 && (
-          <table className="mt-5 rounded-xl border-spacing-0 border-separate border overflow-hidden">
-            <thead className="bg-[#F1F2F3]">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <th
-                      className="font font-nunito font-base  px-8 py-3"
-                      key={header.id}
-                      colSpan={header.colSpan}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            <tbody>
-              {table.getRowModel().rows.map((row) => (
-                <tr key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <td
-                      className={clsx(
-                        "px-8 py-3",
-                        cell.column.id === "judul" && [
-                          "font-semibold text-green-primary",
-                        ]
-                      )}
-                      key={cell.id}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-
-        {screenSize < 720 && (
-          <div className="mt-5 space-y-3">
-            <StoryBoxMobile />
-            <StoryBoxMobile />
-          </div>
-        )}
-        <div className="flex gap-3 items-center ml-auto w-full justify-center md:justify-start md:w-fit mt-5">
-          <button className="border-gray-100 w-7 h-7 text-sm flex justify-center items-center rounded-lg  font-nunito">
-            <HiChevronDoubleLeft className="w-5  h-5" />
-          </button>
-          <button className="border-gray-100 w-7 h-7 text-sm flex justify-center items-center rounded-lg  font-nunito">
-            <MdKeyboardArrowLeft className="w-5  h-5" />
-          </button>
-          {[...Array(table.getPageCount())].slice(1, 4).map((el, i) => (
-            <button
-              key={i}
-              className="border border-green-primary w-9 h-9 text-sm flex justify-center items-center rounded-lg p-2 text-green-primary font-nunito"
-            >
-              {i + 1}
-            </button>
-          ))}
-          <button className="border-gray-100 w-7 h-7 text-sm flex justify-center items-center rounded-lg  font-nunito">
-            <MdKeyboardArrowRight className="w-5  h-5" />
-          </button>
-          <button className="border-gray-100 w-7 h-7 text-sm flex justify-center items-center rounded-lg  font-nunito">
-            <HiChevronDoubleRight className="w-5  h-5" />
-          </button>
-        </div>
-      </div>
+      {(listMode === "cerita" || !listMode) && (
+        <StoryMode data={dummyCerita} screenSize={screenSize} />
+      )}
+      {listMode === "lokasi"  && (
+        <LocationMode data={dummyLocation} screenSize={screenSize} />
+      )}
 
       {/* <div className={"py-5 transition-all flex items-center"}>
         <button
