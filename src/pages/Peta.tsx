@@ -19,7 +19,7 @@ import mapboxgl from "mapbox-gl";
 import { setLocalStorage, getLocalStorage } from "hooks/helper/useLocalStorage";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import UserSection from "components/Main/UserSection";
 
 // The following is required to stop "npm build" from transpiling mapbox code.
 // notice the exclamation point in the import.
@@ -60,13 +60,13 @@ export default function Peta() {
   const [loadedMap, setloadedMap] = useState<boolean>(false);
 
   const [listLocation, setlistLocation] = useState<ApiLocation[]>([
-    {lng:107.1414549333428,
-      lat:-6.363208404137197,
-      id:1,
-      jml_cerita:1,
-      place_name:"kiki"
-
-  }
+    {
+      lng: 107.1414549333428,
+      lat: -6.363208404137197,
+      id: 1,
+      jml_cerita: 1,
+      place_name: "kiki",
+    },
   ]);
 
   const [getMarker, dataMarker, loading] = useGet();
@@ -83,7 +83,8 @@ export default function Peta() {
     place_name: "",
   });
 
- 
+  const [userSectionView, setuserSectionView] = useState<boolean>(false)
+
 
   function _saveCallback({ lat, lng, id, place_name }: ApiLocation) {
     setlistLocation([...listLocation, { lat, lng, id, place_name }]);
@@ -274,7 +275,11 @@ export default function Peta() {
         }}
       >
         {pickedLocation && (
-          <PickedMarker className="z-10" lat={pickedLocation.lat} lng={pickedLocation.lng} />
+          <PickedMarker
+            className="z-10"
+            lat={pickedLocation.lat}
+            lng={pickedLocation.lng}
+          />
         )}
 
         {listLocation.map((loc, i) => (
@@ -303,7 +308,6 @@ export default function Peta() {
         infoLocation={pickedLocation}
       />
 
-
       <DetailStory
         viewData={viewStory}
         showEditor={storyDetailView}
@@ -315,7 +319,19 @@ export default function Peta() {
         }}
       />
 
-
+      <UserSection
+        viewData={viewStory}
+        showEditor={userSectionView}
+        onCloseEditor={() => {
+          setuserSectionView(false);
+        }}
+        onOutsideEditor={() => {
+          setuserSectionView(false);
+        }}
+        handleView={()=>{
+          setuserSectionView(true);
+        }}
+      />
 
       <Button
         variant="danger"

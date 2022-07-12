@@ -6,6 +6,7 @@ import useLogout from "hooks/auth/useLogout";
 import { authStore } from "store/authStore";
 import splitbee from "@splitbee/web";
 import clsx from "clsx";
+import Avatar from "components/Avatar/Avatar";
 
 const LINK_LIST = [
   {
@@ -104,12 +105,7 @@ export default function SideNav() {
         </button>
         <div className="grid grid-cols-4 items-center gap-5 w-full  mt-16">
           <div className="col-span-1">
-            <div
-              id="profile"
-              className=" rounded-full bg-blue-primary text-white font-extrabold w-10 h-10 flex items-center justify-center font-nunito"
-            >
-              A
-            </div>
+            <Avatar size="sm"/>
           </div>
 
           <div

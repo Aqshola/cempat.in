@@ -15,6 +15,9 @@ import useScreenSize from "hooks/helper/useScreenSize";
 import { BottomSheet, BottomSheetRef } from "react-spring-bottom-sheet";
 import "react-spring-bottom-sheet/dist/style.css";
 import { CgClose } from "react-icons/cg";
+import { MdLocationPin } from "react-icons/md";
+import ListBox from "./UserSection/ListBox";
+import Avatar from "components/Avatar/Avatar";
 
 type Props = {
   onOutsideEditor: () => void;
@@ -22,13 +25,14 @@ type Props = {
   onCloseEditor: () => void;
   titleEditor?: string;
   viewData: ApiLocation;
+  handleView?: () => void;
 };
 
-function DetailStory({ titleEditor, viewData, ...props }: Props) {
+function UserSection({ titleEditor, viewData, ...props }: Props) {
   const user_id = authStore((state) => state.authData?.user_id);
   const [getDetail, result, loading] = useDetail();
   const [searchParams] = useSearchParams();
-  const idParams = searchParams.get("id");
+
   const [edit, setedit] = useState<boolean>(false);
   const [formData, setformData] = useState({
     title: "",
@@ -36,6 +40,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
   });
   const sheetRef = useRef<BottomSheetRef>(null);
   const [updateCerita, resultUpdate, loadingUpdate] = useUpdate();
+  const idParams = searchParams.get("user");
 
   const _handleEdit = (value: boolean) => {
     setedit(value);
@@ -63,11 +68,13 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
   };
   const [getSize, screenSize] = useScreenSize();
 
-  
   useEffect(() => {
-    if(!idParams){
-      handleOnClose()
-    }else{
+    if (!idParams) {
+      handleOnClose();
+    } else {
+      if (props.handleView) {
+        props.handleView();
+      }
       getDetail(Number(idParams) || 0);
     }
   }, [idParams]);
@@ -119,23 +126,11 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
         <RightNav
           title={
             <h2 className="text-center font-nunito text-2xl font-bold">
-              {viewData.place_name || result.data?.place_name}
+              Profil
             </h2>
           }
           {...props}
           onCloseEditor={handleOnClose}
-          leftEvent={
-            user_id === result.data?.user_id &&
-            !edit && (
-              <Button
-                onClick={() => _handleEdit(true)}
-                size="sm"
-                variant={edit ? "secondary" : "primary"}
-              >
-                Ubah
-              </Button>
-            )
-          }
         >
           <div className="pb-5">
             {loading && (
@@ -148,69 +143,48 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
           {!loading && !result.data && (
             <>
               <h1 className="text-green-primary text-xl text-center">
-                Yah, cerita yang kamu cari udah gaada
+                Yah, pengguna yang kamu cari gak ketemu nih
               </h1>
             </>
           )}
-          {!loading && edit && result.data && (
-            <input
-              aria-label="judul cerita"
-              name="title"
-              type="text"
-              onChange={_setTitle}
-              placeholder="Judul Cerita..."
-              className="text-green-primary outline-none border rounded p-1 border-green-primary text-lg placeholder:text-lg  w-full"
-              value={formData.title}
-            />
-          )}
 
-          {!loading && result.data && (
-            <>
-              <h1 className="capitalize text-2xl text-center text-green-primary font-bold">
-                {result.data?.title}
-              </h1>
-              <h2 className="text-center font-nunito mt-2">
-                oleh{" "}
-                <Link to={`?user=${result.data?.user.username}`} className="hover:cursor-pointer capitalize hover:underline underline-offset-1 transition-all">{result.data?.user.username}</Link>
-              </h2>
-              <h3 className="text-xs font-light font-nunito text-center">
-                {result.data.created_at
-                  ? parseDateString(result.data.created_at)
-                  : ""}
-              </h3>
-              <div className="mt-5">
-                <Editor
-                  ariaLabel="isi cerita"
-                  placeholder="Tulis ceritamu disini"
-                  editorState={formData.content}
-                  onEditorStateChange={_setContent}
-                  toolbarHidden={true}
-                  readOnly={edit ? false : true}
-                />
+          <div className="flex flex-col">
+            <Avatar className="mx-auto" />
+            <Button size="xs" className="w-fit mx-auto mt-2">
+              Lihat profil seutuhnya
+            </Button>
+            <div className="mt-9">
+              <h3 className="mb-7 text-xl font-semibold font-nunito">Cerita</h3>
+              <div className="flex flex-col space-y-3">
+                <ListBox />
+                <ListBox />
+                <ListBox />
               </div>
-            </>
-          )}
-
-          {result.data && edit && user_id === result.data?.user_id && (
-            <div className="mt-5 flex justify-end gap-5">
-              <Button variant="secondary" onClick={() => _handleEdit(false)}>
-                Batal
+            </div>
+          </div>
+          {!loading && result.data && (
+            <div className="flex flex-col">
+              <div>
+                <div className="w-14 h-14 mx-auto rounded-full bg-blue-primary text-white font-nunito font-bold text-2xl flex justify-center items-center">
+                  <span>A</span>
+                </div>
+                <h2 className="text-center font-nunito text-base mt-1">
+                  Aqshola
+                </h2>
+              </div>
+              <Button size="xs" className="w-fit mx-auto mt-2">
+                Lihat profil seutuhnya
               </Button>
-              <Button
-                loading={loadingUpdate}
-                onClick={() => {
-                  updateCerita(viewData.id || 0, user_id || "", {
-                    title: formData.title,
-                    content: formData.content,
-                  });
-
-                  if (result.data?.title) {
-                    result.data.title = formData.title;
-                  }
-                }}
-              >
-                Simpan
-              </Button>
+              <div className="mt-9">
+                <h3 className="mb-7 text-xl font-semibold font-nunito">
+                  Cerita
+                </h3>
+                <div className="flex flex-col space-y-3">
+                  <ListBox />
+                  <ListBox />
+                  <ListBox />
+                </div>
+              </div>
             </div>
           )}
         </RightNav>
@@ -239,17 +213,8 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
           <CgClose className="w-6 h-6" />
         </button>
         <h1 className="w-full text-center font-nunito font-bold text-lg">
-          {viewData.place_name || result.data?.place_name}
+          Profil
         </h1>
-        {user_id === result.data?.user_id && !edit && (
-          <Button
-            onClick={() => _handleEdit(true)}
-            size="xs"
-            variant={edit ? "secondary" : "primary"}
-          >
-            Ubah
-          </Button>
-        )}
       </div>
 
       <div className="px-6 mt-9">
@@ -261,72 +226,52 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
             ></span>
           )}
 
-          {!loading && !result.data && (
+          {/* {!loading && !result.data && (
             <>
               <h1 className="text-green-primary text-xl text-center">
                 Yah, cerita yang kamu cari udah gaada
               </h1>
             </>
-          )}
-          {!loading && edit && result.data && (
-            <input
-              aria-label="judul cerita"
-              name="title"
-              type="text"
-              onChange={_setTitle}
-              placeholder="Judul Cerita..."
-              className="text-green-primary outline-none border rounded p-1 border-green-primary text-lg placeholder:text-lg  w-full"
-              value={formData.title}
-            />
-          )}
+          )} */}
+
+          <div className="flex flex-col">
+            <Avatar className="mx-auto" />
+            <Button size="xs" className="w-fit mx-auto mt-2">
+              Lihat profil seutuhnya
+            </Button>
+            <div className="mt-9">
+              <h3 className="mb-7 text-xl font-semibold font-nunito">Cerita</h3>
+              <div className="flex flex-col space-y-3">
+                <ListBox />
+                <ListBox />
+                <ListBox />
+              </div>
+            </div>
+          </div>
 
           {!loading && result.data && (
-            <>
-              <h1 className="capitalize text-2xl text-center text-green-primary font-bold">
-                {result.data?.title}
-              </h1>
-              <h2 className="text-center font-nunito mt-2">
-                oleh{" "}
-                <Link to={`?user=${result.data?.user.username}`} className="hover:cursor-pointer capitalize hover:underline underline-offset-1 transition-all">{result.data?.user.username}</Link>
-              </h2>
-              <h3 className="text-xs font-light font-nunito text-center">
-                {result.data.created_at
-                  ? parseDateString(result.data.created_at)
-                  : ""}
-              </h3>
-              <div className="mt-5">
-                <Editor
-                  ariaLabel="isi cerita"
-                  placeholder="Tulis ceritamu disini"
-                  editorState={formData.content}
-                  onEditorStateChange={_setContent}
-                  toolbarHidden={true}
-                  readOnly={edit ? false : true}
-                />
+            <div className="flex flex-col">
+              <div>
+                <div className="w-14 h-14 mx-auto rounded-full bg-blue-primary text-white font-nunito font-bold text-2xl flex justify-center items-center">
+                  <span>A</span>
+                </div>
+                <h2 className="text-center font-nunito text-base mt-1">
+                  Aqshola
+                </h2>
               </div>
-            </>
-          )}
-
-          {result.data && edit && user_id === result.data?.user_id && (
-            <div className="mt-5 flex justify-end gap-5">
-              <Button variant="secondary" onClick={() => _handleEdit(false)}>
-                Batal
+              <Button size="xs" className="w-fit mx-auto mt-2">
+                Lihat profil seutuhnya
               </Button>
-              <Button
-                loading={loadingUpdate}
-                onClick={() => {
-                  updateCerita(viewData.id || 0, user_id || "", {
-                    title: formData.title,
-                    content: formData.content,
-                  });
-
-                  if (result.data?.title) {
-                    result.data.title = formData.title;
-                  }
-                }}
-              >
-                Simpan
-              </Button>
+              <div className="mt-9">
+                <h3 className="mb-7 text-xl font-semibold font-nunito">
+                  Cerita
+                </h3>
+                <div className="flex flex-col space-y-3">
+                  <ListBox />
+                  <ListBox />
+                  <ListBox />
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -335,4 +280,4 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
   );
 }
 
-export default DetailStory;
+export default UserSection;
