@@ -14,6 +14,7 @@ import splitbee from "@splitbee/web";
 import { teleAnalytic } from "hooks/helper/useTele";
 import RegisUsername from "pages/RegisUsername";
 import Timeline from "pages/Timeline";
+import User from "pages/User";
 
 function App() {
   const [getSession, loading] = useSession();
@@ -51,6 +52,15 @@ function App() {
             element={
               // <PrivateRoute loading={loading}>
               <Timeline />
+              // </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/user/:username"
+            element={
+              // <PrivateRoute loading={loading}>
+              <User />
               // </PrivateRoute>
             }
           />

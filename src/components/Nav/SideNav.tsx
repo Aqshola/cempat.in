@@ -76,7 +76,7 @@ export default function SideNav() {
         </div>
         <div className="col-span-7">
           <h1 className="top-12 text-xl font-semibold font-nunito  capitalize text-black w-full text-center">
-            {route.pathname.slice(1, route.pathname.length)}
+            {/* {route.pathname.slice(1, route.pathname.length)} */}
           </h1>
         </div>
       </div>

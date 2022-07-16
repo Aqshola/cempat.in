@@ -148,41 +148,31 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
             </>
           )}
 
-          <div className="flex flex-col">
-            <Avatar className="mx-auto" />
-            <Button size="xs" className="w-fit mx-auto mt-2">
-              Lihat profil seutuhnya
-            </Button>
-            <div className="mt-9">
-              <h3 className="mb-7 text-xl font-semibold font-nunito">Cerita</h3>
-              <div className="flex flex-col space-y-3">
-                <ListBox />
-                <ListBox />
-                <ListBox />
-              </div>
-            </div>
-          </div>
           {!loading && result.data && (
             <div className="flex flex-col">
-              <div>
-                <div className="w-14 h-14 mx-auto rounded-full bg-blue-primary text-white font-nunito font-bold text-2xl flex justify-center items-center">
-                  <span>A</span>
-                </div>
-                <h2 className="text-center font-nunito text-base mt-1">
-                  Aqshola
-                </h2>
-              </div>
-              <Button size="xs" className="w-fit mx-auto mt-2">
-                Lihat profil seutuhnya
-              </Button>
+              <Avatar className="mx-auto" />
+              <Link to={"/user/1"} className="w-full">
+                <Button size="xs" className="w-fit mx-auto mt-2">
+                  Lihat profil seutuhnya
+                </Button>
+              </Link>
               <div className="mt-9">
                 <h3 className="mb-7 text-xl font-semibold font-nunito">
                   Cerita
                 </h3>
                 <div className="flex flex-col space-y-3">
-                  <ListBox />
-                  <ListBox />
-                  <ListBox />
+                  <ListBox
+                    title="Lalatina"
+                    rightText={"13 Hari yang lalu"}
+                    detail={
+                      <div className="flex gap-1 items-center mt-3">
+                        <MdLocationPin />
+                        <p className="font-nunito text-xs font-medium">
+                          Taman Solo
+                        </p>
+                      </div>
+                    }
+                  />
                 </div>
               </div>
             </div>
@@ -226,50 +216,39 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
             ></span>
           )}
 
-          {/* {!loading && !result.data && (
+          {!loading && !result.data && (
             <>
               <h1 className="text-green-primary text-xl text-center">
                 Yah, cerita yang kamu cari udah gaada
               </h1>
             </>
-          )} */}
-
-          <div className="flex flex-col">
-            <Avatar className="mx-auto" />
-            <Button size="xs" className="w-fit mx-auto mt-2">
-              Lihat profil seutuhnya
-            </Button>
-            <div className="mt-9">
-              <h3 className="mb-7 text-xl font-semibold font-nunito">Cerita</h3>
-              <div className="flex flex-col space-y-3">
-                <ListBox />
-                <ListBox />
-                <ListBox />
-              </div>
-            </div>
-          </div>
+          )}
 
           {!loading && result.data && (
             <div className="flex flex-col">
-              <div>
-                <div className="w-14 h-14 mx-auto rounded-full bg-blue-primary text-white font-nunito font-bold text-2xl flex justify-center items-center">
-                  <span>A</span>
-                </div>
-                <h2 className="text-center font-nunito text-base mt-1">
-                  Aqshola
-                </h2>
-              </div>
-              <Button size="xs" className="w-fit mx-auto mt-2">
-                Lihat profil seutuhnya
-              </Button>
+              <Avatar className="mx-auto" />
+              <Link to={"/user/1"} className="w-full">
+                <Button size="xs" className="w-fit mx-auto mt-2">
+                  Lihat profil seutuhnya
+                </Button>
+              </Link>
               <div className="mt-9">
                 <h3 className="mb-7 text-xl font-semibold font-nunito">
                   Cerita
                 </h3>
                 <div className="flex flex-col space-y-3">
-                  <ListBox />
-                  <ListBox />
-                  <ListBox />
+                  <ListBox
+                    title="Lalatina"
+                    rightText={"13 Hari yang lalu"}
+                    detail={
+                      <div className="flex gap-1 items-center mt-3">
+                        <MdLocationPin />
+                        <p className="font-nunito text-xs font-medium">
+                          Taman Solo
+                        </p>
+                      </div>
+                    }
+                  />
                 </div>
               </div>
             </div>
