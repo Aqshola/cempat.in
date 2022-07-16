@@ -88,7 +88,7 @@ export default function SideNav() {
             : ["md:w-20 w-0 overflow-hidden px-0 md:px-2 absolute"],
           route.pathname === "/peta" && ["absolute"],
           route.pathname !== "/peta" && ["absolute md:relative"],
-          route.pathname !== "/peta" && ["shadow-sidenav"]
+          route.pathname !== "/peta" && !spanSideNav && ["shadow-sidenav"]
         )}
       >
         <button
