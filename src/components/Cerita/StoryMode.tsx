@@ -13,6 +13,7 @@ import {
   getPaginationRowModel,
 } from "@tanstack/react-table";
 import { data } from "autoprefixer";
+import Paginate from "components/Pagination/Paginate";
 
 type Props = {
   data: Story[];
@@ -200,28 +201,7 @@ export default function StoryMode({ screenSize, ...props }: Props) {
           ))}
         </div>
       )}
-      <div className="flex gap-3 items-center ml-auto w-full justify-center md:justify-start md:w-fit mt-5">
-        <button className="border-gray-100 w-7 h-7 text-sm flex justify-center items-center rounded-lg  font-nunito">
-          <HiChevronDoubleLeft className="w-5  h-5" />
-        </button>
-        <button className="border-gray-100 w-7 h-7 text-sm flex justify-center items-center rounded-lg  font-nunito">
-          <MdKeyboardArrowLeft className="w-5  h-5" />
-        </button>
-        {[...Array(table.getPageCount())].slice(1, 4).map((el, i) => (
-          <button
-            key={i}
-            className="border border-green-primary w-9 h-9 text-sm flex justify-center items-center rounded-lg p-2 text-green-primary font-nunito"
-          >
-            {i + 1}
-          </button>
-        ))}
-        <button className="border-gray-100 w-7 h-7 text-sm flex justify-center items-center rounded-lg  font-nunito">
-          <MdKeyboardArrowRight className="w-5  h-5" />
-        </button>
-        <button className="border-gray-100 w-7 h-7 text-sm flex justify-center items-center rounded-lg  font-nunito">
-          <HiChevronDoubleRight className="w-5  h-5" />
-        </button>
-      </div>
+      <Paginate totalPage={table.getPageCount()} className="ml-auto mt-5"/>
     </div>
   );
 }

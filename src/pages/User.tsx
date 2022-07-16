@@ -1,5 +1,5 @@
 import Avatar from "components/Avatar/Avatar";
-import ListBox from "components/Main/UserSection/ListBox";
+import ListBox from "components/Peta/UserSection/ListBox";
 import React from "react";
 import Button from "components/Button/Button";
 import { MdLocationPin } from "react-icons/md";
@@ -9,6 +9,7 @@ import DesktopTempatSection from "components/User/DesktopTempatSection";
 import MobileCeritaSection from "components/User/MobileCeritaSection";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import clsx from "clsx";
+import MobileTempatSection from "components/User/MobileTempatSection";
 
 export default function User() {
   const [searchParam] = useSearchParams();
@@ -60,7 +61,9 @@ export default function User() {
           </div>
         </section>
 
-        <MobileCeritaSection />
+        {(mode === "cerita" || !mode) && <MobileCeritaSection />}
+        {mode === "tempat" && <MobileTempatSection />}
+        
 
         <section
           id="desktop-view"

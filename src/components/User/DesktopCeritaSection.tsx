@@ -1,13 +1,13 @@
 import React from "react";
 import { MdLocationPin } from "react-icons/md";
 import Paginate from "components/Pagination/Paginate";
-import ListBox from "components/Main/UserSection/ListBox";
+import ListBox from "components/Peta/UserSection/ListBox";
 type Props = {};
 
 export default function DesktopCeritaSection({}: Props) {
   return (
     <div className="flex flex-col h-full">
-      <h2 className="text-center font-semibold font-nunito mb-2">
+      <h2 className="text-center font-semibold font-nunito text-2xl mb-5">
         Cerita yang ditulis
       </h2>
       <div className="px-10 flex flex-col gap-5 mb-5">

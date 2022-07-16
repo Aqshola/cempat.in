@@ -3,7 +3,7 @@ import useSession from "hooks/auth/useSession";
 import Cerita from "pages/Cerita";
 import Landing from "pages/Landing";
 import Login from "pages/Login";
-import Main from "pages/Peta";
+import Peta from "pages/Peta";
 import Register from "pages/Register";
 import { useEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
@@ -34,7 +34,7 @@ function App() {
             path="/peta"
             element={
               // <PrivateRoute loading={loading}>
-              <Main />
+              <Peta />
               // </PrivateRoute>
             }
           />

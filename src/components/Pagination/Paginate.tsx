@@ -11,7 +11,7 @@ export default function Paginate({ ...props }: Props) {
   return (
     <div
       className={clsx(
-        "flex gap-3 items-center  w-full justify-center md:justify-start md:w-fit mt-10",
+        "flex gap-3 items-center  w-full justify-center md:justify-start md:w-fit",
         props.className
       )}
     >

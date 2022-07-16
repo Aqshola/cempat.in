@@ -1,8 +1,7 @@
 import React from "react";
 
-import ListBox from "components/Main/UserSection/ListBox";
+import ListBox from "components/Peta/UserSection/ListBox";
 
-import Button from "components/Button/Button";
 import { MdLocationPin } from "react-icons/md";
 import Paginate from "components/Pagination/Paginate";
 
@@ -34,7 +33,7 @@ export default function MobileCeritaSection({}: Props) {
           }
         />
       </div>
-      <Paginate totalPage={10} key={"mobile"} />
+      <Paginate totalPage={10} key={"mobile"} className="mt-10"/>
     </section>
   );
 }

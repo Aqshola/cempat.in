@@ -9,7 +9,7 @@ type Props = {
   count: number;
 };
 
-export default function StroyCard({ ...props }: Props) {
+export default function StoryCard({ ...props }: Props) {
   return (
     <div
       aria-label={"action " + props.title}

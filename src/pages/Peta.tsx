@@ -3,15 +3,15 @@ import MapGL, { MapRef } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { sideNavStore } from "store/navStore";
-import EditorSection from "components/Main/EditorSection";
-import Search from "components/Main/Search";
-import { StoryMarker, PickedMarker } from "components/Main/Marker";
+import EditorSection from "components/Peta/EditorSection";
+import Search from "components/Peta/Search";
+import { StoryMarker, PickedMarker } from "components/Peta/Marker";
 import Button from "components/Button/Button";
 import clsx from "clsx";
 import useGet from "hooks/cerita/useGet";
 import { ApiLocation, Location } from "types/types";
-import StoryList from "components/Main/ListStory";
-import DetailStory from "components/Main/DetailStory";
+import StoryList from "components/Peta/ListStory";
+import DetailStory from "components/Peta/DetailStory";
 import useRemoveDuplicate from "hooks/helper/useRemoveDuplicate";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import mapboxgl from "mapbox-gl";
@@ -19,7 +19,8 @@ import mapboxgl from "mapbox-gl";
 import { setLocalStorage, getLocalStorage } from "hooks/helper/useLocalStorage";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import UserSection from "components/Main/UserSection";
+import UserSection from "components/Peta/UserSection";
+import HelmetTitle from "components/Helper/HelmetTitle";
 
 // The following is required to stop "npm build" from transpiling mapbox code.
 // notice the exclamation point in the import.
@@ -83,8 +84,7 @@ export default function Peta() {
     place_name: "",
   });
 
-  const [userSectionView, setuserSectionView] = useState<boolean>(false)
-
+  const [userSectionView, setuserSectionView] = useState<boolean>(false);
 
   function _saveCallback({ lat, lng, id, place_name }: ApiLocation) {
     setlistLocation([...listLocation, { lat, lng, id, place_name }]);
@@ -241,122 +241,125 @@ export default function Peta() {
   // }, [loadedMap, latParams, lngParams]);
 
   return (
-    <div className="h-screen " id="nav-btn" aria-label="nav-btn">
-      <Search handleSearch={viewLocation} />
+    <>
+      <HelmetTitle title="Peta"/>
+      <div className="h-screen " id="nav-btn" aria-label="nav-btn">
+        <Search handleSearch={viewLocation} />
 
-      <MapGL
-        onLoad={() => {
-          // setLocalStorage<ApiLocation[]>("list_location", []);
-          // _handleGet();
-        }}
-        reuseMaps={true}
-        // onMoveEnd={_handleGet}
-        // onZoomEnd={_handleGet}
-        optimizeForTerrain={true}
-        ref={(e) => {
-          mapGlRef.current = e;
+        <MapGL
+          onLoad={() => {
+            // setLocalStorage<ApiLocation[]>("list_location", []);
+            // _handleGet();
+          }}
+          reuseMaps={true}
+          // onMoveEnd={_handleGet}
+          // onZoomEnd={_handleGet}
+          optimizeForTerrain={true}
+          ref={(e) => {
+            mapGlRef.current = e;
 
-          if (mapGlRef.current !== null) {
-            setloadedMap(true);
-          }
-        }}
-        onClick={(el) => _pickLocation(el)}
-        mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
-        initialViewState={{
-          longitude: initialLocation.lat,
-          latitude: initialLocation.long,
-          zoom: 10,
-        }}
-        attributionControl={false}
-        mapStyle="mapbox://styles/mapbox/streets-v9"
-        style={{
-          width: "100%",
-          height: "100%",
-        }}
-      >
-        {pickedLocation && (
-          <PickedMarker
-            className="z-10"
-            lat={pickedLocation.lat}
-            lng={pickedLocation.lng}
-          />
-        )}
+            if (mapGlRef.current !== null) {
+              setloadedMap(true);
+            }
+          }}
+          onClick={(el) => _pickLocation(el)}
+          mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
+          initialViewState={{
+            longitude: initialLocation.lat,
+            latitude: initialLocation.long,
+            zoom: 10,
+          }}
+          attributionControl={false}
+          mapStyle="mapbox://styles/mapbox/streets-v9"
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          {pickedLocation && (
+            <PickedMarker
+              className="z-10"
+              lat={pickedLocation.lat}
+              lng={pickedLocation.lng}
+            />
+          )}
 
-        {listLocation.map((loc, i) => (
-          <StoryMarker
-            key={i}
-            onClick={() => {
-              if (!pickLocation) {
-                _handleStoryView(loc.jml_cerita || 0, loc);
-              }
-            }}
-            lat={loc.lat}
-            lng={loc.lng}
-          />
-        ))}
-      </MapGL>
+          {listLocation.map((loc, i) => (
+            <StoryMarker
+              key={i}
+              onClick={() => {
+                if (!pickLocation) {
+                  _handleStoryView(loc.jml_cerita || 0, loc);
+                }
+              }}
+              lat={loc.lat}
+              lng={loc.lng}
+            />
+          ))}
+        </MapGL>
 
-      <EditorSection
-        showEditor={showEditor}
-        onCloseEditor={() => {
-          setshowEditor(false);
-        }}
-        onSaveEditor={_saveCallback}
-        onOutsideEditor={() => {
-          setshowEditor(false);
-        }}
-        infoLocation={pickedLocation}
-      />
+        <EditorSection
+          showEditor={showEditor}
+          onCloseEditor={() => {
+            setshowEditor(false);
+          }}
+          onSaveEditor={_saveCallback}
+          onOutsideEditor={() => {
+            setshowEditor(false);
+          }}
+          infoLocation={pickedLocation}
+        />
 
-      <DetailStory
-        viewData={viewStory}
-        showEditor={storyDetailView}
-        onCloseEditor={() => {
-          setstoryDetailView(false);
-        }}
-        onOutsideEditor={() => {
-          setstoryDetailView(false);
-        }}
-      />
+        <DetailStory
+          viewData={viewStory}
+          showEditor={storyDetailView}
+          onCloseEditor={() => {
+            setstoryDetailView(false);
+          }}
+          onOutsideEditor={() => {
+            setstoryDetailView(false);
+          }}
+        />
 
-      <UserSection
-        viewData={viewStory}
-        showEditor={userSectionView}
-        onCloseEditor={() => {
-          setuserSectionView(false);
-        }}
-        onOutsideEditor={() => {
-          setuserSectionView(false);
-        }}
-        handleView={()=>{
-          setuserSectionView(true);
-        }}
-      />
+        <UserSection
+          viewData={viewStory}
+          showEditor={userSectionView}
+          onCloseEditor={() => {
+            setuserSectionView(false);
+          }}
+          onOutsideEditor={() => {
+            setuserSectionView(false);
+          }}
+          handleView={() => {
+            setuserSectionView(true);
+          }}
+        />
 
-      <Button
-        variant="danger"
-        onClick={_cancelPick}
-        className={clsx(
-          "shadow w-max absolute left-10 md:left-40 bottom-20 md:right-20",
-          pickLocation && ["visible opacity-100"],
-          !pickLocation && [" invisible opacity-0"]
-        )}
-      >
-        Batal
-      </Button>
+        <Button
+          variant="danger"
+          onClick={_cancelPick}
+          className={clsx(
+            "shadow w-max absolute left-10 md:left-40 bottom-20 md:right-20",
+            pickLocation && ["visible opacity-100"],
+            !pickLocation && [" invisible opacity-0"]
+          )}
+        >
+          Batal
+        </Button>
 
-      <Button
-        onClick={_newStory}
-        className="absolute  right-5 bottom-20 md:right-20 shadow"
-        variant={pickLocation ? "secondary" : "primary"}
-      >
-        {pickLocation ? "Pilih lokasi " : "Buat Cerita"}
-      </Button>
+        <Button
+          onClick={_newStory}
+          className="absolute  right-5 bottom-20 md:right-20 shadow"
+          variant={pickLocation ? "secondary" : "primary"}
+        >
+          {pickLocation ? "Pilih lokasi " : "Buat Cerita"}
+        </Button>
 
-      <ToastContainer
-        className="z-50"
-        bodyClassName={" text-xs font-poppins text-red-600"}
-      />
-    </div>
+        <ToastContainer
+          className="z-50"
+          bodyClassName={" text-xs font-poppins text-red-600"}
+        />
+      </div>
+    </>
   );
 }
