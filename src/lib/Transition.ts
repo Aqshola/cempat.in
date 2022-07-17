@@ -90,3 +90,15 @@ export const fontWeightTransition={
     },
   },
 }
+export const textGreenTransition = {
+  hidden: {
+    color: "#000",
+  },
+  show: {
+    delay: 0.5,
+    color: "#00AA13",
+    transition: {
+      delay: 1,
+    },
+  },
+};

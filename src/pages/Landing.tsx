@@ -11,6 +11,7 @@ import {
   opacityTransition,
   parentTransition,
   scaleTransition,
+  textGreenTransition,
   titleLandingTransition,
 } from "lib/Transition";
 import { useInView } from "react-intersection-observer";
@@ -89,6 +90,7 @@ function Landing() {
           className="grid grid-cols-12 mt-5 md:mt-14 py-8 mx-7 md:mx-32"
         >
           <motion.div
+          
             variants={parentTransition}
             initial="hidden"
             animate={sectionTwoView ? "show" : "hidden"}
@@ -164,7 +166,7 @@ function Landing() {
         <motion.h2 className="text-center md:mt-5 text-lg md:text-4xl font-nunito">
           yuk ceritain di{" "}
           <motion.span
-            variants={childTitleLandingTransition}
+            variants={textGreenTransition}
             className="font-extrabold text-green-primary"
           >
             Cempat.in
