@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { ApiLocation } from "types/types";
 import { convertFromRaw, EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import parseDateString from "hooks/helper/parseDateString";
 import Button from "components/Button/Button";
 import { authStore } from "store/authStore";
@@ -22,9 +22,11 @@ type Props = {
   onCloseEditor: () => void;
   titleEditor?: string;
   viewData: ApiLocation;
+  handleHelmetTitle?: (title: string, desc: string | null) => void;
 };
 
 function DetailStory({ titleEditor, viewData, ...props }: Props) {
+  const navigate = useNavigate();
   const user_id = authStore((state) => state.authData?.user_id);
   const [getDetail, result, loading] = useDetail();
   const [searchParams] = useSearchParams();
@@ -58,16 +60,19 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
   };
 
   const handleOnClose = () => {
+    if (props.handleHelmetTitle) {
+      props.handleHelmetTitle("Peta", null);
+    }
     props.onCloseEditor();
     _handleEdit(false);
+    // navigate("/peta")
   };
   const [getSize, screenSize] = useScreenSize();
 
-  
   useEffect(() => {
-    if(!idParams){
-      handleOnClose()
-    }else{
+    if (!idParams) {
+      handleOnClose();
+    } else {
       getDetail(Number(idParams) || 0);
     }
   }, [idParams]);
@@ -83,6 +88,16 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
           title: result.data.title,
           content: editorState,
         });
+
+        if (props.handleHelmetTitle) {
+          let title = result.data.title.split("");
+          title[0] = title[0].toUpperCase();
+
+          props.handleHelmetTitle(
+            "Cerita " + title.join(""),
+            result.data.content.slice(0, 100)
+          );
+        }
 
         // splitbee.track("view story", {
         //   id: result.data.id,
@@ -123,7 +138,10 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
             </h2>
           }
           {...props}
-          onCloseEditor={handleOnClose}
+          onCloseEditor={() => {
+            handleOnClose();
+            navigate("/peta");
+          }}
           leftEvent={
             user_id === result.data?.user_id &&
             !edit && (
@@ -171,7 +189,12 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
               </h1>
               <h2 className="text-center font-nunito mt-2">
                 oleh{" "}
-                <Link to={`?user=${result.data?.user.username}`} className="hover:cursor-pointer capitalize hover:underline underline-offset-1 transition-all">{result.data?.user.username}</Link>
+                <Link
+                  to={`?user=${result.data?.user.username}`}
+                  className="hover:cursor-pointer capitalize hover:underline underline-offset-1 transition-all"
+                >
+                  {result.data?.user.username}
+                </Link>
               </h2>
               <h3 className="text-xs font-light font-nunito text-center">
                 {result.data.created_at
@@ -233,7 +256,8 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
         <button
           className="w-fit h-fit"
           onClick={() => {
-            props.onCloseEditor();
+            handleOnClose();
+            navigate("/peta");
           }}
         >
           <CgClose className="w-6 h-6" />
@@ -287,7 +311,12 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
               </h1>
               <h2 className="text-center font-nunito mt-2">
                 oleh{" "}
-                <Link to={`?user=${result.data?.user.username}`} className="hover:cursor-pointer capitalize hover:underline underline-offset-1 transition-all">{result.data?.user.username}</Link>
+                <Link
+                  to={`?user=${result.data?.user.username}`}
+                  className="hover:cursor-pointer capitalize hover:underline underline-offset-1 transition-all"
+                >
+                  {result.data?.user.username}
+                </Link>
               </h2>
               <h3 className="text-xs font-light font-nunito text-center">
                 {result.data.created_at

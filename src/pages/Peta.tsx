@@ -45,6 +45,14 @@ export default function Peta() {
 
   const { showSideNav } = sideNavStore((state) => state);
 
+  const [headContent, setheadContent] = useState<{
+    title: string;
+    desc: string | null;
+  }>({
+    title: "Peta",
+    desc: null,
+  });
+
   const [pickLocation, setpickLocation] = useState<boolean>(false);
 
   const [pickedLocation, setpickedLocation] = useState<Location | null>({
@@ -199,6 +207,13 @@ export default function Peta() {
     }
   }
 
+  function handleTitleHelmet(title: string, desc: string | null) {
+    setheadContent({
+      title,
+      desc,
+    });
+  }
+
   // useEffect(() => {
   //   _getCurrentPosition();
   //   let localData = getLocalStorage<ApiLocation[]>("list_location");
@@ -242,7 +257,7 @@ export default function Peta() {
 
   return (
     <>
-      <HelmetTitle title="Peta"/>
+      <HelmetTitle title={headContent.title} description={headContent.desc}  />
       <div className="h-screen " id="nav-btn" aria-label="nav-btn">
         <Search handleSearch={viewLocation} />
 
@@ -311,6 +326,7 @@ export default function Peta() {
         />
 
         <DetailStory
+          handleHelmetTitle={handleTitleHelmet}
           viewData={viewStory}
           showEditor={storyDetailView}
           onCloseEditor={() => {
@@ -322,6 +338,7 @@ export default function Peta() {
         />
 
         <UserSection
+          handleHelmetTitle={handleTitleHelmet}
           viewData={viewStory}
           showEditor={userSectionView}
           onCloseEditor={() => {

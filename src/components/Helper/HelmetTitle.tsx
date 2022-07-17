@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useLocation } from "react-router-dom";
+
 
 type Props = {
   title: string;
-  description?: string;
+  description?: string |null;
 };
 
 export default function HelmetTitle({ ...props }: Props) {
   return (
     <Helmet>
       <title>{props.title}</title>
-      <meta name="description" content={props.description} />
+      {props.description && (
+        <meta name="description" content={props.description} />
+      )}
       <meta property="og:title" content={props.title} />
       <meta property="og:url" content={window.location.href || ""} />
       {props.description && (

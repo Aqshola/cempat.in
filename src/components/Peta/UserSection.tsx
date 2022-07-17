@@ -3,12 +3,9 @@ import useDetail from "hooks/cerita/useDetail";
 import React, { useEffect, useRef, useState } from "react";
 import { ApiLocation } from "types/types";
 import { convertFromRaw, EditorState } from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
-import { Link, useSearchParams } from "react-router-dom";
-import parseDateString from "hooks/helper/parseDateString";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+
 import Button from "components/Button/Button";
-import { authStore } from "store/authStore";
-import useUpdate from "hooks/cerita/useUpdate";
 import { getLocalStorage, setLocalStorage } from "hooks/helper/useLocalStorage";
 import splitbee from "@splitbee/web";
 import useScreenSize from "hooks/helper/useScreenSize";
@@ -26,45 +23,35 @@ type Props = {
   titleEditor?: string;
   viewData: ApiLocation;
   handleView?: () => void;
+  handleHelmetTitle?: (title: string, desc: string | null) => void;
 };
 
 function UserSection({ titleEditor, viewData, ...props }: Props) {
-  const user_id = authStore((state) => state.authData?.user_id);
+  const navigate=useNavigate()
   const [getDetail, result, loading] = useDetail();
   const [searchParams] = useSearchParams();
 
-  const [edit, setedit] = useState<boolean>(false);
+ 
   const [formData, setformData] = useState({
     title: "",
     content: EditorState.createEmpty(),
   });
   const sheetRef = useRef<BottomSheetRef>(null);
-  const [updateCerita, resultUpdate, loadingUpdate] = useUpdate();
+  
   const idParams = searchParams.get("user");
-
-  const _handleEdit = (value: boolean) => {
-    setedit(value);
-    if (edit) {
-      if (result.data?.content) {
-        let editorState = EditorState.createWithContent(
-          convertFromRaw(JSON.parse(result.data?.content))
-        );
-        setformData({ ...formData, content: editorState });
-      }
-    }
-  };
-
-  const _setTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setformData({ ...formData, title: e.target.value });
-  };
-
-  const _setContent = (editorState: EditorState) => {
-    setformData({ ...formData, content: editorState });
-  };
 
   const handleOnClose = () => {
     props.onCloseEditor();
-    _handleEdit(false);
+
+    if (props.handleHelmetTitle) {
+      props.handleHelmetTitle(
+        "Peta",
+        null
+      );
+    }
+
+    navigate("/peta")
+
   };
   const [getSize, screenSize] = useScreenSize();
 
@@ -91,6 +78,16 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
           content: editorState,
         });
 
+        if (props.handleHelmetTitle) {
+          
+          
+          
+          props.handleHelmetTitle(
+            result.data.user.username,
+            null
+          );
+        }
+
         // splitbee.track("view story", {
         //   id: result.data.id,
         //   title: result.data.title,
@@ -109,12 +106,7 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
     }
   }, [loading, result.data]);
 
-  useEffect(() => {
-    if (!loadingUpdate && !resultUpdate.error) {
-      setedit(false);
-      props.onCloseEditor();
-    }
-  }, [loadingUpdate, resultUpdate.error]);
+ 
 
   useEffect(() => {
     getSize();
@@ -196,9 +188,7 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
       <div className="px-6 flex items-center">
         <button
           className="w-fit h-fit"
-          onClick={() => {
-            props.onCloseEditor();
-          }}
+          onClick={handleOnClose}
         >
           <CgClose className="w-6 h-6" />
         </button>
