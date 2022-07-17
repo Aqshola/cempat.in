@@ -1,7 +1,6 @@
 import React, { useLayoutEffect, useRef } from "react";
 import clsx from "clsx";
-import gsap from "gsap";
-import { time } from "console";
+
 
 
 type ButtonProps = {
@@ -15,12 +14,12 @@ type ButtonProps = {
 const ButtonType:{
   [key: string]: string;
 }={
-  primary:"bg-green-primary font-semibold text-white rounded-lg ",
-  secondary:"bg-blue-primary text-white font-semibold rounded-lg",
-  danger:"bg-red-primary text-white font-semibold rounded-lg",
-  "outline-primary":"bg-transparent text-green-primary font-semibold rounded-lg",
-  "outline-secondary":"bg-transparent text-blue-primary font-semibold rounded-lg",
-  "outline-gray":"border bg-transparent border-gray-300 font-semibold rounded-lg"
+  primary:"bg-green-primary font-semibold text-white rounded-lg btn-primary",
+  secondary:"bg-blue-primary text-white font-semibold rounded-lg btn-secondary",
+  danger:"bg-red-primary text-white font-semibold rounded-lg btn-danger",
+  "outline-primary":"bg-transparent text-green-primary font-semibold rounded-lg btn-primary",
+  "outline-secondary":"bg-transparent text-blue-primary font-semibold rounded-lg btn-secondary",
+  "outline-gray":"border bg-transparent border-gray-300 font-semibold rounded-lg btn-gray"
 }
 
 const ButtonSize:{
@@ -48,7 +47,7 @@ function Button({
   
     
   return (
-    <button {...props} className={clsx(ButtonType[variant],ButtonSize[size], props.className)}>
+    <button {...props} className={clsx("transition-all btn",ButtonType[variant],ButtonSize[size], props.className)}>
         {children}
     </button>
     

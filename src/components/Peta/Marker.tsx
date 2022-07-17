@@ -1,8 +1,8 @@
 import MarkerStory from "components/Icon/MarkerStory";
 import MarkerPicked from "components/Icon/MarkerPicked";
 import { Marker } from "react-map-gl";
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
+import { useRef } from "react";
+
 
 type PickedMarkerProps = {
   lng: number;
@@ -27,19 +27,7 @@ type StoryMarkerProps = PickedMarkerProps & {
 
 const StoryMarker = ({ onClick, lng, lat }: StoryMarkerProps) => {
   const refMarker = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    gsap.fromTo(
-      refMarker.current,
-      {
-        scale: 0,
-      },
-      {
-        scale: 1,
-        duration: 2,
-        ease: "elastic",
-      }
-    );
-  }, []);
+
 
   return (
     <Marker longitude={lng} latitude={lat} anchor="bottom" onClick={onClick}>

@@ -41,7 +41,7 @@ export default function Navbar() {
             }
           >
             <Link to={"/register"} aria-label="register">
-              <Button size="xs" variant="outline-secondary">
+              <Button size="xs" variant="outline-secondary" className="mr-1">
                 Register
               </Button>
             </Link>

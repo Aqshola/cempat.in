@@ -13,10 +13,13 @@
 }
 
 
+/* shadow */
 .shadow-story-card{
   box-shadow: 5px 10px 0px #00AA13;
 }
 .shadow-map-card{
+  animation: bounce-map-shadow;
+  animation-duration: 3s;
   box-shadow: -10px 15px 0px #00AA13;
 }
 
@@ -24,9 +27,12 @@
   box-shadow: 0px 5px 0px #116530;
 }
 
+.shadow-btn-landing:hover{
+  box-shadow: 0px 10px 0px #116530 !important;
+}
 .shadow-btn-landing:focus{
-  box-shadow: none;
-  transform: translateY(5px);
+  box-shadow: none !important;
+  transform: translateY(5px) !important;
 }
 
 .shadow-auth-box{
@@ -42,6 +48,31 @@
 }
 
 
+
+/* button */
+.btn-primary:hover{
+  box-shadow: 0px 5px 0px #116530;
+}
+
+.btn-secondary:hover{
+  box-shadow: 0px 5px 0px rgb(22, 106, 112);
+}
+
+.btn-danger:hover{
+  box-shadow: 0px 5px 0px #ca2533;
+}
+
+.btn:disabled{
+  opacity: 0.5;
+}
+.btn:focus{
+  box-shadow: none;
+  transform: translateY(5px);
+}
+
+
+
+/* additional */
 .form-input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 1000px white inset !important;
   
@@ -76,30 +107,12 @@
 
 
 
-#type-animate{
-  animation-name: word-ping;
-  animation-duration: 0.5s;
-  animation-iteration-count: infinite;
-}
-
-@keyframes scale-up {
-    from{
-      transform:scale(0)
-    }
-
-    50%{
-      transform:scale(1.5)
-    }
-    to{
-      to:scale(1)
-    }
-}
-
-@keyframes word-ping{
-  from{
-    border-right-color: #03C88E;
+@keyframes bounce-map-shadow {
+  0%{
+    box-shadow: 0px 0px 0px #00AA13;
   }
-  to{
-    border-right-color: black;
-  }
-}
+  0%, 20%, 50%, 80%  {box-shadow: -5px 10px 0px #00AA13;} 
+  40%,60% {box-shadow: -10px 0px 0px #00AA13;} 
+   
+  100%{box-shadow: -10px 15px 0px #00AA13;}
+} 

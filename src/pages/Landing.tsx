@@ -1,69 +1,64 @@
 import Button from "components/Button/Button";
-import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import MapGL from "react-map-gl";
-import gsap, { SteppedEase } from "gsap";
 
 import "mapbox-gl/dist/mapbox-gl.css";
+import { motion } from "framer-motion";
+import {
+  childTitleLandingTransition,
+  childTransition,
+  fontWeightTransition,
+  opacityTransition,
+  parentTransition,
+  scaleTransition,
+  titleLandingTransition,
+} from "lib/Transition";
+import { useInView } from "react-intersection-observer";
 
 function Landing() {
-  // const refTyping = useRef<HTMLSpanElement>(null);
-  // const [wordIndex, setwordIndex] = useState<number>(0);
-  // const [wordList, setwordList] = useState(["Tempat", "Lokasi", "Wisata"]);
-
-  // useEffect(() => {
-  //   let index = 0;
-  //   let typeTl = gsap.timeline({
-  //     repeat: -1,
-  //     onRepeat: () => {
-  //       if (index === wordList.length - 1) {
-  //         index = 0;
-  //       } else {
-  //         index++;
-  //       }
-  //       setwordIndex(index);
-  //     },
-  //   });
-
-  //   typeTl.fromTo(
-  //     refTyping.current,
-  //     2,
-  //     {
-  //       width: "0",
-  //     },
-  //     {
-  //       width: "4em",
-  //       ease: SteppedEase.config(37),
-  //     }
-  //   );
-
-  //   typeTl.to(refTyping.current, 2, {
-  //     width: "0",
-  //     ease: SteppedEase.config(37),
-  //     delay: 10,
-  //   });
-  // }, []);
-
+  const { ref: sectionTwo, inView: sectionTwoView } = useInView();
+  const { ref: sectionThree, inView: sectionThreeView } = useInView();
   return (
-    <>
-      <section
+    <motion.div>
+      <motion.section
+        variants={parentTransition}
+        initial="hidden"
+        animate="show"
         className="grid grid-cols-12 md:mt-14 py-8 mx-7 md:mx-32"
         id="header"
       >
-        <div className="col-span-12 md:col-span-6">
-          <h1 className="font-extrabold text-3xl font-nunito md:leading-snug md:text-6xl">
+        <motion.div
+          variants={childTransition}
+          className="col-span-12 md:col-span-6"
+        >
+          <motion.h1
+            initial="hidden"
+            animate="show"
+            variants={titleLandingTransition}
+            className="font-extrabold text-3xl font-nunito md:leading-snug md:text-6xl"
+          >
             Ceritain <br /> tiap{" "}
-            <span className="text-green-primary">Tempat</span> <br /> yang kamu{" "}
-            <span className="text-green-primary">kunjungin</span>
-          </h1>
+            <motion.span variants={childTitleLandingTransition}>
+              Tempat
+            </motion.span>{" "}
+            <br /> yang kamu{" "}
+            <motion.span variants={childTitleLandingTransition}>
+              kunjungin
+            </motion.span>
+          </motion.h1>
           <Link to={"/peta"}>
-            <Button className="mt-7 shadow-btn-landing" size="lg">
+            <Button
+              className="mt-7 transition-all shadow-btn-landing"
+              size="lg"
+            >
               Tulis Cerita
             </Button>
           </Link>
-        </div>
-        <div className="col-span-12 md:col-span-4 md:col-start-9">
-          {/* <div className="block w-[400px] h-[600px] rounded-[50px] "></div> */}
+        </motion.div>
+        <motion.div
+          variants={childTransition}
+          className="col-span-12 md:col-span-4 md:col-start-9"
+        >
           <div className="w-full h-[300px] mt-10 md:mt-0  md:h-[600px] relative rounded-[50px] overflow-hidden   shadow-map-card ">
             <MapGL
               reuseMaps={true}
@@ -82,35 +77,101 @@ function Landing() {
               }}
             ></MapGL>
           </div>
-        </div>
-      </section>
-      <section className="bg-green-primary md:py-36" id="info">
-        <div className="grid grid-cols-12 mt-5 md:mt-14 py-8 mx-7 md:mx-32">
-          <div className="col-span-12 md:order-1 order-2 md:col-span-3 grid grid-cols-3 md:grid-cols-2 gap-5 mt-11 md:mt-0">
-            <div className="col-span-1 flex justify-center md:order-2">
-              <img className="flex w-[70px] h-[70px] md:w-[100px] md:h-[100px]" src="/icon/filled/location-logo-filled.svg" alt="pick location"  />
-            </div>
-            <div className="col-span-1 md:col-span-2 flex justify-center ">
-              <img className="flex w-[70px] h-[70px] md:w-[100px] md:h-[100px]" src="/icon/filled/write-logo-filled.svg"  alt="write" />
-            </div>
-            
-            <div className="flex justify-center md:order-3">
-              <img className="flex w-[70px] h-[70px] md:w-[100px] md:h-[100px]" src="/icon/filled/upload-logo-filled.svg" alt="upload" />
-            </div>
-          </div>
-          <div className="col-span-12 order-1  md:col-start-5 md:col-span-7 md:order-3">
-            <h2 className="font-nunito text-2xl md:text-6xl md:leading-snug text-white font-light">
-              <span className="font-extrabold">Pilih</span>  Lokasi <br /> <span className="font-extrabold">Tulis</span>  dan <span className="font-extrabold">Bagikan</span>  <br /> Cerita yang kamu
-              miliki
-            </h2>
-          </div>
-        </div>
-      </section>
-      <section id="quotes" className="mt-5 md:mt-14 py-32 mx-7 md:mx-32">
-              <h1 className="font-extrabold text-2xl md:text-6xl text-center font-nunito">“Tempat juga punya Cerita”</h1>
-              <h2 className="text-center md:mt-5 text-lg md:text-4xl font-nunito">yuk ceritain di <span className="font-extrabold text-green-primary">Cempat.in</span></h2>
-      </section>
-    </>
+        </motion.div>
+      </motion.section>
+
+      <motion.section className="bg-green-primary md:py-36" id="info">
+        <motion.div
+          ref={sectionTwo}
+          variants={parentTransition}
+          initial="hidden"
+          animate={sectionTwoView ? "show" : "hidden"}
+          className="grid grid-cols-12 mt-5 md:mt-14 py-8 mx-7 md:mx-32"
+        >
+          <motion.div
+            variants={parentTransition}
+            initial="hidden"
+            animate={sectionTwoView ? "show" : "hidden"}
+            className="col-span-12 md:order-1 order-2 md:col-span-3 grid grid-cols-3 md:grid-cols-2 gap-5 mt-11 md:mt-0"
+          >
+            <motion.div
+              variants={scaleTransition}
+              className="col-span-1 flex justify-center md:order-2"
+            >
+              <img
+                className="flex w-[70px] h-[70px] md:w-[100px] md:h-[100px]"
+                src="/icon/filled/location-logo-filled.svg"
+                alt="pick location"
+              />
+            </motion.div>
+            <motion.div
+              variants={scaleTransition}
+              className="col-span-1 md:col-span-2 flex justify-center "
+            >
+              <img
+                className="flex w-[70px] h-[70px] md:w-[100px] md:h-[100px]"
+                src="/icon/filled/write-logo-filled.svg"
+                alt="write"
+              />
+            </motion.div>
+
+            <motion.div
+              variants={scaleTransition}
+              className="flex justify-center md:order-3"
+            >
+              <img
+                className="flex w-[70px] h-[70px] md:w-[100px] md:h-[100px]"
+                src="/icon/filled/upload-logo-filled.svg"
+                alt="upload"
+              />
+            </motion.div>
+          </motion.div>
+          <motion.div className="col-span-12 order-1  md:col-start-5 md:col-span-7 md:order-3">
+            <motion.h2
+              variants={opacityTransition}
+              className="font-nunito text-2xl md:text-6xl md:leading-snug text-white font-light"
+            >
+              <motion.span variants={fontWeightTransition}>Pilih</motion.span>{" "}
+              Lokasi <br />{" "}
+              <motion.span
+                variants={fontWeightTransition}
+                className="font-extrabold"
+              >
+                Tulis
+              </motion.span>{" "}
+              dan{" "}
+              <motion.span variants={fontWeightTransition}>Bagikan</motion.span>{" "}
+              <br /> Cerita yang kamu miliki
+            </motion.h2>
+          </motion.div>
+        </motion.div>
+      </motion.section>
+
+      <motion.section
+        ref={sectionThree}
+        id="quotes"
+        className="mt-5 md:mt-14 py-32 mx-7 md:mx-32"
+        variants={parentTransition}
+        initial="hidden"
+        animate={sectionThreeView ? "show" : "hidden"}
+      >
+        <motion.h1
+          variants={opacityTransition}
+          className="font-extrabold text-2xl md:text-6xl text-center font-nunito"
+        >
+          “Tempat juga punya Cerita”
+        </motion.h1>
+        <motion.h2 className="text-center md:mt-5 text-lg md:text-4xl font-nunito">
+          yuk ceritain di{" "}
+          <motion.span
+            variants={childTitleLandingTransition}
+            className="font-extrabold text-green-primary"
+          >
+            Cempat.in
+          </motion.span>
+        </motion.h2>
+      </motion.section>
+    </motion.div>
   );
 }
 
