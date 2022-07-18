@@ -7,6 +7,7 @@ import { authStore } from "store/authStore";
 import splitbee from "@splitbee/web";
 import clsx from "clsx";
 import Avatar from "components/Avatar/Avatar";
+import useScreenSize from "hooks/helper/useScreenSize";
 
 const LINK_LIST = [
   {
@@ -30,7 +31,7 @@ export default function SideNav() {
   const username = authStore((state) => state.authData?.username);
   const { sideNav, showSideNav } = sideNavStore((state) => state);
   const [spanSideNav, setspanSideNav] = useState<boolean>(false);
-
+  const [getSize, screenSize] = useScreenSize();
   const route = useLocation();
 
   const isNotMainRoute =
@@ -40,6 +41,16 @@ export default function SideNav() {
     route.pathname === "/register/username" ||
     route.pathname === "/404" ||
     route.pathname === "/lupa-sandi";
+
+  useEffect(() => {
+    getSize();
+  });
+
+  useEffect(() => {
+    if (screenSize < 768) {
+      setspanSideNav(false);
+    }
+  }, [route.pathname]);
 
   const [logout] = useLogout();
 
@@ -82,7 +93,7 @@ export default function SideNav() {
       </div>
       <aside
         className={clsx(
-          "h-full transition-all   px-2 min-h-screen rounded-tb-3xl rounded-tr-3xl bg-white z-50 pt-12 flex flex-col ",
+          "sidenav-animate  h-full transition-all   px-2 min-h-screen rounded-tb-3xl rounded-tr-3xl bg-white z-50 pt-12 flex flex-col ",
           spanSideNav
             ? ["md:w-64 w-full absolute"]
             : ["md:w-20 w-0 overflow-hidden px-0 md:px-2 absolute"],
@@ -106,7 +117,7 @@ export default function SideNav() {
         </button>
         <div className="grid grid-cols-4 items-center gap-5 w-full  mt-16">
           <div className="col-span-1">
-            <Avatar size="sm"/>
+            <Avatar size="sm" />
           </div>
 
           <div

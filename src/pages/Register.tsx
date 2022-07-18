@@ -10,6 +10,8 @@ import Button from "components/Button/Button";
 import splitbee from "@splitbee/web";
 import { googleProvider } from "hooks/auth/useOAuthGoogle";
 import HelmetTitle from "components/Helper/HelmetTitle";
+import { motion } from "framer-motion";
+import { opacityPageTransition } from "lib/Transition";
 
 /**
  * TODO: Onchange check username and email
@@ -45,27 +47,33 @@ function Register() {
   }, [loading]);
 
   return (
-    <>
-    <HelmetTitle title="Gabung"/>
+    <motion.div
+      variants={opacityPageTransition}
+      initial="hidden"
+      animate="show"
+      exit="exit"
+    >
+      <HelmetTitle title="Gabung" />
       <div className="bg-green-primary min-h-screen px-7 pb-10 md:px-32">
         <div className="md:w-[450px] mx-auto">
           <h1 className="text-3xl text-white leading-snug">
-            Halo 👋 <br />
+            Halo <span className="handwave">👋</span> <br />
             Selamat datang
           </h1>
           <div className="mt-5 mx-auto bg-white py-16 px-5 rounded-lg shadow-auth-box">
             <form className="space-y-5">
-            <FormInput
-              placeholder="Username"
-              id="username"
-              type={"text"}
-              label="Username"
-              leftButton={
-                <img src="/icon/filled/username-logo-filled.svg" aria-label="Username"/>
-                  
-                
-              }
-            />
+              <FormInput
+                placeholder="Username"
+                id="username"
+                type={"text"}
+                label="Username"
+                leftButton={
+                  <img
+                    src="/icon/filled/username-logo-filled.svg"
+                    aria-label="Username"
+                  />
+                }
+              />
               <FormInput
                 placeholder="email@email.com"
                 id="email"
@@ -103,7 +111,7 @@ function Register() {
           </div>
         </div>
       </div>
-    </>
+    </motion.div>
   );
 }
 

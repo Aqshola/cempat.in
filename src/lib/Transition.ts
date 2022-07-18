@@ -56,40 +56,40 @@ export const scaleTransition = {
   show: {
     scale: 1,
     transition: {
-      duration:0.2,
+      duration: 0.2,
       type: "spring",
       bounce: 0.25,
     },
   },
 };
 
-export const opacityTransition={
+export const opacityTransition = {
   hidden: {
-    opacity:0,
+    opacity: 0,
   },
   show: {
-    opacity:1,
+    opacity: 1,
     transition: {
-      duration:0.5,
+      duration: 0.5,
       type: "tween",
     },
   },
-}
+};
 
-export const fontWeightTransition={
+export const fontWeightTransition = {
   hidden: {
-    fontWeight:300,
+    fontWeight: 300,
   },
   show: {
-    fontWeight:800,
+    fontWeight: 800,
     transition: {
       delay: 1,
-      duration:0.5,
+      duration: 0.5,
       type: "spring",
       bounce: 0.25,
     },
   },
-}
+};
 export const textGreenTransition = {
   hidden: {
     color: "#000",
@@ -102,3 +102,24 @@ export const textGreenTransition = {
     },
   },
 };
+
+export const opacityPageTransition = {
+  hidden: {
+    opacity:0,
+  },
+  show: {
+    opacity:1,
+    transition: {
+      delay: 1,
+      duration:1
+    },
+  },
+  exit:{
+    opacity:0,
+    transition: {
+      duration:1
+    },
+  }
+};
+
+

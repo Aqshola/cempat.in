@@ -32,7 +32,7 @@ export default function Layout({ children }: Props) {
             route.pathname !== "/peta" && !isNotMainRoute && ["flex"]
           )}
         >
-          <SideNav key={route.pathname} />
+          <SideNav  />
 
           {children}
         </div>

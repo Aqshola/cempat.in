@@ -10,6 +10,8 @@ import splitbee from "@splitbee/web";
 import { googleProvider } from "hooks/auth/useOAuthGoogle";
 import { BsGoogle } from "react-icons/bs";
 import HelmetTitle from "components/Helper/HelmetTitle";
+import { motion } from "framer-motion";
+import { opacityPageTransition } from "lib/Transition";
 
 /**
  * TODO: Add google login
@@ -42,14 +44,34 @@ function Login() {
   const [inputInvalid, setinputInvalid] = useState<boolean>(false);
 
   return (
-    <>
-      <HelmetTitle title="Cempat.in | Login"/>
-      <div className="pb-96 bg-green-primary h-screen md:py-8 px-7 md:px-32">
+    <motion.div
+      variants={opacityPageTransition}
+      initial="hidden"
+      animate="show"
+      exit="exit"
+    >
+      <HelmetTitle title="Cempat.in | Login" />
+      <motion.div className="loginpage transition-all pb-96 bg-green-primary h-screen md:py-8 px-7 md:px-32">
         <div className="md:w-[450px] mx-auto">
-          <h1 className="text-3xl text-white leading-snug">
-            Halo 👋 <br />
+          <motion.h1 initial={{
+            opacity:0,
+            translateX:-100,
+          }}
+          animate={{
+            opacity:1,
+            translateX:0
+          }}
+          transition={{
+            delay:2,
+            duration:1.5,
+            type:"spring",
+            stiffness:200,
+          
+          }}
+           className="text-3xl text-white leading-snug">
+            Halo <span className="handwave">👋</span> <br />
             Selamat datang kembali
-          </h1>
+          </motion.h1>
           <div className="mt-5 mx-auto bg-white py-16 px-5 rounded-lg shadow-auth-box">
             <form className="space-y-5">
               <FormInput
@@ -94,8 +116,8 @@ function Login() {
             </p>
           </div>
         </div>
-      </div>
-    </>
+      </motion.div>
+    </motion.div>
   );
 }
 

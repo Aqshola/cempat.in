@@ -8,6 +8,7 @@ import {
   childTitleLandingTransition,
   childTransition,
   fontWeightTransition,
+  opacityPageTransition,
   opacityTransition,
   parentTransition,
   scaleTransition,
@@ -20,7 +21,12 @@ function Landing() {
   const { ref: sectionTwo, inView: sectionTwoView } = useInView();
   const { ref: sectionThree, inView: sectionThreeView } = useInView();
   return (
-    <motion.div>
+    <motion.div
+      variants={opacityPageTransition}
+      initial="hidden"
+      animate="show"
+      exit="exit"
+    >
       <motion.section
         variants={parentTransition}
         initial="hidden"
@@ -90,7 +96,6 @@ function Landing() {
           className="grid grid-cols-12 mt-5 md:mt-14 py-8 mx-7 md:mx-32"
         >
           <motion.div
-          
             variants={parentTransition}
             initial="hidden"
             animate={sectionTwoView ? "show" : "hidden"}
