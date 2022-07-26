@@ -1,17 +1,14 @@
-import Landmark from "components/Icon/Landmark";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useLogin from "hooks/auth/useLogin";
-import ErrorBox from "components/Error/ErrorBox";
 import Button from "components/Button/Button";
 import FormInput from "components/Input/FormInput";
-import { FiMail } from "react-icons/fi";
 import splitbee from "@splitbee/web";
 import { googleProvider } from "hooks/auth/useOAuthGoogle";
-import { BsGoogle } from "react-icons/bs";
 import HelmetTitle from "components/Helper/HelmetTitle";
 import { motion } from "framer-motion";
 import { opacityPageTransition } from "lib/Transition";
+import Alert from "components/Alert/Alert";
 
 /**
  * TODO: Add google login
@@ -20,28 +17,26 @@ import { opacityPageTransition } from "lib/Transition";
  */
 
 function Login() {
-  // const [formData, setformData] = useState({ email: "", password: "" });
-  // const [login, error, loading] = useLogin();
+  const [formData, setformData] = useState({ email: "", password: "" });
+  const [login, error, loading] = useLogin();
 
-  // const _setformData = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setformData({ ...formData, [e.target.name]: e.target.value });
-  // };
+  const _setformData = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setformData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-  // const _handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   login(formData.email, formData.password);
-  //   splitbee.user.set({
-  //     email: formData.email
-  //   })
-  // };
+  const _handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    login(formData.email, formData.password);
+    splitbee.user.set({
+      email: formData.email,
+    });
+  };
 
-  // useEffect(() => {
-  //   if(!loading && error){
-  //     splitbee.reset()
-  //   }
-  // }, [loading])
-
-  const [inputInvalid, setinputInvalid] = useState<boolean>(false);
+  useEffect(() => {
+    if (!loading && error) {
+      splitbee.reset();
+    }
+  }, [loading]);
 
   return (
     <motion.div
@@ -52,39 +47,49 @@ function Login() {
     >
       <HelmetTitle title="Cempat.in | Login" />
       <motion.div className="loginpage transition-all pb-96 bg-green-primary h-screen md:py-8 px-7 md:px-32">
-        <div className="md:w-[450px] mx-auto">
-          <motion.h1 initial={{
-            opacity:0,
-            translateX:-100,
-          }}
-          animate={{
-            opacity:1,
-            translateX:0
-          }}
-          transition={{
-            delay:2,
-            duration:1.5,
-            type:"spring",
-            stiffness:200,
-          
-          }}
-           className="text-3xl text-white leading-snug">
+        <div className="md:w-[450px] w-full mx-auto">
+          <motion.h1
+            initial={{
+              opacity: 0,
+              translateX: -100,
+            }}
+            animate={{
+              opacity: 1,
+              translateX: 0,
+            }}
+            transition={{
+              delay: 2,
+              duration: 1.5,
+              type: "spring",
+              stiffness: 200,
+            }}
+            className="text-3xl text-white leading-snug"
+          >
             Halo <span className="handwave">👋</span> <br />
             Selamat datang kembali
           </motion.h1>
-          <div className="mt-5 mx-auto bg-white py-16 px-5 rounded-lg shadow-auth-box">
-            <form className="space-y-5">
+          <div className="mt-5 mx-auto bg-white py-10 px-5 rounded-lg shadow-auth-box">
+            <Alert show={!!error} variant="danger">
+              {error?.message && "email atau password kamu salah"}
+            </Alert>
+            <form className="space-y-5 mt-5" onSubmit={_handleLogin}>
               <FormInput
                 placeholder="email@email.com"
                 id="email"
                 type={"email"}
                 label="Email"
+                name="email"
+                invalidmsg="Masukin email yang valid ya"
+                onChange={_setformData}
               />
               <FormInput
                 placeholder="*****"
                 id="password"
                 type={"password"}
                 label="Password"
+                name="password"
+                invalidmsg="Passwordnya yang bener dong"
+                onChange={_setformData}
               />
               <Link
                 to={"/lupa-sandi"}
@@ -92,7 +97,7 @@ function Login() {
               >
                 Lupa Password ?
               </Link>
-              <Button className="w-full" size="lg">
+              <Button loading={loading} className="w-full" size="lg">
                 Login
               </Button>
             </form>
@@ -102,6 +107,7 @@ function Login() {
             <Button
               variant="outline-gray"
               className="w-full flex justify-center gap-5"
+              onClick={googleProvider}
             >
               <span>
                 <img src="/icon/filled/google-icon-filled.svg" alt="google" />

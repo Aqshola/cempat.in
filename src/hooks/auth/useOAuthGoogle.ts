@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { authStore } from "store/authStore";
 import checkUsername from "./useCheckUsername";
 
-
 export function useFinishRegisGoogle(): [
   (username: string) => Promise<void>,
   ApiError | PostgrestError | null,
@@ -13,7 +12,6 @@ export function useFinishRegisGoogle(): [
   const { setAuthStatus } = authStore((state) => state);
   const [error, seterror] = useState<ApiError | PostgrestError | null>(null);
   const [loading, setloading] = useState<boolean>(false);
-  
 
   return [
     async (username: string) => {
@@ -65,15 +63,19 @@ export function useFinishRegisGoogle(): [
 }
 
 export async function googleProvider() {
-  const urlOrigin=window.location.origin
-  await supabase.auth.signIn(
-    {
-      provider: "google",
-    },
-    {
-      redirectTo: `${urlOrigin}/register/username`,
-    }
-  );
+  const urlOrigin = window.location.origin;
+  try {
+    await supabase.auth.signIn(
+      {
+        provider: "google",
+      },
+      {
+        redirectTo: `${urlOrigin}/register/username`,
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export async function redirectLogin(): Promise<
@@ -81,7 +83,7 @@ export async function redirectLogin(): Promise<
 > {
   const user = supabase.auth.user();
   if (user) {
-    const { data} = await supabase
+    const { data } = await supabase
       .from("user")
       .select("username, id, user_id, email")
       .eq("user_id", user.id)

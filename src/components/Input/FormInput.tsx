@@ -6,14 +6,15 @@ type Props = {
   logo?: React.ReactNode;
   label: string;
   leftButton?: React.ReactNode;
-  hideLabel?:boolean
+  hideLabel?: boolean;
+  invalidmsg?: string;
 };
 
 export default function FormInput({
   logo,
   label,
   className,
-  hideLabel=false,
+  hideLabel = false,
   ...props
 }: Props &
   React.DetailedHTMLProps<
@@ -31,7 +32,7 @@ export default function FormInput({
     const isValid = e.target.value.match(emailPattern);
     setinputInvalid(isValid ? false : true);
     e.target.setCustomValidity(
-      inputInvalid ? "" : "Masukin email yang valid ya"
+      inputInvalid ? "" : props.invalidmsg || "Masukin input yang valid ya"
     );
   };
 
@@ -43,10 +44,13 @@ export default function FormInput({
           "px-3 py-4 border border-gray-300 rounded-lg flex items-center " +
           (inputInvalid
             ? " focus-within:border-red-primary "
-            : " focus-within:border-green-primary") +" "+className
+            : " focus-within:border-green-primary") +
+          " " +
+          className
         }
       >
         <input
+          autoComplete={typeInput === "password" ? "current-password" : ""}
           {...props}
           type={typeInput}
           onChange={(e) => {
@@ -60,9 +64,7 @@ export default function FormInput({
           }}
           className="form-input md:placeholder:text-base placeholder:text-sm border-none outline-none focus:border-none focus:outline-none w-full"
         />
-        {props.leftButton && (
-          props.leftButton
-        )}
+        {props.leftButton && props.leftButton}
         {typeInput === "email" && !props.leftButton && (
           <label htmlFor={props.id}>
             <img src="/icon/filled/mail-logo-filled.svg" alt="email" />

@@ -28,7 +28,7 @@ export default function RegisUsername() {
           navigate("/peta");
         }, 500);
       } else if (result === "unregister") {
-        navigate("/");
+        navigate("/register?error=unregister");
       }
     }, 500);
   };
@@ -42,9 +42,9 @@ export default function RegisUsername() {
       <HelmetTitle title="Buat Username" />
       <div className="h-screen px-16 py-28 w-full">
         <div className="w-96 mx-auto">
-          <h1 className="text-center text-2xl">Halo, Selamat datang 👋</h1>
-          <p className="text-center text-sm mt-2 font-light">
-            yuk isi username kamu sebelum lanjut
+          <h1 className="text-center text-3xl font-semibold font-nunito ">Halo, Selamat datang <span className="handwave">👋</span> <br /></h1>
+          <p className="text-center text-xl mt-2 font-light font-nunito">
+            yuk isi <span className="font-semibold text-green-primary">username</span>  kamu sebelum lanjut
           </p>
 
           <form className="mt-14" onSubmit={_finishRegis}>
@@ -61,7 +61,7 @@ export default function RegisUsername() {
                 {error?.message}
               </p>
             )}
-            <Button className="mt-5 mx-auto" loading={loading}>
+            <Button className="w-full mt-5" loading={loading}>
               Simpan
             </Button>
           </form>
