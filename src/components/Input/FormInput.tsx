@@ -1,5 +1,6 @@
+import clsx from "clsx";
 import Button from "components/Button/Button";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 type Props = {
@@ -8,13 +9,21 @@ type Props = {
   leftButton?: React.ReactNode;
   hideLabel?: boolean;
   invalidmsg?: string;
+  loading?: boolean;
+  error?: boolean;
+  debounce?: boolean;
+  debounceCallback?: () => void;
 };
 
 export default function FormInput({
   logo,
+  loading,
   label,
   className,
   hideLabel = false,
+  error,
+  debounce,
+  debounceCallback,
   ...props
 }: Props &
   React.DetailedHTMLProps<
@@ -36,20 +45,30 @@ export default function FormInput({
     );
   };
 
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  useEffect(() => {
+    const debounceFn = setTimeout(() => {
+      if (debounceCallback) {
+        debounceCallback();
+      }
+    }, 1000);
+    return () => clearTimeout(debounceFn);
+  }, [inputRef.current?.value]);
+
   return (
     <span className="flex flex-col space-y-2">
       {!hideLabel && <label htmlFor={props.id}>{label}</label>}
       <div
-        className={
-          "px-3 py-4 border border-gray-300 rounded-lg flex items-center " +
-          (inputInvalid
-            ? " focus-within:border-red-primary "
-            : " focus-within:border-green-primary") +
-          " " +
+        className={clsx(
+          "transition-all px-3 py-4 border border-gray-300 rounded-lg flex items-center",
+          !inputInvalid && ["focus-within:border-red-primary"],
+          inputInvalid && ["focus-within:border-green-primary"],
+          error && ["border-red-primary"],
           className
-        }
+        )}
       >
         <input
+          ref={inputRef}
           autoComplete={typeInput === "password" ? "current-password" : ""}
           {...props}
           type={typeInput}
@@ -65,39 +84,48 @@ export default function FormInput({
           className="form-input md:placeholder:text-base placeholder:text-sm border-none outline-none focus:border-none focus:outline-none w-full"
         />
         {props.leftButton && props.leftButton}
-        {typeInput === "email" && !props.leftButton && (
+        {!loading && typeInput === "email" && !props.leftButton && (
           <label htmlFor={props.id}>
             <img src="/icon/filled/mail-logo-filled.svg" alt="email" />
           </label>
         )}
-        {typeInput === "password" && !passwordVisible && !props.leftButton && (
-          <button
-            onClick={() => {
-              settypeInput("text");
-              setpasswordVisible(true);
-            }}
-            aria-label="password visible"
-          >
-            <img
-              src="/icon/filled/eye-logo-filled.svg"
-              alt="password visible"
-            />
-          </button>
-        )}
+        {!loading &&
+          typeInput === "password" &&
+          !passwordVisible &&
+          !props.leftButton && (
+            <button
+              onClick={() => {
+                settypeInput("text");
+                setpasswordVisible(true);
+              }}
+              aria-label="password visible"
+            >
+              <img
+                src="/icon/filled/eye-logo-filled.svg"
+                alt="password visible"
+              />
+            </button>
+          )}
+        {!loading &&
+          typeInput === "text" &&
+          passwordVisible &&
+          !props.leftButton && (
+            <button
+              onClick={() => {
+                settypeInput("password");
+                setpasswordVisible(false);
+              }}
+              aria-label="password invisible"
+            >
+              <img
+                src="/icon/filled/eye-closed-logo-filled.svg"
+                alt="password invisible"
+              />
+            </button>
+          )}
 
-        {typeInput === "text" && passwordVisible && !props.leftButton && (
-          <button
-            onClick={() => {
-              settypeInput("password");
-              setpasswordVisible(false);
-            }}
-            aria-label="password invisible"
-          >
-            <img
-              src="/icon/filled/eye-closed-logo-filled.svg"
-              alt="password invisible"
-            />
-          </button>
+        {loading && (
+          <span className=" border-t-2 border-t-green-primary animate-spin rounded-full w-8 h-8  border-2"></span>
         )}
       </div>
     </span>

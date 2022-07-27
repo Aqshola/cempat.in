@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BsGoogle } from "react-icons/bs";
 import Landmark from "components/Icon/Landmark";
-import { Link } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import useRegis from "hooks/auth/useRegis";
 import ErrorBox from "components/Error/ErrorBox";
 import FormInput from "components/Input/FormInput";
@@ -12,33 +12,45 @@ import { googleProvider } from "hooks/auth/useOAuthGoogle";
 import HelmetTitle from "components/Helper/HelmetTitle";
 import { motion } from "framer-motion";
 import { opacityPageTransition } from "lib/Transition";
+import Alert from "components/Alert/Alert";
 
 /**
  * TODO: Onchange check username and email
  */
 function Register() {
+  const [searchParams] = useSearchParams();
+
+  const errorUnregister = searchParams.get("error");
   const [formData, setformData] = useState({
     email: "",
     password: "",
     username: "",
   });
+  
 
   const [regis, error, loading] = useRegis();
 
-  const _setformData = (e: React.ChangeEvent<HTMLInputElement>) => {
+  function _setformData(e: React.ChangeEvent<HTMLInputElement>) {
     setformData({
       ...formData,
       [e.target.name]: e.target.value,
     });
-  };
+  }
 
-  const _register = (e: React.FormEvent<HTMLFormElement>) => {
+  function _register(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     regis(formData.email, formData.password, formData.username);
     splitbee.user.set({
       email: formData.email,
     });
-  };
+  }
+
+  
+ 
+  async function _changeUsername(){
+
+    
+  }
 
   useEffect(() => {
     if (!loading && error) {
@@ -60,8 +72,11 @@ function Register() {
             Halo <span className="handwave">👋</span> <br />
             Selamat datang
           </h1>
-          <div className="mt-5 mx-auto bg-white py-16 px-5 rounded-lg shadow-auth-box">
-            <form className="space-y-5">
+          <div className="mt-5 mx-auto bg-white py-10 px-5 rounded-lg shadow-auth-box">
+            <Alert show={!!errorUnregister} variant="danger">
+              Yah, akun belum kedaftar nih
+            </Alert>
+            <form className="space-y-5 mt-5">
               <FormInput
                 placeholder="Username"
                 id="username"
