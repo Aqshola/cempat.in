@@ -2,7 +2,6 @@ import React, { useEffect, useLayoutEffect, useRef } from "react";
 import clsx from "clsx";
 import {
   AnimationControls,
-  ForwardRefComponent,
   HTMLMotionProps,
   motion,
   TargetAndTransition,

@@ -13,6 +13,7 @@ import HelmetTitle from "components/Helper/HelmetTitle";
 import { motion } from "framer-motion";
 import { opacityPageTransition } from "lib/Transition";
 import Alert from "components/Alert/Alert";
+import { useCheckUsername } from "hooks/auth/useCheckUsername";
 
 /**
  * TODO: Onchange check username and email
@@ -26,9 +27,9 @@ function Register() {
     password: "",
     username: "",
   });
-  
 
   const [regis, error, loading] = useRegis();
+  const [checkUsername, found, loadingCheck] = useCheckUsername();
 
   function _setformData(e: React.ChangeEvent<HTMLInputElement>) {
     setformData({
@@ -43,13 +44,6 @@ function Register() {
     splitbee.user.set({
       email: formData.email,
     });
-  }
-
-  
- 
-  async function _changeUsername(){
-
-    
   }
 
   useEffect(() => {
@@ -73,11 +67,18 @@ function Register() {
             Selamat datang
           </h1>
           <div className="mt-5 mx-auto bg-white py-10 px-5 rounded-lg shadow-auth-box">
-            <Alert show={!!errorUnregister} variant="danger">
-              Yah, akun belum kedaftar nih
+            <Alert show={!!errorUnregister || found} variant="danger">
+              {!!errorUnregister && "Yah, akun belum kedaftar nih"}
+              {found && "Yah, username udah dipake"}
             </Alert>
-            <form className="space-y-5 mt-5">
+            <form className="space-y-5 mt-5" onSubmit={_register}>
               <FormInput
+                name="username"
+                debounce={true}
+                debounceCallback={() => checkUsername(formData.username)}
+                loading={loadingCheck}
+                onChange={_setformData}
+                required
                 placeholder="Username"
                 id="username"
                 type={"text"}
@@ -90,18 +91,34 @@ function Register() {
                 }
               />
               <FormInput
+                onChange={_setformData}
+                required
                 placeholder="email@email.com"
                 id="email"
                 type={"email"}
                 label="Email"
+                name="email"
               />
               <FormInput
+                onChange={_setformData}
+                required
                 placeholder="*****"
                 id="password"
                 type={"password"}
                 label="Password"
+                name="password"
               />
-              <Button className="w-full" size="lg">
+              <Button
+                className="w-full"
+                size="lg"
+                disabled={
+                  loadingCheck ||
+                  found ||
+                  formData.username.trim() === "" ||
+                  formData.email.trim() === "" ||
+                  formData.password.trim() === ""
+                }
+              >
                 Register
               </Button>
             </form>

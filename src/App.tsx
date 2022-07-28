@@ -19,11 +19,11 @@ import User from "pages/User";
 function App() {
   const [getSession, loading] = useSession();
 
-  // useEffect(() => {
-  //   teleAnalytic();
-  //   splitbee.init();
-  //   getSession();
-  // }, []);
+  useEffect(() => {
+    // teleAnalytic();
+    // splitbee.init();
+    getSession();
+  }, []);
 
   return (
     <>
@@ -33,26 +33,26 @@ function App() {
           <Route
             path="/peta"
             element={
-              // <PrivateRoute loading={loading}>
-              <Peta />
-              // </PrivateRoute>
+              <PrivateRoute loading={loading}>
+                <Peta />
+              </PrivateRoute>
             }
           />
           <Route
             path="/cerita"
             element={
-              // <PrivateRoute loading={loading}>
-              <Cerita />
-              // </PrivateRoute>
+              <PrivateRoute loading={loading}>
+                <Cerita />
+              </PrivateRoute>
             }
           />
 
           <Route
             path="/timeline"
             element={
-              // <PrivateRoute loading={loading}>
-              <Timeline />
-              // </PrivateRoute>
+              <PrivateRoute loading={loading}>
+                <Timeline />
+              </PrivateRoute>
             }
           />
 

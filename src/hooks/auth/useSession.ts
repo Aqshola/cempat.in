@@ -6,19 +6,17 @@ import { authStore } from "store/authStore";
 import { UserData } from "types/types";
 import useLogout from "./useLogout";
 
-
 function useSession(): [() => void, boolean] {
   const [loading, setloading] = useState<boolean>(false);
   const { setAuthStatus } = authStore((state) => state);
   const [logout] = useLogout();
-  const navigate=useNavigate()
+  const navigate = useNavigate();
 
   return [
-    async () => {
+    async (link: string = "/") => {
       setloading(true);
       const session = supabase.auth.session();
-      
-      
+
       if (session?.user) {
         const { data } = await supabase
           .from("user")
@@ -28,10 +26,9 @@ function useSession(): [() => void, boolean] {
 
         if (data) {
           setAuthStatus(true, data);
-        }else{
+        } else {
           setAuthStatus(false, null);
-          navigate("/register/username");
-
+          navigate(link);
         }
       } else {
         logout();

@@ -33,23 +33,29 @@ export default function Alert({ show, children, variant = "info" }: Props) {
         {showAlert && (
           <motion.div
             initial={{
-              y: -2,
+              height: 0,
               opacity: 0,
+              paddingTop: "0px",
+              paddingBottom: "0px",
             }}
             animate={{
-              y: 0,
+              height: "56px",
               opacity: 1,
+              paddingTop: "16px",
+              paddingBottom: "16px",
             }}
             exit={{
-              y: -2,
+              height: "0",
               opacity: 0,
+              paddingTop: "0px",
+              paddingBottom: "0px",
             }}
             transition={{
               duration: 0.3,
               ease: "easeInOut",
             }}
             className={clsx(
-              "w-full px-2 py-4 rounded-md  text-white font-medium flex items-center",
+              "w-full overflow-hidden  px-2 py-4 rounded-md  text-white font-medium flex items-center",
               ALERT_STYLE[variant]
             )}
           >

@@ -110,14 +110,14 @@ export const opacityPageTransition = {
   show: {
     opacity:1,
     transition: {
-      delay: 1,
-      duration:1
+      delay: 0.2,
+      duration:0.2
     },
   },
   exit:{
     opacity:0,
     transition: {
-      duration:1
+      duration:0.2
     },
   }
 };

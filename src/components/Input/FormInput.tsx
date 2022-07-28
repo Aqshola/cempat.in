@@ -24,6 +24,7 @@ export default function FormInput({
   error,
   debounce,
   debounceCallback,
+  leftButton,
   ...props
 }: Props &
   React.DetailedHTMLProps<
@@ -48,7 +49,7 @@ export default function FormInput({
   const inputRef = useRef<HTMLInputElement | null>(null);
   useEffect(() => {
     const debounceFn = setTimeout(() => {
-      if (debounceCallback) {
+      if (debounceCallback && inputRef.current?.value.trim() !== "") {
         debounceCallback();
       }
     }, 1000);
@@ -83,8 +84,9 @@ export default function FormInput({
           }}
           className="form-input md:placeholder:text-base placeholder:text-sm border-none outline-none focus:border-none focus:outline-none w-full"
         />
-        {props.leftButton && props.leftButton}
-        {!loading && typeInput === "email" && !props.leftButton && (
+
+        {!loading && leftButton && leftButton}
+        {!loading && typeInput === "email" && !leftButton && (
           <label htmlFor={props.id}>
             <img src="/icon/filled/mail-logo-filled.svg" alt="email" />
           </label>
@@ -92,7 +94,7 @@ export default function FormInput({
         {!loading &&
           typeInput === "password" &&
           !passwordVisible &&
-          !props.leftButton && (
+          !leftButton && (
             <button
               onClick={() => {
                 settypeInput("text");
@@ -109,7 +111,7 @@ export default function FormInput({
         {!loading &&
           typeInput === "text" &&
           passwordVisible &&
-          !props.leftButton && (
+          !leftButton && (
             <button
               onClick={() => {
                 settypeInput("password");
@@ -125,7 +127,7 @@ export default function FormInput({
           )}
 
         {loading && (
-          <span className=" border-t-2 border-t-green-primary animate-spin rounded-full w-8 h-8  border-2"></span>
+          <span className=" border-t-2 border-t-green-primary animate-spin rounded-full w-6 h-6  border-2"></span>
         )}
       </div>
     </span>
