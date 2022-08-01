@@ -161,7 +161,7 @@ export default function EditorSection({
         maxHeight * 0.6,
       ]}
       open={props.showEditor}
-      className="w-full z-50 absolute bottom-0"
+      className="w-full z-50 absolute bottom-0 py-5"
       blocking={true}
       ref={sheetRef}
     >
@@ -179,9 +179,9 @@ export default function EditorSection({
         </h1>
       </div>
 
-      <div className="px-6">
+      <div className="px-6 py-5">
         <form onSubmit={_createStory}>
-          <div className="w-full mt-5">
+          <div className="w-full mt-5 mb-20">
             <input
               required
               aria-label="judul cerita"
@@ -200,7 +200,7 @@ export default function EditorSection({
               toolbarHidden={true}
             />
           </div>
-          <Button loading={loading} className="float-right mt-20">
+          <Button loading={loading} className="float-right">
             Simpan
           </Button>
         </form>

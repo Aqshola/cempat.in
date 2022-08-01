@@ -19,18 +19,16 @@ export default function RegisUsername() {
     finishGoogle(username);
   };
   const navigate = useNavigate();
-  const [getSession] = useSession();
-  const [valid, setvalid] = useState(false)
+  const [getSession, loadingSession] = useSession();
+  const [valid, setvalid] = useState(false);
+  const [mount, setmount] = useState<boolean>(true);
 
   const checkUserStatus = async () => {
     setTimeout(async () => {
       const result = await redirectLogin();
-
       if (result === "login") {
         getSession();
-        setTimeout(() => {
-          navigate("/peta");
-        }, 500);
+        navigate("/peta");
       } else if (result === "unregister") {
         navigate("/register?error=unregister");
       }
@@ -42,11 +40,17 @@ export default function RegisUsername() {
   }, []);
 
   useEffect(() => {
-    if(!loadingCheck){
-      setvalid(found)
+    if (mount) {
+      if (!loadingCheck) {
+        setvalid(found);
+      }
     }
-  }, [loadingCheck])
-  
+    return () => setmount(false);
+  }, [loadingCheck]);
+
+  if (loadingSession) {
+    return null;
+  }
 
   return (
     <>
@@ -61,7 +65,9 @@ export default function RegisUsername() {
             <span className="font-semibold text-green-primary">username</span>{" "}
             kamu sebelum lanjut
           </p>
-          <Alert variant="danger" show={true}>Yah, username udah dipake </Alert>
+          <Alert variant="danger" show={found}>
+            Yah, username udah dipake{" "}
+          </Alert>
           <form className="mt-5" onSubmit={_finishRegis}>
             <FormInput
               loading={loadingCheck}
@@ -83,7 +89,11 @@ export default function RegisUsername() {
                 {error?.message}
               </p>
             )}
-            <Button disabled={ loadingCheck || valid} className="w-full mt-5" loading={loading}>
+            <Button
+              disabled={loadingCheck || valid}
+              className="w-full mt-5"
+              loading={loading}
+            >
               Simpan
             </Button>
           </form>

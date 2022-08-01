@@ -1,8 +1,7 @@
-import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MapGL, { MapRef } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { sideNavStore } from "store/navStore";
 import EditorSection from "components/Peta/EditorSection";
 import Search from "components/Peta/Search";
 import { StoryMarker, PickedMarker } from "components/Peta/Marker";
@@ -10,11 +9,9 @@ import Button from "components/Button/Button";
 import clsx from "clsx";
 import useGet from "hooks/cerita/useGet";
 import { ApiLocation, Location } from "types/types";
-import StoryList from "components/Peta/ListStory";
 import DetailStory from "components/Peta/DetailStory";
 import useRemoveDuplicate from "hooks/helper/useRemoveDuplicate";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import mapboxgl from "mapbox-gl";
 
 import { setLocalStorage, getLocalStorage } from "hooks/helper/useLocalStorage";
 import { toast, ToastContainer } from "react-toastify";
@@ -43,8 +40,6 @@ export default function Peta() {
   const latParams = searchParams.get("lat");
   const lngParams = searchParams.get("lng");
 
-  const { showSideNav } = sideNavStore((state) => state);
-
   const [headContent, setheadContent] = useState<{
     title: string;
     desc: string | null;
@@ -68,19 +63,9 @@ export default function Peta() {
 
   const [loadedMap, setloadedMap] = useState<boolean>(false);
 
-  const [listLocation, setlistLocation] = useState<ApiLocation[]>([
-    {
-      lng: 107.1414549333428,
-      lat: -6.363208404137197,
-      id: 1,
-      jml_cerita: 1,
-      place_name: "kiki",
-    },
-  ]);
+  const [listLocation, setlistLocation] = useState<ApiLocation[]>([]);
 
   const [getMarker, dataMarker, loading] = useGet();
-
-  const [storyListView, setstoryListView] = useState<boolean>(false);
 
   const [storyDetailView, setstoryDetailView] = useState<boolean>(false);
 
@@ -173,14 +158,9 @@ export default function Peta() {
 
   function _handleStoryView(count: number, data: ApiLocation) {
     setviewStory(data);
-    if (count > 1) {
-      setstoryListView(true);
-      setstoryDetailView(false);
-    } else {
-      navigate(`?id=${data.id}`);
-      setstoryDetailView(true);
-      setstoryListView(false);
-    }
+
+    navigate(`?id=${data.id}`);
+    setstoryDetailView(true);
   }
 
   function _loadLocationStory() {
@@ -222,53 +202,53 @@ export default function Peta() {
   //   }
   // }, []);
 
-  // useEffect(() => {
-  //   _handleGet();
-  // }, []);
+  useEffect(() => {
+    _handleGet();
+  }, []);
 
-  // useEffect(() => {
-  //   if (!loading) {
-  //     _loadLocationStory();
-  //   }
-  // }, [loading]);
+  useEffect(() => {
+    if (!loading) {
+      _loadLocationStory();
+    }
+  }, [loading]);
 
-  // useEffect(() => {
-  //   if (loadedMap) {
-  //     if (latParams && lngParams) {
-  //       let flying = true;
-  //       mapGlRef.current?.flyTo({
-  //         center: [parseFloat(lngParams), parseFloat(latParams)],
-  //         essential: true,
-  //       });
+  useEffect(() => {
+    if (loadedMap) {
+      if (latParams && lngParams) {
+        let flying = true;
+        mapGlRef.current?.flyTo({
+          center: [parseFloat(lngParams), parseFloat(latParams)],
+          essential: true,
+        });
 
-  //       mapGlRef.current?.on("flyend", () => {
-  //         flying = false;
-  //       });
+        mapGlRef.current?.on("flyend", () => {
+          flying = false;
+        });
 
-  //       mapGlRef.current?.on("moveend", () => {
-  //         if (flying) {
-  //           setstoryDetailView(true);
-  //           flying = false;
-  //         }
-  //       });
-  //     }
-  //   }
-  // }, [loadedMap, latParams, lngParams]);
+        mapGlRef.current?.on("moveend", () => {
+          if (flying) {
+            setstoryDetailView(true);
+            flying = false;
+          }
+        });
+      }
+    }
+  }, [loadedMap, latParams, lngParams]);
 
   return (
     <>
-      <HelmetTitle title={headContent.title} description={headContent.desc}  />
-      <div className="h-screen " id="nav-btn" aria-label="nav-btn">
+      <HelmetTitle title={headContent.title} description={headContent.desc} />
+      <div className="h-screen" id="nav-btn" aria-label="nav-btn">
         <Search handleSearch={viewLocation} />
 
         <MapGL
           onLoad={() => {
-            // setLocalStorage<ApiLocation[]>("list_location", []);
-            // _handleGet();
+            setLocalStorage<ApiLocation[]>("list_location", []);
+            _handleGet();
           }}
           reuseMaps={true}
-          // onMoveEnd={_handleGet}
-          // onZoomEnd={_handleGet}
+          onMoveEnd={_handleGet}
+          onZoomEnd={_handleGet}
           optimizeForTerrain={true}
           ref={(e) => {
             mapGlRef.current = e;
@@ -293,6 +273,7 @@ export default function Peta() {
         >
           {pickedLocation && (
             <PickedMarker
+              markerId={1}
               className="z-10"
               lat={pickedLocation.lat}
               lng={pickedLocation.lng}
@@ -301,6 +282,7 @@ export default function Peta() {
 
           {listLocation.map((loc, i) => (
             <StoryMarker
+              markerId={i}
               key={i}
               onClick={() => {
                 if (!pickLocation) {
@@ -366,10 +348,26 @@ export default function Peta() {
 
         <Button
           onClick={_newStory}
-          className="absolute  right-5 bottom-20 md:right-20 shadow"
-          variant={pickLocation ? "secondary" : "primary"}
+          className={clsx(
+            "absolute  right-5 bottom-20 md:right-20 shadow",
+            !pickLocation && ["visible opacity-100"],
+            pickLocation && [" invisible opacity-0"]
+          )}
+          variant={"primary"}
         >
-          {pickLocation ? "Pilih lokasi " : "Buat Cerita"}
+          Buat Cerita
+        </Button>
+
+        <Button
+          onClick={_newStory}
+          className={clsx(
+            "absolute  right-5 bottom-20 md:right-20 shadow",
+            pickLocation && ["visible opacity-100"],
+            !pickLocation && [" invisible opacity-0"]
+          )}
+          variant={"secondary"}
+        >
+          Pilih lokasi
         </Button>
 
         <ToastContainer

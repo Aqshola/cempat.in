@@ -7,7 +7,7 @@ import { UserData } from "types/types";
 import useLogout from "./useLogout";
 
 function useSession(): [() => void, boolean] {
-  const [loading, setloading] = useState<boolean>(false);
+  const [loading, setloading] = useState<boolean>(true);
   const { setAuthStatus } = authStore((state) => state);
   const [logout] = useLogout();
   const navigate = useNavigate();

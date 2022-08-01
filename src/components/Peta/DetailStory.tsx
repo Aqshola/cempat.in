@@ -242,6 +242,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
   }
   return (
     <BottomSheet
+      initialFocusRef={false}
       snapPoints={({ maxHeight }) => [
         maxHeight - maxHeight / 10,
         maxHeight / 4,
@@ -265,15 +266,17 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
         <h1 className="w-full text-center font-nunito font-bold text-lg">
           {viewData.place_name || result.data?.place_name}
         </h1>
-        {user_id === result.data?.user_id && !edit && (
-          <Button
-            onClick={() => _handleEdit(true)}
-            size="xs"
-            variant={edit ? "secondary" : "primary"}
-          >
-            Ubah
-          </Button>
-        )}
+        <div>
+          {user_id === result.data?.user_id && !edit && (
+            <Button
+              onClick={() => _handleEdit(true)}
+              size="xs"
+              variant={edit ? "secondary" : "primary"}
+            >
+              Ubah
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="px-6 mt-9">

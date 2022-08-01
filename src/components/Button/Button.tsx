@@ -99,19 +99,22 @@ function Button({
       disabled={loading ? loading : props.disabled}
       {...props}
       className={clsx(
-        "transition-all btn relative",
+        "transition-all btn",
         ButtonType[variant],
         ButtonSize[size],
         props.className
       )}
     >
+      <span className="relative">
+      <DotLoader animate={loaderAnimation} variant={variant} />
+      </span>
       <motion.div
         animate={loadingAnimation}
         className="w-full flex  justify-center gap-2"
       >
         {children}
       </motion.div>
-      <DotLoader animate={loaderAnimation} variant={variant} />
+      
     </motion.button>
   );
 }
@@ -192,17 +195,17 @@ function DotLoader({ animate, variant = "primary" }: Props) {
         <motion.span
           variants={loadingCircleVariants}
           transition={loadingCircleTransition}
-          className={clsx("w-3 h-3 flex  rounded-full", LoaderType[variant])}
+          className={clsx("w-2 h-2 flex  rounded-full", LoaderType[variant])}
         ></motion.span>
         <motion.span
           variants={loadingCircleVariants}
           transition={loadingCircleTransition}
-          className={clsx("w-3 h-3 flex  rounded-full", LoaderType[variant])}
+          className={clsx("w-2 h-2 flex  rounded-full", LoaderType[variant])}
         ></motion.span>
         <motion.span
           variants={loadingCircleVariants}
           transition={loadingCircleTransition}
-          className={clsx("w-3 h-3 flex  rounded-full", LoaderType[variant])}
+          className={clsx("w-2 h-2 flex  rounded-full", LoaderType[variant])}
         ></motion.span>
       </motion.div>
     </motion.div>

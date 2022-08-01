@@ -2,12 +2,14 @@ import MarkerStory from "components/Icon/MarkerStory";
 import MarkerPicked from "components/Icon/MarkerPicked";
 import { Marker } from "react-map-gl";
 import { useRef } from "react";
+import {motion} from "framer-motion"
 
 
 type PickedMarkerProps = {
   lng: number;
   lat: number;
   className?: string;
+  markerId:number
 };
 
 const PickedMarker = ({ lng, lat, className }: PickedMarkerProps) => {
@@ -25,15 +27,19 @@ type StoryMarkerProps = PickedMarkerProps & {
   onClick?: (...T: any) => void;
 };
 
-const StoryMarker = ({ onClick, lng, lat }: StoryMarkerProps) => {
+const StoryMarker = ({ onClick, lng, lat,markerId }: StoryMarkerProps) => {
   const refMarker = useRef<HTMLDivElement>(null);
 
 
   return (
     <Marker longitude={lng} latitude={lat} anchor="bottom" onClick={onClick}>
-      <div ref={refMarker}>
+      <motion.div ref={refMarker} initial={{scale:0}} animate={{scale:1}} transition={{
+        type:"spring",
+        bounce:0.2,
+        duration:0.5*markerId
+      }}>
         <MarkerStory className="w-16 h-16" />
-      </div>
+      </motion.div>
     </Marker>
   );
 };
