@@ -10,10 +10,13 @@ import clsx from "clsx";
 import useGet from "hooks/cerita/useGet";
 import { ApiLocation, Location } from "types/types";
 import DetailStory from "components/Peta/DetailStory";
-import useRemoveDuplicate from "hooks/helper/useRemoveDuplicate";
+import removeDuplicate from "hooks/helper/useRemoveDuplicate";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-import { setLocalStorage, getLocalStorage } from "hooks/helper/useLocalStorage";
+import {
+  setSessionStorage,
+  getSessionStorage,
+} from "hooks/helper/useSessionStorage";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import UserSection from "components/Peta/UserSection";
@@ -163,14 +166,6 @@ export default function Peta() {
     setstoryDetailView(true);
   }
 
-  function _loadLocationStory() {
-    const pushedArray = useRemoveDuplicate(listLocation, dataMarker.data, "id");
-    if (pushedArray.length > 0) {
-      setlistLocation([...pushedArray]);
-      setLocalStorage<ApiLocation[]>("list_location", listLocation);
-    }
-  }
-
   function viewLocation(
     lat: number,
     long: number,
@@ -194,23 +189,38 @@ export default function Peta() {
     });
   }
 
-  // useEffect(() => {
-  //   _getCurrentPosition();
-  //   let localData = getLocalStorage<ApiLocation[]>("list_location");
-  //   if (localData != null) {
-  //     setlistLocation([...localData]);
-  //   }
-  // }, []);
-
   useEffect(() => {
-    _handleGet();
+    _getCurrentPosition();
+    let localData = getSessionStorage<ApiLocation[]>("list_location");
+    if (localData != null) {
+      setlistLocation([...localData]);
+    }
   }, []);
 
   useEffect(() => {
-    if (!loading) {
-      _loadLocationStory();
+    _getCurrentPosition();
+    let localData = getSessionStorage<ApiLocation[]>("list_location");
+    if (localData == null) {
+      const bound = mapGlRef.current?.getBounds();
+      if (bound) {
+        const ne = bound.getNorthEast();
+        const sw = bound.getSouthWest();
+        getMarker(ne.lng, sw.lng, ne.lat, sw.lat);
+        console.log("sas");
+      }
     }
-  }, [loading]);
+  }, [mapGlRef.current]);
+
+
+  useEffect(() => {
+    if (!loading && dataMarker.data.length>0) {
+      const pushedArray = removeDuplicate(listLocation, dataMarker.data, "id");
+      if (pushedArray.length > 0) {
+        setlistLocation([...pushedArray]);
+        setSessionStorage<ApiLocation[]>("list_location", listLocation);
+      }
+    }
+  }, [loading,dataMarker.data]);
 
   useEffect(() => {
     if (loadedMap) {
@@ -243,7 +253,6 @@ export default function Peta() {
 
         <MapGL
           onLoad={() => {
-            setLocalStorage<ApiLocation[]>("list_location", []);
             _handleGet();
           }}
           reuseMaps={true}

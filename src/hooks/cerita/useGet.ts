@@ -1,7 +1,7 @@
 import { PostgrestError } from "@supabase/supabase-js";
 import supabase from "lib/supabase";
 import React, { useState } from "react";
-import { ApiLocation, Location, Result } from "types/types";
+import { ApiLocation, Result } from "types/types";
 
 function useGet ():[(ne_lng:number,sw_lng:number,ne_lat:number,sw_lat:number)=>Promise<void>,Result<ApiLocation[], PostgrestError | null>,boolean] {
   const [result, setresult] = useState<

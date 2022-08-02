@@ -1,5 +1,8 @@
 
-
+/**
+ * TODO - Change into Session Storage
+ * 
+ */
 export function setLocalStorage<T>(storageName:string, item:T){
     localStorage.setItem(storageName, JSON.stringify(item));
 }
