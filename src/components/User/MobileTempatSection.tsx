@@ -22,7 +22,7 @@ export default function MobileTempatSection({}: Props) {
           rightText={""}
         />
       </div>
-      <Paginate totalPage={10} key={"mobile"} className="mt-10" />
+      
     </section>
   );
 }

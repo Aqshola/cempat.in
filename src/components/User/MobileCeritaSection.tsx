@@ -33,7 +33,7 @@ export default function MobileCeritaSection({}: Props) {
           }
         />
       </div>
-      <Paginate totalPage={10} key={"mobile"} className="mt-10"/>
+      {/* <Paginate totalPage={10} key={"mobile"} className="mt-10"/> */}
     </section>
   );
 }

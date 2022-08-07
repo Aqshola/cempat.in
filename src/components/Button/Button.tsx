@@ -106,7 +106,7 @@ function Button({
       )}
     >
       <span className="relative">
-      <DotLoader animate={loaderAnimation} variant={variant} />
+        <DotLoader animate={loaderAnimation} variant={variant} />
       </span>
       <motion.div
         animate={loadingAnimation}
@@ -114,7 +114,6 @@ function Button({
       >
         {children}
       </motion.div>
-      
     </motion.button>
   );
 }
@@ -173,9 +172,12 @@ function DotLoader({ animate, variant = "primary" }: Props) {
   };
 
   const loadingCircleTransition = {
-    duration: 0.3,
-    yoyo: Infinity,
-    ease: "easeInOut",
+    transition:{
+      duration: 0.3,
+      repeat: Infinity,
+      repeatType: "reverse",
+      ease: "easeInOut",
+    }
   };
   return (
     <motion.div

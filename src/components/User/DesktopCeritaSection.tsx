@@ -32,7 +32,7 @@ export default function DesktopCeritaSection({}: Props) {
           }
         />
       </div>
-      <Paginate totalPage={10} key={"desktop-cerita"} className="mt-auto mx-auto self-end" />
+      {/* <Paginate totalPage={10} key={"desktop-cerita"} className="mt-auto mx-auto self-end" /> */}
     </div>
   );
 }

@@ -17,11 +17,11 @@ export default function DesktopTempatSection({}: Props) {
           rightText={""}
         />
       </div>
-      <Paginate
+      {/* <Paginate
         totalPage={10}
         key={"desktop-tempat"}
         className="mt-auto mx-auto self-end"
-      />
+      /> */}
     </div>
   );
 }

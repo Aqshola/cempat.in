@@ -189,61 +189,61 @@ export default function Peta() {
     });
   }
 
-  useEffect(() => {
-    _getCurrentPosition();
-    let localData = getSessionStorage<ApiLocation[]>("list_location");
-    if (localData != null) {
-      setlistLocation([...localData]);
-    }
-  }, []);
+  // useEffect(() => {
+  //   _getCurrentPosition();
+  //   let localData = getSessionStorage<ApiLocation[]>("list_location");
+  //   if (localData != null) {
+  //     setlistLocation([...localData]);
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    _getCurrentPosition();
-    let localData = getSessionStorage<ApiLocation[]>("list_location");
-    if (localData == null) {
-      const bound = mapGlRef.current?.getBounds();
-      if (bound) {
-        const ne = bound.getNorthEast();
-        const sw = bound.getSouthWest();
-        getMarker(ne.lng, sw.lng, ne.lat, sw.lat);
-        console.log("sas");
-      }
-    }
-  }, [mapGlRef.current]);
+  // useEffect(() => {
+  //   _getCurrentPosition();
+  //   let localData = getSessionStorage<ApiLocation[]>("list_location");
+  //   if (localData == null) {
+  //     const bound = mapGlRef.current?.getBounds();
+  //     if (bound) {
+  //       const ne = bound.getNorthEast();
+  //       const sw = bound.getSouthWest();
+  //       getMarker(ne.lng, sw.lng, ne.lat, sw.lat);
+  //       console.log("sas");
+  //     }
+  //   }
+  // }, [mapGlRef.current]);
 
 
-  useEffect(() => {
-    if (!loading && dataMarker.data.length>0) {
-      const pushedArray = removeDuplicate(listLocation, dataMarker.data, "id");
-      if (pushedArray.length > 0) {
-        setlistLocation([...pushedArray]);
-        setSessionStorage<ApiLocation[]>("list_location", listLocation);
-      }
-    }
-  }, [loading,dataMarker.data]);
+  // useEffect(() => {
+  //   if (!loading && dataMarker.data.length>0) {
+  //     const pushedArray = removeDuplicate(listLocation, dataMarker.data, "id");
+  //     if (pushedArray.length > 0) {
+  //       setlistLocation([...pushedArray]);
+  //       setSessionStorage<ApiLocation[]>("list_location", listLocation);
+  //     }
+  //   }
+  // }, [loading,dataMarker.data]);
 
-  useEffect(() => {
-    if (loadedMap) {
-      if (latParams && lngParams) {
-        let flying = true;
-        mapGlRef.current?.flyTo({
-          center: [parseFloat(lngParams), parseFloat(latParams)],
-          essential: true,
-        });
+  // useEffect(() => {
+  //   if (loadedMap) {
+  //     if (latParams && lngParams) {
+  //       let flying = true;
+  //       mapGlRef.current?.flyTo({
+  //         center: [parseFloat(lngParams), parseFloat(latParams)],
+  //         essential: true,
+  //       });
 
-        mapGlRef.current?.on("flyend", () => {
-          flying = false;
-        });
+  //       mapGlRef.current?.on("flyend", () => {
+  //         flying = false;
+  //       });
 
-        mapGlRef.current?.on("moveend", () => {
-          if (flying) {
-            setstoryDetailView(true);
-            flying = false;
-          }
-        });
-      }
-    }
-  }, [loadedMap, latParams, lngParams]);
+  //       mapGlRef.current?.on("moveend", () => {
+  //         if (flying) {
+  //           setstoryDetailView(true);
+  //           flying = false;
+  //         }
+  //       });
+  //     }
+  //   }
+  // }, [loadedMap, latParams, lngParams]);
 
   return (
     <>

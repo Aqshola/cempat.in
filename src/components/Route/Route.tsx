@@ -17,6 +17,7 @@ export function PrivateRoute({ children, loading }: Props) {
   const { isAuth } = authStore((state) => state);
   const location = useLocation();
 
+
   if (loading) {
     return (
       <div className="h-screen flex justify-center items-center">
