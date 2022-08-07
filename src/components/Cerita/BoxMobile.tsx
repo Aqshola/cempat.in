@@ -14,7 +14,7 @@ type Props = {
 export default function StoryBoxMobile({ ...props }: Props) {
   const [open, setopen] = useState<boolean>(false);
   return (
-    <div className="transition-all flex overflow-hidden flex-col py-3 px-2 border border-green-primary rounded">
+    <div className="box-mobile transition-all hover:shadow-btn-landing  flex overflow-hidden flex-col py-3 px-2 border border-green-primary rounded">
       <div className="flex gap-5 text-green-primary font-nunito">
         {props.detailView && (
           <button

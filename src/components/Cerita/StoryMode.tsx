@@ -57,12 +57,12 @@ export default function StoryMode({ screenSize, ...props }: Props) {
       header: "Aksi",
       accessorFn: (info) => (
         <div className="flex gap-5">
-          <button
+          <Link to={`/peta?id=${info.id}&&lat=${info.lat}&&lng=${info.lng}`}
             aria-label="Update"
             className="w-6 h-6  flex justify-center items-center rounded-lg  bg-blue-primary "
           >
             <img src="/icon/filled/update-logo-filled.svg" alt="Edit" />
-          </button>
+          </Link>
 
           <button
             onClick={async () => {
@@ -282,7 +282,7 @@ export default function StoryMode({ screenSize, ...props }: Props) {
                     actionView={true}
                     actionElement={
                       <div className="flex gap-2 self-end ml-auto w-fit">
-                        <Link to={`/peta?id=${item.id}`}
+                        <Link to={`/peta?id=${item.id}&&lat=${item.lat}&&lng=${item.lng}`}
                           aria-label="Update"
                           className="w-6 h-6  flex justify-center items-center rounded-lg  bg-blue-primary "
                         >

@@ -1,23 +1,19 @@
 import useUserStory from "hooks/cerita/useUserStory";
-import {
-  setSessionStorage,
-  getSessionStorage,
-} from "hooks/helper/useSessionStorage";
 import React, { useEffect, useState } from "react";
 
 import { authStore } from "store/authStore";
-import { sideNavStore } from "store/navStore";
-import { Story, ApiLocation, Location } from "types/types";
+
+import { Story, Location } from "types/types";
 import StoryCard from "components/Cerita/StoryCard";
-import { ColumnDef } from "@tanstack/react-table";
+
 import useScreenSize from "hooks/helper/useScreenSize";
 
 import LocationMode from "components/Cerita/LocationMode";
-import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
+import {useNavigate, useSearchParams } from "react-router-dom";
 import StoryMode from "components/Cerita/StoryMode";
 import HelmetTitle from "components/Helper/HelmetTitle";
 import useGetLocations from "hooks/cerita/useGetLocations";
-import useDelete from "hooks/cerita/useDelete";
+
 
 function Cerita() {
   const [storyList, setstoryList] = useState<Story[]>([]);
@@ -31,7 +27,7 @@ function Cerita() {
   const [getSize, screenSize] = useScreenSize();
   const [getUserStory, data, loading] = useUserStory();
   const [getUserLocationStory, dataLocation, loadingLocation] =useGetLocations();
-  const [deleteCerita, result, loadingDelete] = useDelete();
+  
 
   useEffect(() => {
     getSize();

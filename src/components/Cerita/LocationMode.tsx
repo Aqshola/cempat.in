@@ -12,7 +12,7 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table";
 import usePaginate from "components/Pagination/Paginate";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 type Props = {
   data: Location[];
@@ -28,12 +28,19 @@ const columns: ColumnDef<Location>[] = [
   {
     accessorKey: "place_name",
     header: "Lokasi",
+    accessorFn:(info)=>(
+      <Link className="hover:cursor-pointer" to={`/peta?lat=${info.lat}&&lng=${info.lng}`}>
+        {info.place_name}
+      </Link>
+    ),
     cell: (info) => info.getValue(),
     id: "lokasi",
   },
   {
     header: "Koordinat",
-    accessorFn: (info) => info.lat + "," + info.lng,
+    accessorFn: (info) => (
+      info.lat + "," + info.lng
+      ),
     cell: (info) => info.getValue(),
   },
 ];
@@ -174,17 +181,19 @@ export default function LocationMode({ screenSize, ...props }: Props) {
       )}
 
       {screenSize < 720 && (
-        <div className="mt-5 space-y-3">
+        <div className="mt-5 space-y-3 flex flex-col gap-2">
           {props.data
             .filter((item) =>
               item.place_name?.toLowerCase().includes(searchValue.toLowerCase())
             )
             .slice(
               pageState.active * pageState.length,
-              (pageState.active * pageState.length) + pageState.length
+              pageState.active * pageState.length + pageState.length
             )
             .map((item, index) => (
-              <BoxMobile title={item.place_name} key={index} />
+              <Link key={index} to={`/peta?lat=${item.lat}&&lng=${item.lng}`}>
+                <BoxMobile title={item.place_name} />
+              </Link>
             ))}
         </div>
       )}
