@@ -3,12 +3,15 @@ import TimelineList from "components/Timeline/TimelineList";
 import useGetListPost from "hooks/timeline/useGetListPost";
 import React, { useEffect, useRef, useState } from "react";
 import { Story } from "types/types";
+import {
+  setSessionStorage,
+  getSessionStorage,
+} from "hooks/helper/useSessionStorage";
 
 type Props = {};
 
 export default function Timeline({}: Props) {
   const listParent = useRef<HTMLDivElement>(null);
-  const noDataRef = useRef<HTMLDivElement>(null);
   const [currentScroll, setcurrentScroll] = useState<number>(-1);
   const [touchStart, settouchStart] = useState({
     x: 0,
@@ -32,7 +35,6 @@ export default function Timeline({}: Props) {
   const [getList, result, loadingList] = useGetListPost();
   const [timelineData, settimelineData] = useState<Story[]>([]);
 
-  
   function onTouchStart(e: React.TouchEvent<HTMLElement>) {
     const touch = e.targetTouches[0];
     settouchStart({
@@ -73,70 +75,62 @@ export default function Timeline({}: Props) {
   }
   function onScroll(e: React.UIEvent<HTMLElement, UIEvent>) {
     setcurrentScroll(e.currentTarget.scrollTop);
+    scrollDownUpdate();
+  }
+
+  function scrollDownUpdate() {
+    if (listParent.current) {
+      const { scrollTop, scrollHeight, clientHeight } = listParent.current;
+      const bottomPosition = scrollTop + clientHeight;
+
+      if (bottomPosition >= scrollHeight) {
+        let sessionTimeline = getSessionStorage("timeline") as Story[];
+        let timeout = setTimeout(() => {
+          getList(sessionTimeline.length || 0);
+          clearTimeout(timeout);
+        }, 500);
+        setbottomLoading(true);
+      }
+    }
   }
 
   useEffect(() => {
-    getList(paginateInfinite.limit, paginateInfinite.from, paginateInfinite.to);
+    let sessionTimeline = getSessionStorage("timeline") as Story[];
+    if (!sessionTimeline || sessionTimeline.length === 0) {
+      console.log("get");
+
+      getList(0);
+    } else {
+      console.log("Session");
+      settimelineData(sessionTimeline);
+    }
   }, []);
 
   useEffect(() => {
     if (!loadingList) {
       settimelineData([...timelineData, ...result.data]);
       if (result.data.length === 0) {
-        if (result.data.length === 0) {
-          setTimeout(() => {
-            if (listParent.current) {
-              const scrollTop = listParent.current.scrollHeight || 0;
-              listParent.current.scrollTo({
-                top: scrollTop - 1000,
-                behavior: "smooth",
-              });
-            }
-            setbottomLoading(false);
-          }, 1000);
-        }
-      }else{
+        setTimeout(() => {
+          if (listParent.current) {
+            const scrollTop = listParent.current.scrollHeight || 0;
+            listParent.current.scrollTo({
+              top: scrollTop - 1000,
+              behavior: "smooth",
+            });
+          }
+          setbottomLoading(false);
+        }, 1000);
+      } else {
         setbottomLoading(false);
       }
     }
   }, [loadingList]);
 
   useEffect(() => {
-    if (listParent.current) {
-      listParent.current.addEventListener(
-        "scroll",
-        () => {
-          if (listParent.current) {
-            const { scrollTop, scrollHeight, clientHeight } =
-              listParent.current;
-            const bottomPosition = scrollTop + clientHeight;
-
-            if (bottomPosition >= scrollHeight) {
-              console.log("lebih");
-              const newFrom =
-                (paginateInfinite.from + 1) * paginateInfinite.limit + 1;
-              const newTo = newFrom + paginateInfinite.limit;
-
-
-                getList(newFrom, newTo, paginateInfinite.limit);
-
-                setpaginateInfinite({
-                  ...paginateInfinite,
-                  from: newFrom,
-                  to: newTo,
-                });
-
-                setbottomLoading(true);
-              
-            }
-          }
-        },
-        {
-          passive: true,
-        }
-      );
+    if (timelineData.length > 0) {
+      setSessionStorage("timeline", timelineData);
     }
-  }, [listParent]);
+  }, [timelineData]);
 
   return (
     <section

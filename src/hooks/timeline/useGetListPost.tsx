@@ -1,10 +1,11 @@
 import { PostgrestError } from "@supabase/supabase-js";
+import { Pagination } from "@tanstack/react-table";
 import supabase from "lib/supabase";
 import React, { useState } from "react";
 import { Result, Story } from "types/types";
 
 export default function useGetListPost(): [
-  (limit: number, from: number, to: number) => Promise<void>,
+  (skip: number) => Promise<void>,
   Result<Story[], PostgrestError | null>,
   boolean
 ] {
@@ -13,50 +14,110 @@ export default function useGetListPost(): [
     error: null,
   });
 
+  const [paginateInfinite, setpaginateInfinite] = useState({
+    from: 0,
+    to: 10,
+    limit: 10,
+  });
+
   const [loading, setloading] = useState<boolean>(true);
   return [
-    async (limit: number = 10, from: number, to: number) => {
+    async (skip: number = 0) => {
       setloading(true);
-      const { data: Count } = await supabase.from("cerita").select("count(*");
+
+      const { data: Count } = await supabase
+        .from("cerita")
+        .select("count(*")
+        .single();
       if (Count) {
-        if (Count[0].count <= from + 1) {
+        if (paginateInfinite.from >= Count.count || skip>=Count.count) {
+          let totalCount = Count.count as number;
+          setpaginateInfinite({
+            ...paginateInfinite,
+            from: totalCount,
+            to: totalCount + 10,
+          });
           setresult({
             data: [],
             error: null,
           });
         } else {
-          const { data, error } = await supabase
-            .from("cerita")
-            .select(
-              `id,
-              lng,lat,
-              place_name,title,
-              created_at,
-              user(
-                  username
+          if (paginateInfinite.from === 0 && skip > 0) {
+            console.log("skipping")
+            const { data, error } = await supabase
+              .from("cerita")
+              .select(
+                `id,
+                lng,lat,
+                place_name,title,
+                created_at,
+                user(
+                    username
+                )
+                `
               )
-              `
-            )
-            .limit(limit)
-            .range(from, to)
-            .order("created_at", {
-              ascending: false,
-            });
+              .range(skip, skip + paginateInfinite.limit)
+              .order("created_at", {
+                ascending: false,
+              });
 
-          if (data) {
-            setresult({
-              data,
-              error: null,
+            if (data) {
+              setresult({
+                data,
+                error: null,
+              });
+            } else {
+              setresult({
+                data: [],
+                error: error,
+              });
+            }
+            setpaginateInfinite({
+              limit: 10,
+              from: skip,
+              to: skip + paginateInfinite.limit,
             });
           } else {
-            setresult({
-              data: [],
-              error: error,
+            const newFrom =
+              (paginateInfinite.from + 1) * paginateInfinite.limit + 1;
+            const newTo = newFrom + paginateInfinite.limit;
+            setpaginateInfinite({
+              limit: 10,
+              from: newFrom,
+              to: newTo,
             });
+
+            const { data, error } = await supabase
+              .from("cerita")
+              .select(
+                `id,
+                lng,lat,
+                place_name,title,
+                created_at,
+                user(
+                    username
+                )
+                `
+              )
+              .range(paginateInfinite.from, paginateInfinite.to)
+              .order("created_at", {
+                ascending: false,
+              });
+
+            if (data) {
+              setresult({
+                data,
+                error: null,
+              });
+            } else {
+              setresult({
+                data: [],
+                error: error,
+              });
+            }
           }
         }
       }
-
       setloading(false);
     },
     result,

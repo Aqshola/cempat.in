@@ -36,8 +36,8 @@ const StoryMarker = ({ onClick, lng, lat,markerId }: StoryMarkerProps) => {
       <motion.div ref={refMarker} initial={{scale:0}} animate={{scale:1}} transition={{
         type:"spring",
         bounce:0.5,
-        duration:0.5*markerId,
-        delay:0.2*markerId
+        duration:0.5,
+        // delay:0.2*markerId
       }}>
         <MarkerStory className="w-16 h-16" />
       </motion.div>
