@@ -7,6 +7,7 @@ import {
   setSessionStorage,
   getSessionStorage,
 } from "hooks/helper/useSessionStorage";
+import useRefreshTimeline from "hooks/timeline/useRefreshTimeline";
 
 type Props = {};
 
@@ -24,16 +25,12 @@ export default function Timeline({}: Props) {
     y: 0,
   });
 
-  const [paginateInfinite, setpaginateInfinite] = useState({
-    from: 0,
-    to: 10,
-    limit: 10,
-  });
-
   const [bottomLoading, setbottomLoading] = useState<boolean>(false);
 
   const [getList, result, loadingList] = useGetListPost();
   const [timelineData, settimelineData] = useState<Story[]>([]);
+
+  const [refreshData, resultRefresh, loadingRefresh] = useRefreshTimeline();
 
   function onTouchStart(e: React.TouchEvent<HTMLElement>) {
     const touch = e.targetTouches[0];
@@ -60,9 +57,9 @@ export default function Timeline({}: Props) {
     if (isPullDown(changeY, changeX)) {
       setLoading(true);
       let timeout = setTimeout(() => {
-        setLoading(false);
+        refreshData(timelineData[0].created_at);
         clearTimeout(timeout);
-      }, 2000);
+      }, 500);
     }
   }
 
@@ -95,13 +92,20 @@ export default function Timeline({}: Props) {
   }
 
   useEffect(() => {
+    if(!loadingRefresh){
+      if(resultRefresh.data.length>0){
+        settimelineData([...resultRefresh.data, ...timelineData]);
+      }
+      setLoading(false)
+    }
+  }, [loadingRefresh])
+  
+
+  useEffect(() => {
     let sessionTimeline = getSessionStorage("timeline") as Story[];
     if (!sessionTimeline || sessionTimeline.length === 0) {
-      console.log("get");
-
       getList(0);
     } else {
-      console.log("Session");
       settimelineData(sessionTimeline);
     }
   }, []);

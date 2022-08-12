@@ -43,7 +43,6 @@ export default function useGetListPost(): [
           });
         } else {
           if (paginateInfinite.from === 0 && skip > 0) {
-            console.log("skipping")
             const { data, error } = await supabase
               .from("cerita")
               .select(
