@@ -8,10 +8,10 @@ import {
   getSessionStorage,
 } from "hooks/helper/useSessionStorage";
 import useRefreshTimeline from "hooks/timeline/useRefreshTimeline";
+import { BiRefresh } from "react-icons/bi";
+import Button from "components/Button/Button"
 
-type Props = {};
-
-export default function Timeline({}: Props) {
+export default function Timeline() {
   const listParent = useRef<HTMLDivElement>(null);
   const [currentScroll, setcurrentScroll] = useState<number>(-1);
   const [touchStart, settouchStart] = useState({
@@ -91,15 +91,21 @@ export default function Timeline({}: Props) {
     }
   }
 
+  function refreshDesktop(){
+    if(timelineData.length>0){
+      setLoading(true)
+      refreshData(timelineData[0].created_at)
+    }
+  }
+
   useEffect(() => {
-    if(!loadingRefresh){
-      if(resultRefresh.data.length>0){
+    if (!loadingRefresh) {
+      if (resultRefresh.data.length > 0) {
         settimelineData([...resultRefresh.data, ...timelineData]);
       }
-      setLoading(false)
+      setLoading(false);
     }
-  }, [loadingRefresh])
-  
+  }, [loadingRefresh]);
 
   useEffect(() => {
     let sessionTimeline = getSessionStorage("timeline") as Story[];
@@ -136,6 +142,8 @@ export default function Timeline({}: Props) {
     }
   }, [timelineData]);
 
+  
+
   return (
     <section
       onTouchStart={onTouchStart}
@@ -147,9 +155,14 @@ export default function Timeline({}: Props) {
         currentScroll > 0 && [" bg-white z-50"]
       )}
     >
-      <h1 className="top-12 text-xl font-semibold font-nunito  capitalize text-black w-full text-center hidden md:inline">
-        Timeline
-      </h1>
+      <div className="md:flex gap-5 justify-center w-full items-center hidden">
+        <h1 className="top-12 text-xl font-semibold font-nunito  capitalize text-black hidden md:inline">
+          Timeline
+        </h1>
+        <Button className="w-fit h-fit" size="sm" onClick={refreshDesktop}>
+          <BiRefresh className="w-5 h-5"/>
+        </Button>
+      </div>
 
       <span
         aria-label="loading"

@@ -40,6 +40,7 @@ export default function Peta() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
+  
   const latParams = searchParams.get("lat");
   const lngParams = searchParams.get("lng");
   const id = searchParams.get("id");
@@ -211,7 +212,6 @@ export default function Peta() {
         const ne = bound.getNorthEast();
         const sw = bound.getSouthWest();
         getMarker(ne.lng, sw.lng, ne.lat, sw.lat);
-        console.log("sas");
       }
     }
   }, [mapGlRef.current]);

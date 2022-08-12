@@ -34,7 +34,9 @@ export default function Paginate(
     );
     listBtn.forEach((e) => {
       e.style.transform = `translateX(${-(36 * (page - 2))}px)`;
+      
     });
+
   }
 
   function _setPageData({ ...props }: PAGE_STATE) {
