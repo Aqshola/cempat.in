@@ -4,7 +4,7 @@ import React from "react";
 type AvatarProps = {
   size?: "lg" | "md" | "sm";
   className?:string;
-  initial:string
+  name:string
 };
 
 const AvatarSize: {
@@ -15,17 +15,18 @@ const AvatarSize: {
   sm: "w-10 h-10",
 };
 
-export default function Avatar({size="md", className,initial}: AvatarProps) {
+export default function Avatar({size="md", className,name}: AvatarProps) {
+  const avatarName=name.charAt(0)+name.charAt(name.length-1)
   return (
     <div
       id="profile"
       className={clsx(
-        "rounded-full bg-blue-primary text-white font-extrabold flex items-center justify-center font-nunito",
+        "rounded-full bg-blue-primary text-white font-extrabold flex items-center justify-center font-nunito uppercase",
         AvatarSize[size],
         className
       )}
     >
-      {initial}
+      {avatarName}
     </div>
   );
 }

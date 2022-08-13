@@ -12,7 +12,7 @@ export default function TimelineList({...props}:Props) {
   
   return (
     <div
-      className="flex w-full border-b-2 py-2 border-green-primary gap-5 items-start text-sm bg-white"
+      className="hover:border-blue-primary flex w-full border-b-2 py-2 border-green-primary gap-5 items-start text-sm bg-white"
     >
       <div className="font-nunito w-7 h-7 font-bold bg-blue-primary rounded-full flex justify-center items-center text-white">
         {props.username.charAt(0).toUpperCase()}

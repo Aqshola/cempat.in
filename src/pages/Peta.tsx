@@ -40,7 +40,6 @@ export default function Peta() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  
   const latParams = searchParams.get("lat");
   const lngParams = searchParams.get("lng");
   const id = searchParams.get("id");
@@ -165,7 +164,7 @@ export default function Peta() {
     setviewStory(data);
     navigate(`?id=${data.id}`);
     setstoryDetailView(true);
-    setuserSectionView(false)
+    setuserSectionView(false);
   }
 
   function viewLocation(
@@ -178,9 +177,12 @@ export default function Peta() {
       mapGlRef.current?.flyTo({
         center: [lat, long],
         essential: true,
+        zoom: 15,
       });
     } else {
-      mapGlRef.current?.fitBounds(bbox);
+      mapGlRef.current?.fitBounds(bbox, {
+        zoom: 15,
+      });
     }
   }
 
@@ -190,10 +192,6 @@ export default function Peta() {
       desc,
     });
   }
-
-  
-
-  
 
   useEffect(() => {
     _getCurrentPosition();
@@ -216,16 +214,15 @@ export default function Peta() {
     }
   }, [mapGlRef.current]);
 
-
   useEffect(() => {
-    if (!loading && dataMarker.data.length>0) {
+    if (!loading && dataMarker.data.length > 0) {
       const pushedArray = removeDuplicate(listLocation, dataMarker.data, "id");
       if (pushedArray.length > 0) {
         setlistLocation([...pushedArray]);
         setSessionStorage<ApiLocation[]>("list_location", listLocation);
       }
     }
-  }, [loading,dataMarker.data]);
+  }, [loading, dataMarker.data]);
 
   useEffect(() => {
     if (loadedMap) {
@@ -234,7 +231,7 @@ export default function Peta() {
         mapGlRef.current?.flyTo({
           center: [parseFloat(lngParams), parseFloat(latParams)],
           essential: true,
-          zoom:15,
+          zoom: 15,
         });
 
         mapGlRef.current?.on("flyend", () => {
@@ -251,11 +248,10 @@ export default function Peta() {
   }, [loadedMap, latParams, lngParams]);
 
   useEffect(() => {
-    if(id){
-      setstoryDetailView(true)
+    if (id) {
+      setstoryDetailView(true);
     }
-  }, [id])
-  
+  }, [id]);
 
   return (
     <>

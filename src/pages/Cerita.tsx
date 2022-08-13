@@ -71,7 +71,7 @@ function Cerita() {
   return (
     <>
       <HelmetTitle title="Cerita" />
-      <div className="min-h-screen py-32 md:py-12 px-5 w-full md:px-14">
+      <section className="h-screen py-32 md:py-12 px-5 w-full md:px-14 overflow-y-hidden transition-all">
         <h1 className="top-12 text-xl font-semibold font-nunito  capitalize text-black w-full text-center hidden md:inline">
           Cerita
         </h1>
@@ -138,7 +138,7 @@ function Cerita() {
         {listMode === "lokasi" && (
           <LocationMode data={locationList} screenSize={screenSize} />
         )}
-      </div>
+      </section>
     </>
   );
 }

@@ -10,6 +10,7 @@ import {
 import useRefreshTimeline from "hooks/timeline/useRefreshTimeline";
 import { BiRefresh } from "react-icons/bi";
 import Button from "components/Button/Button"
+import { Link } from "react-router-dom";
 
 export default function Timeline() {
   const listParent = useRef<HTMLDivElement>(null);
@@ -175,13 +176,15 @@ export default function Timeline() {
 
       <div className="flex flex-col gap-4 w-full md:mt-10">
         {timelineData.map((el) => (
-          <TimelineList
-            createdAt={el.created_at}
-            title={el.title}
-            placeName={el.place_name || ""}
-            username={el.user.username}
-            key={el.id}
-          />
+          <Link className="cursor-pointer" to={`/peta?id=${el.id}&&lat=${el.lat}&&lng=${el.lng}`} key={el.id}>
+            <TimelineList
+              createdAt={el.created_at}
+              title={el.title}
+              placeName={el.place_name || ""}
+              username={el.user.username}
+              
+            />
+          </Link>
         ))}
       </div>
 

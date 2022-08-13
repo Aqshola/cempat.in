@@ -38,7 +38,7 @@ export default function User() {
       </div>
       <div className="gap-2 relative">
         <div className="absolute flex-col md:px-6  w-full  -top-5 gap-1 md:gap-2 flex items-center">
-          <Avatar initial="sa" />
+          <Avatar name={result.data?.user.username || ""} />
           <h1 className="text-xl font-semibold text-blue-primary font-nunito capitalize">
             {result.data?.user.username}
           </h1>

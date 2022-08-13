@@ -29,7 +29,7 @@ const LINK_LIST = [
 
 export default function SideNav() {
   const username = authStore((state) => state.authData?.username);
-  const { sideNav, showSideNav } = sideNavStore((state) => state);
+  const { showSideNav } = sideNavStore((state) => state);
   const [spanSideNav, setspanSideNav] = useState<boolean>(false);
   const [getSize, screenSize] = useScreenSize();
   const route = useLocation();
@@ -117,7 +117,7 @@ export default function SideNav() {
         </button>
         <div className="grid grid-cols-12 md:grid-cols-4 items-center md:gap-5 w-full  mt-16">
           <div className="col-span-1">
-            <Avatar size="sm" initial={username?.charAt(0).toUpperCase()||""}/>
+            <Avatar size="sm" name={username||""}/>
           </div>
           <div
             className={clsx(

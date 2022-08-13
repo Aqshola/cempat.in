@@ -1,13 +1,9 @@
 import RightNav from "components/Nav/RightNav";
-import useDetail from "hooks/cerita/useDetail";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef} from "react";
 import { ApiLocation, Story } from "types/types";
-import { convertFromRaw, EditorState } from "draft-js";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 import Button from "components/Button/Button";
-import { getLocalStorage, setLocalStorage } from "hooks/helper/useLocalStorage";
-import splitbee from "@splitbee/web";
 import useScreenSize from "hooks/helper/useScreenSize";
 import { BottomSheet, BottomSheetRef } from "react-spring-bottom-sheet";
 import "react-spring-bottom-sheet/dist/style.css";
@@ -117,7 +113,7 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
           {!loading && result.data && (
             <div className="flex flex-col">
               <Avatar
-                initial={result.data.user.username.charAt(0).toUpperCase()}
+                name={result.data.user.username}
                 className="mx-auto"
               />
               <h2 className="text-center font-nunito font-medium text-xl mt-2 capitalize">
@@ -197,7 +193,7 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
             <div className="flex flex-col">
               <Avatar
                 className="mx-auto"
-                initial={result.data.user.username.charAt(0).toUpperCase()}
+                name={result.data.user.username}
               />
               <h2 className="text-center font-nunito font-medium text-xl mt-2 capitalize">
                 {result.data.user.username}
