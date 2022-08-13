@@ -3,7 +3,7 @@ import React from "react";
 import ListBox from "components/Peta/UserSection/ListBox";
 
 import { MdLocationPin } from "react-icons/md";
-import Paginate from "components/Pagination/Paginate";
+// import Paginate from "components/Pagination/Paginate";
 
 type Props = {};
 

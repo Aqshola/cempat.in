@@ -11,7 +11,7 @@ import {
   getPaginationRowModel,
   getFilteredRowModel,
 } from "@tanstack/react-table";
-import usePaginate from "components/Pagination/Paginate";
+import { usePaginate, Paginate } from "components/Pagination/Paginate";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 type Props = {
@@ -47,7 +47,7 @@ const columns: ColumnDef<Location>[] = [
 
 export default function LocationMode({ screenSize, ...props }: Props) {
   const [dataTable, setDataTable] = useState(() => [...props.data]);
-  const [Paging, pageState, setPageState] = usePaginate(props.data.length);
+  const [pageState, handlerPage] = usePaginate();
   const [searchValue, setsearchValue] = useState<string>("");
   const table = useReactTable({
     data: dataTable,
@@ -80,7 +80,7 @@ export default function LocationMode({ screenSize, ...props }: Props) {
 
   useEffect(() => {
     if (queryPage) {
-      setPageState({
+      handlerPage({
         length: 5,
         active: Number(queryPage) - 1,
       });
@@ -121,6 +121,8 @@ export default function LocationMode({ screenSize, ...props }: Props) {
         />
       </div>
       {screenSize >= 720 && (
+        <div className="w-full  min-h-[300px]">
+
         <table className="mt-5 w-full rounded-xl border-spacing-0 border-separate border overflow-hidden">
           <thead className="bg-[#F1F2F3]">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -178,10 +180,11 @@ export default function LocationMode({ screenSize, ...props }: Props) {
               ))}
           </tbody>
         </table>
+        </div>
       )}
 
       {screenSize < 720 && (
-        <div className="mt-5 space-y-3 flex flex-col gap-2">
+        <div className="mt-5 space-y-3 flex flex-col gap-2  min-h-[300px]">
           {props.data
             .filter((item) =>
               item.place_name?.toLowerCase().includes(searchValue.toLowerCase())
@@ -197,7 +200,13 @@ export default function LocationMode({ screenSize, ...props }: Props) {
             ))}
         </div>
       )}
-      <Paging className="ml-auto mt-5" buttonCallback={_navigatePage} />
+      <Paginate
+        buttonCallback={_navigatePage}
+        className="ml-auto mt-5"
+        pageState={pageState}
+        pageStateHandler={handlerPage}
+        totalPage={props.data.length}
+      />
     </div>
   );
 }

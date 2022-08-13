@@ -1,6 +1,6 @@
 import React from "react";
 import { MdLocationPin } from "react-icons/md";
-import Paginate from "components/Pagination/Paginate";
+// import Paginate from "components/Pagination/Paginate";
 import ListBox from "components/Peta/UserSection/ListBox";
 type Props = {};
 

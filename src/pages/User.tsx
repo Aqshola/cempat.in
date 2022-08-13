@@ -3,7 +3,7 @@ import ListBox from "components/Peta/UserSection/ListBox";
 import React from "react";
 import Button from "components/Button/Button";
 import { MdLocationPin } from "react-icons/md";
-import Paginate from "components/Pagination/Paginate";
+// import Paginate from "components/Pagination/Paginate";
 import DesktopCeritaSection from "components/User/DesktopCeritaSection";
 import DesktopTempatSection from "components/User/DesktopTempatSection";
 import MobileCeritaSection from "components/User/MobileCeritaSection";

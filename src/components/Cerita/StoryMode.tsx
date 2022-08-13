@@ -11,7 +11,7 @@ import {
   getPaginationRowModel,
   getFilteredRowModel,
 } from "@tanstack/react-table";
-import usePaginate from "components/Pagination/Paginate";
+import { usePaginate, Paginate } from "components/Pagination/Paginate";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import parseDateString from "hooks/helper/parseDateString";
 import { useAnimation, motion } from "framer-motion";
@@ -57,7 +57,8 @@ export default function StoryMode({ screenSize, ...props }: Props) {
       header: "Aksi",
       accessorFn: (info) => (
         <div className="flex gap-5">
-          <Link to={`/peta?id=${info.id}&&lat=${info.lat}&&lng=${info.lng}`}
+          <Link
+            to={`/peta?id=${info.id}&&lat=${info.lat}&&lng=${info.lng}`}
             aria-label="Update"
             className="w-6 h-6  flex justify-center items-center rounded-lg  bg-blue-primary "
           >
@@ -82,8 +83,9 @@ export default function StoryMode({ screenSize, ...props }: Props) {
   ];
 
   const [dataTable, setDataTable] = useState(() => [...props.data]);
-  const [Paging, pageState, setPageState] = usePaginate(props.data.length);
+  const [pageState, handlerPage] = usePaginate();
   
+
   const [searchValue, setsearchValue] = useState<string>("");
 
   const [searchParams] = useSearchParams();
@@ -115,7 +117,7 @@ export default function StoryMode({ screenSize, ...props }: Props) {
 
   useEffect(() => {
     if (queryPage) {
-      setPageState({
+      handlerPage({
         length: 5,
         active: Number(queryPage) - 1,
       });
@@ -177,7 +179,7 @@ export default function StoryMode({ screenSize, ...props }: Props) {
         />
       </div>
       {screenSize >= 720 && (
-        <div className="w-full overflow-x-scroll ">
+        <div className="w-full md:overflow-x-scroll lg:overflow-hidden  min-h-[300px]">
           <table className="mt-5 rounded-xl w-full border-spacing-0 border-separate border overflow-hidden">
             <thead className="bg-[#F1F2F3]">
               {table.getHeaderGroups().map((headerGroup) => (
@@ -237,7 +239,7 @@ export default function StoryMode({ screenSize, ...props }: Props) {
       )}
 
       {screenSize < 720 && (
-        <div className="mt-5 space-y-3">
+        <div className="mt-5 space-y-3 min-h-[300px]">
           {props.data.length > 0 &&
             props.data
               .filter((item) =>
@@ -282,7 +284,8 @@ export default function StoryMode({ screenSize, ...props }: Props) {
                     actionView={true}
                     actionElement={
                       <div className="flex gap-2 self-end ml-auto w-fit">
-                        <Link to={`/peta?id=${item.id}&&lat=${item.lat}&&lng=${item.lng}`}
+                        <Link
+                          to={`/peta?id=${item.id}&&lat=${item.lat}&&lng=${item.lng}`}
                           aria-label="Update"
                           className="w-6 h-6  flex justify-center items-center rounded-lg  bg-blue-primary "
                         >
@@ -310,7 +313,14 @@ export default function StoryMode({ screenSize, ...props }: Props) {
               ))}
         </div>
       )}
-      <Paging buttonCallback={_navigatePage} className="ml-auto mt-5" />
+
+      <Paginate
+        buttonCallback={_navigatePage}
+        className="ml-auto mt-5"
+        pageState={pageState}
+        pageStateHandler={handlerPage}
+        totalPage={props.data.length}
+      />
     </div>
   );
 }
