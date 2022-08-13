@@ -163,9 +163,9 @@ export default function Peta() {
 
   function _handleStoryView(count: number, data: ApiLocation) {
     setviewStory(data);
-
     navigate(`?id=${data.id}`);
     setstoryDetailView(true);
+    setuserSectionView(false)
   }
 
   function viewLocation(
@@ -261,7 +261,7 @@ export default function Peta() {
     <>
       <HelmetTitle title={headContent.title} description={headContent.desc} />
       <div className="h-screen" id="nav-btn" aria-label="nav-btn">
-        {/* <Search handleSearch={viewLocation} /> */}
+        <Search handleSearch={viewLocation} />
 
         <MapGL
           onLoad={() => {
@@ -340,7 +340,7 @@ export default function Peta() {
           }}
         />
 
-        {/* <UserSection
+        <UserSection
           handleHelmetTitle={handleTitleHelmet}
           viewData={viewStory}
           showEditor={userSectionView}
@@ -353,7 +353,7 @@ export default function Peta() {
           handleView={() => {
             setuserSectionView(true);
           }}
-        /> */}
+        />
 
         <Button
           variant="danger"

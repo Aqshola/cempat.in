@@ -115,18 +115,17 @@ export default function SideNav() {
             alt="side nav logo"
           />
         </button>
-        <div className="grid grid-cols-4 items-center gap-5 w-full  mt-16">
+        <div className="grid grid-cols-12 md:grid-cols-4 items-center md:gap-5 w-full  mt-16">
           <div className="col-span-1">
-            <Avatar size="sm" />
+            <Avatar size="sm" initial={username?.charAt(0).toUpperCase()||""}/>
           </div>
-
           <div
             className={clsx(
-              "col-span-3 text-left",
+              "col-span-4 md:col-span-3 text-left pl-1 md:pl-0 ",
               !spanSideNav && ["md:hidden"]
             )}
           >
-            <span className="font-bold text-blue-primary text-lg">Aqshola</span>
+            <span className="font-bold text-blue-primary text-lg capitalize">{username}</span>
           </div>
         </div>
 

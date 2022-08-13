@@ -26,7 +26,10 @@ export type Story = Location & {
   id: string;
   user_id: string;
   created_at:string;
-  user:{
-    username:string;
-  }
+  user:User
 };
+
+export type User= {
+  user_id:string;
+  username:string
+}

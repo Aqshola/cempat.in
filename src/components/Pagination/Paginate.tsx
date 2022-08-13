@@ -9,6 +9,7 @@ type PAGE_STATE = {
 };
 
 type Props = {
+  id?: string;
   className?: string;
   buttonCallback?: (page: number) => void;
   totalPage: number;
@@ -20,18 +21,19 @@ export function Paginate({ ...props }: Props) {
   const generatedArray = Array.from(
     Array(Math.ceil(props.totalPage / props.pageState.length)).keys()
   );
+
+  let identifier = props.id ? `btn-num-${props.id}` : `btn-num`;
   function _handlePage(page: number) {
     props.pageStateHandler({ ...props.pageState, active: page });
     let listBtn = Array.from(
       document.getElementsByClassName(
-        "btn-num"
+        identifier
       ) as HTMLCollectionOf<HTMLElement>
     );
 
     let translateStyle = `translateX(${-(36 * (page - 1))}px)`;
 
     if (page === 0) {
-      console.log("sasa");
       translateStyle = `translateX(0px)`;
     } else if (page === props.totalPage) {
       translateStyle = `translateX(${-(36 * props.totalPage)}px)`;
@@ -93,7 +95,8 @@ export function Paginate({ ...props }: Props) {
             }}
             key={el}
             className={clsx(
-              "border btn-num w-9 h-9 transition-all text-sm flex justify-center items-center rounded-lg p-2  font-nunito",
+              "border  w-9 h-9 transition-all text-sm flex justify-center items-center rounded-lg p-2  font-nunito",
+              identifier,
               props.pageState.active !== el && [
                 "border-green-primary text-green-primary",
               ],

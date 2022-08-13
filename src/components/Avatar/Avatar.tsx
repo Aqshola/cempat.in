@@ -3,7 +3,8 @@ import React from "react";
 
 type AvatarProps = {
   size?: "lg" | "md" | "sm";
-  className?:string
+  className?:string;
+  initial:string
 };
 
 const AvatarSize: {
@@ -14,7 +15,7 @@ const AvatarSize: {
   sm: "w-10 h-10",
 };
 
-export default function Avatar({size="md", className}: AvatarProps) {
+export default function Avatar({size="md", className,initial}: AvatarProps) {
   return (
     <div
       id="profile"
@@ -24,7 +25,7 @@ export default function Avatar({size="md", className}: AvatarProps) {
         className
       )}
     >
-      A
+      {initial}
     </div>
   );
 }

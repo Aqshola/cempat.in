@@ -59,9 +59,9 @@ function App() {
           <Route
             path="/user/:username"
             element={
-              // <PrivateRoute loading={loading}>
-              <User />
-              // </PrivateRoute>
+              <PrivateRoute loading={loading}>
+                <User />
+              </PrivateRoute>
             }
           />
 

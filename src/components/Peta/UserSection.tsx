@@ -1,7 +1,7 @@
 import RightNav from "components/Nav/RightNav";
 import useDetail from "hooks/cerita/useDetail";
 import React, { useEffect, useRef, useState } from "react";
-import { ApiLocation } from "types/types";
+import { ApiLocation, Story } from "types/types";
 import { convertFromRaw, EditorState } from "draft-js";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
@@ -15,6 +15,8 @@ import { CgClose } from "react-icons/cg";
 import { MdLocationPin } from "react-icons/md";
 import ListBox from "./UserSection/ListBox";
 import Avatar from "components/Avatar/Avatar";
+import useDetailUser from "hooks/user/useDetailUser";
+import parseDateString from "hooks/helper/parseDateString";
 
 type Props = {
   onOutsideEditor: () => void;
@@ -27,65 +29,39 @@ type Props = {
 };
 
 function UserSection({ titleEditor, viewData, ...props }: Props) {
-  const navigate=useNavigate()
-  const [getDetail, result, loading] = useDetail();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const [getUserDetail, result, loading] = useDetailUser();
 
- 
-  const [formData, setformData] = useState({
-    title: "",
-    content: EditorState.createEmpty(),
-  });
   const sheetRef = useRef<BottomSheetRef>(null);
-  
+
   const idParams = searchParams.get("user");
 
   const handleOnClose = () => {
     props.onCloseEditor();
 
     if (props.handleHelmetTitle) {
-      props.handleHelmetTitle(
-        "Peta",
-        null
-      );
+      props.handleHelmetTitle("Peta", null);
     }
 
-    navigate("/peta")
-
+    navigate("/peta");
   };
   const [getSize, screenSize] = useScreenSize();
 
   useEffect(() => {
-    if (!idParams) {
-      handleOnClose();
-    } else {
+    if (idParams) {
       if (props.handleView) {
         props.handleView();
       }
-      getDetail(Number(idParams) || 0);
+      getUserDetail(idParams);
     }
   }, [idParams]);
 
   useEffect(() => {
     if (!loading) {
       if (result.data) {
-        let editorState = EditorState.createWithContent(
-          convertFromRaw(JSON.parse(result.data?.content))
-        );
-        setformData({
-          ...formData,
-          title: result.data.title,
-          content: editorState,
-        });
-
         if (props.handleHelmetTitle) {
-          
-          
-          
-          props.handleHelmetTitle(
-            result.data.user.username,
-            null
-          );
+          props.handleHelmetTitle(result.data.user.username, null);
         }
 
         // splitbee.track("view story", {
@@ -95,18 +71,16 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
         //   coordinat: result.data.lat + " - " + result.data.lng,
         // });
       } else {
-        let localData = getLocalStorage<ApiLocation[]>("list_location");
-        if (localData) {
-          localData = localData.filter(
-            (location) => location.id !== Number(Number(idParams))
-          );
-          setLocalStorage("list_location", localData);
-        }
+        // let localData = getLocalStorage<ApiLocation[]>("list_location");
+        // if (localData) {
+        //   localData = localData.filter(
+        //     (location) => location.id !== Number(Number(idParams))
+        //   );
+        //   setLocalStorage("list_location", localData);
+        // }
       }
     }
   }, [loading, result.data]);
-
- 
 
   useEffect(() => {
     getSize();
@@ -142,9 +116,15 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
 
           {!loading && result.data && (
             <div className="flex flex-col">
-              <Avatar className="mx-auto" />
-              <Link to={"/user/1"} className="w-full">
-                <Button size="xs" className="w-fit mx-auto mt-2">
+              <Avatar
+                initial={result.data.user.username.charAt(0).toUpperCase()}
+                className="mx-auto"
+              />
+              <h2 className="text-center font-nunito font-medium text-xl mt-2 capitalize">
+                {result.data.user.username}
+              </h2>
+              <Link to={"/user/1"} className="w-full flex justify-center mt-5">
+                <Button size="xs" className="w-fit">
                   Lihat profil seutuhnya
                 </Button>
               </Link>
@@ -153,18 +133,20 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
                   Cerita
                 </h3>
                 <div className="flex flex-col space-y-3">
-                  <ListBox
-                    title="Lalatina"
-                    rightText={"13 Hari yang lalu"}
-                    detail={
-                      <div className="flex gap-1 items-center mt-3">
-                        <MdLocationPin />
-                        <p className="font-nunito text-xs font-medium">
-                          Taman Solo
-                        </p>
-                      </div>
-                    }
-                  />
+                  {result.data.story.slice(0, 4).map((story: Story) => (
+                    <ListBox
+                      title={story.title}
+                      rightText={parseDateString(story.created_at)}
+                      detail={
+                        <div className="flex gap-1 items-center mt-3">
+                          <MdLocationPin />
+                          <p className="font-nunito text-xs font-medium">
+                            {story.place_name}
+                          </p>
+                        </div>
+                      }
+                    />
+                  ))}
                 </div>
               </div>
             </div>
@@ -186,10 +168,7 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
       ref={sheetRef}
     >
       <div className="px-6 flex items-center">
-        <button
-          className="w-fit h-fit"
-          onClick={handleOnClose}
-        >
+        <button className="w-fit h-fit" onClick={handleOnClose}>
           <CgClose className="w-6 h-6" />
         </button>
         <h1 className="w-full text-center font-nunito font-bold text-lg">
@@ -209,16 +188,22 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
           {!loading && !result.data && (
             <>
               <h1 className="text-green-primary text-xl text-center">
-                Yah, cerita yang kamu cari udah gaada
+                Yah, Profil yang kamu cari udah gaada
               </h1>
             </>
           )}
 
           {!loading && result.data && (
             <div className="flex flex-col">
-              <Avatar className="mx-auto" />
-              <Link to={"/user/1"} className="w-full">
-                <Button size="xs" className="w-fit mx-auto mt-2">
+              <Avatar
+                className="mx-auto"
+                initial={result.data.user.username.charAt(0).toUpperCase()}
+              />
+              <h2 className="text-center font-nunito font-medium text-xl mt-2 capitalize">
+                {result.data.user.username}
+              </h2>
+              <Link to={`/user/${result.data.user.username}`} className="w-full flex justify-center mt-5">
+                <Button size="xs" className="w-fit">
                   Lihat profil seutuhnya
                 </Button>
               </Link>
@@ -227,18 +212,20 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
                   Cerita
                 </h3>
                 <div className="flex flex-col space-y-3">
-                  <ListBox
-                    title="Lalatina"
-                    rightText={"13 Hari yang lalu"}
-                    detail={
-                      <div className="flex gap-1 items-center mt-3">
-                        <MdLocationPin />
-                        <p className="font-nunito text-xs font-medium">
-                          Taman Solo
-                        </p>
-                      </div>
-                    }
-                  />
+                  {result.data.story.slice(0, 4).map((story: Story) => (
+                    <ListBox
+                      title={story.title}
+                      rightText={parseDateString(story.created_at)}
+                      detail={
+                        <div className="flex gap-1 items-center mt-3">
+                          <MdLocationPin />
+                          <p className="font-nunito text-xs font-medium">
+                            {story.place_name}
+                          </p>
+                        </div>
+                      }
+                    />
+                  ))}
                 </div>
               </div>
             </div>
