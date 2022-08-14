@@ -15,6 +15,8 @@ import useScreenSize from "hooks/helper/useScreenSize";
 import { BottomSheet, BottomSheetRef } from "react-spring-bottom-sheet";
 import "react-spring-bottom-sheet/dist/style.css";
 import { CgClose } from "react-icons/cg";
+import useLiking from "hooks/cerita/useLiking";
+import useGetLiking from "hooks/cerita/useGetLiking";
 
 type Props = {
   onOutsideEditor: () => void;
@@ -31,19 +33,35 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
   const user_id = authStore((state) => state.authData?.user_id);
   const [getDetail, result, loading] = useDetail();
   const [updateCerita, resultUpdate, loadingUpdate] = useUpdate();
+  const [postLike, likeResult, loadingLike] = useLiking();
+  const [getLike, likingResult, loadingLiking] = useGetLiking();
+  const [getSize, screenSize] = useScreenSize();
+  const sheetRef = useRef<BottomSheetRef>(null);
+
   const [searchParams] = useSearchParams();
   const idParams = searchParams.get("id");
+
   const [edit, setedit] = useState<boolean>(false);
   const [formData, setformData] = useState({
     title: "",
     content: EditorState.createEmpty(),
   });
 
+  const [likingData, setlikingData] = useState<{
+    like_count: number;
+    unlike_count: number;
+    status: "like" | "unlike" | null;
+  }>({
+    like_count: 0,
+    unlike_count: 0,
+    status: null,
+  });
+
   const [mount, setmount] = useState<boolean>(true);
-  const sheetRef = useRef<BottomSheetRef>(null);
+
   
 
-  const _handleEdit = (value: boolean) => {
+  function _handleEdit(value: boolean) {
     setedit(value);
     if (edit) {
       if (result.data?.content) {
@@ -53,39 +71,43 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
         setformData({ ...formData, content: editorState });
       }
     }
-  };
+  }
 
-  const _setTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+  function _setTitle(e: React.ChangeEvent<HTMLInputElement>) {
     setformData({ ...formData, title: e.target.value });
-  };
+  }
 
-  const _setContent = (editorState: EditorState) => {
+  function _setContent(editorState: EditorState) {
     setformData({ ...formData, content: editorState });
-  };
+  }
 
-  const handleOnClose = () => {
+  function handleOnClose() {
     if (props.handleHelmetTitle) {
       props.handleHelmetTitle("Peta", null);
     }
     props.onCloseEditor();
     _handleEdit(false);
     // navigate("/peta")
-  };
-  const [getSize, screenSize] = useScreenSize();
+  }
+
+  function _postLike(action: "like" | "unlike") {
+    if (result.data) {
+      postLike(user_id || "", result.data.id, action);
+    }
+  }
 
   useEffect(() => {
-    // if(mount){
     if (!idParams) {
       handleOnClose();
     } else {
       getDetail(Number(idParams) || 0);
+      if(user_id){
+        getLike(user_id, idParams);
+      }
     }
-    // }
-    // return ()=>setmount(false)
   }, [idParams]);
 
   useEffect(() => {
-    // if(mount){
     if (!loading) {
       if (result.data) {
         let editorState = EditorState.createWithContent(
@@ -123,8 +145,6 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
         }
       }
     }
-    // }
-    // return ()=>setmount(false)
   }, [loading, result.data]);
 
   useEffect(() => {
@@ -136,6 +156,22 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
     }
     return () => setmount(false);
   }, [loadingUpdate, resultUpdate.error]);
+
+  useEffect(() => {
+    if (!loadingLiking) {
+      if (likingResult.data) {
+        setlikingData(likingResult.data);
+      }
+    }
+  }, [loadingLiking]);
+
+  useEffect(() => {
+    if (!loadingLike) {
+      if(user_id && idParams){
+        getLike(user_id, idParams);
+      }
+    }
+  }, [loadingLike]);
 
   useEffect(() => {
     getSize();
@@ -224,25 +260,58 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
                   readOnly={edit ? false : true}
                 />
               </div>
+
+              {/* LIKING */}
               {!edit && (
                 <div className="mt-10 flex justify-between">
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline-gray">
+                    <Button
+                      loading={loadingLike || loadingLiking}
+                      size="sm"
+                      variant="outline-gray"
+                      onClick={() => {
+                        
+                        _postLike("like");
+                      }}
+                    >
                       <span className="flex items-center gap-2">
                         <img
-                          src={`/icon/outline/like-logo-outline.svg`}
+                          src={`
+                              /icon/${
+                                likingData.status === "like"
+                                  ? "filled"
+                                  : "outline"
+                              }/like-logo-${
+                            likingData.status === "like" ? "filled" : "outline"
+                          }.svg`}
                           alt="like"
                         />
-                        10
+                        {likingData.like_count}
                       </span>
                     </Button>
-                    <Button size="sm" variant="outline-gray">
+                    <Button
+                      loading={loadingLike || loadingLiking}
+                      size="sm"
+                      variant="outline-gray"
+                      onClick={() => {
+                        
+                        _postLike("unlike");
+                      }}
+                    >
                       <span className="flex items-center gap-2">
                         <img
-                          src={`/icon/outline/unlike-logo-outline.svg`}
+                          src={`/icon/${
+                            likingData.status === "unlike"
+                              ? "filled"
+                              : "outline"
+                          }/unlike-logo-${
+                            likingData.status === "unlike"
+                              ? "filled"
+                              : "outline"
+                          }.svg`}
                           alt="unlike"
                         />
-                        10
+                        {likingData.unlike_count}
                       </span>
                     </Button>
                   </div>
@@ -297,6 +366,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
       </>
     );
   }
+
   return (
     <BottomSheet
       initialFocusRef={false}
@@ -393,6 +463,82 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
                   readOnly={edit ? false : true}
                 />
               </div>
+              {/* LIKING */}
+              {!edit && (
+                <div className="mt-10 flex justify-between">
+                  <div className="flex gap-2">
+                    <Button
+                      loading={loadingLike || loadingLiking}
+                      size="sm"
+                      variant="outline-gray"
+                      onClick={() => {
+                        
+                        _postLike("like");
+                      }}
+                    >
+                      <span className="flex items-center gap-2">
+                        <img
+                          src={`
+                              /icon/${
+                                likingData.status === "like"
+                                  ? "filled"
+                                  : "outline"
+                              }/like-logo-${
+                            likingData.status === "like" ? "filled" : "outline"
+                          }.svg`}
+                          alt="like"
+                        />
+                        {likingData.like_count}
+                      </span>
+                    </Button>
+                    <Button
+                      loading={loadingLike || loadingLiking}
+                      size="sm"
+                      variant="outline-gray"
+                      onClick={() => {
+                        
+                        _postLike("unlike");
+                      }}
+                    >
+                      <span className="flex items-center gap-2">
+                        <img
+                          src={`/icon/${
+                            likingData.status === "unlike"
+                              ? "filled"
+                              : "outline"
+                          }/unlike-logo-${
+                            likingData.status === "unlike"
+                              ? "filled"
+                              : "outline"
+                          }.svg`}
+                          alt="unlike"
+                        />
+                        {likingData.unlike_count}
+                      </span>
+                    </Button>
+                  </div>
+                  <div className="flex">
+                    <Button size="sm" variant="vanilla">
+                      <span className="flex items-center gap-2">
+                        <img
+                          src={`/icon/outline/report-logo-outline.svg`}
+                          alt="report"
+                        />
+                        Report
+                      </span>
+                    </Button>
+                    <Button size="sm" variant="vanilla">
+                      <span className="flex items-center gap-2">
+                        <img
+                          src={`/icon/outline/share-logo-outline.svg`}
+                          alt="share"
+                        />
+                        Share
+                      </span>
+                    </Button>
+                  </div>
+                </div>
+              )}
             </>
           )}
 
