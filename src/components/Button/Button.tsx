@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef } from "react";
+import React, { useEffect} from "react";
 import clsx from "clsx";
 import {
   AnimationControls,
@@ -17,7 +17,9 @@ type ButtonProps = {
     | "danger"
     | "outline-primary"
     | "outline-secondary"
-    | "outline-gray";
+    | "outline-gray" 
+    |'vanilla'
+    ;
   size?: "sm" | "md" | "lg" | "xs" | "xl";
   shape?: "normal" | "round";
   loading?: boolean;
@@ -36,6 +38,7 @@ const ButtonType: {
     "bg-transparent text-blue-primary font-semibold rounded-lg btn-secondary",
   "outline-gray":
     "border bg-transparent border-gray-300 font-semibold rounded-lg btn-gray",
+   'vanilla':'bg-transparent btn-gray font-semibold rounded-lg' 
 };
 
 const ButtonSize: {
@@ -133,7 +136,8 @@ type Props = {
     | "danger"
     | "outline-primary"
     | "outline-secondary"
-    | "outline-gray";
+    | "outline-gray"
+    | 'vanilla';
 };
 
 const LoaderType: {
@@ -145,6 +149,7 @@ const LoaderType: {
   "outline-primary": "bg-green-primary",
   "outline-secondary": "bg-blue-primary",
   "outline-gray": "bg-black",
+  "vanilla": "bg-black",
 };
 function DotLoader({ animate, variant = "primary" }: Props) {
   const loadingContainerVariants = {

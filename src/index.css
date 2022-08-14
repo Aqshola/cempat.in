@@ -70,7 +70,7 @@
 .btn:disabled{
   opacity: 0.5;
 }
-.btn:focus{
+.btn:active{
   box-shadow: none;
   transform: translateY(5px);
 }

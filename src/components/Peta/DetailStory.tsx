@@ -30,6 +30,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
 
   const user_id = authStore((state) => state.authData?.user_id);
   const [getDetail, result, loading] = useDetail();
+  const [updateCerita, resultUpdate, loadingUpdate] = useUpdate();
   const [searchParams] = useSearchParams();
   const idParams = searchParams.get("id");
   const [edit, setedit] = useState<boolean>(false);
@@ -38,9 +39,9 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
     content: EditorState.createEmpty(),
   });
 
-  const [mount, setmount] = useState<boolean>(true)
+  const [mount, setmount] = useState<boolean>(true);
   const sheetRef = useRef<BottomSheetRef>(null);
-  const [updateCerita, resultUpdate, loadingUpdate] = useUpdate();
+  
 
   const _handleEdit = (value: boolean) => {
     setedit(value);
@@ -74,66 +75,66 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
 
   useEffect(() => {
     // if(mount){
-      if (!idParams) {
-        handleOnClose();
-      } else {
-        getDetail(Number(idParams) || 0);
-      }
+    if (!idParams) {
+      handleOnClose();
+    } else {
+      getDetail(Number(idParams) || 0);
+    }
     // }
     // return ()=>setmount(false)
   }, [idParams]);
 
   useEffect(() => {
     // if(mount){
-      if (!loading) {
-        if (result.data) {
-          let editorState = EditorState.createWithContent(
-            convertFromRaw(JSON.parse(result.data?.content))
+    if (!loading) {
+      if (result.data) {
+        let editorState = EditorState.createWithContent(
+          convertFromRaw(JSON.parse(result.data?.content))
+        );
+        setformData({
+          ...formData,
+          title: result.data.title,
+          content: editorState,
+        });
+
+        if (props.handleHelmetTitle) {
+          let title = result.data.title.split("");
+          title[0] = title[0].toUpperCase();
+
+          props.handleHelmetTitle(
+            "Cerita " + title.join(""),
+            result.data.content.slice(0, 100)
           );
-          setformData({
-            ...formData,
-            title: result.data.title,
-            content: editorState,
-          });
-  
-          if (props.handleHelmetTitle) {
-            let title = result.data.title.split("");
-            title[0] = title[0].toUpperCase();
-  
-            props.handleHelmetTitle(
-              "Cerita " + title.join(""),
-              result.data.content.slice(0, 100)
-            );
-          }
-  
-          // splitbee.track("view story", {
-          //   id: result.data.id,
-          //   title: result.data.title,
-          //   place_name: result.data.place_name,
-          //   coordinat: result.data.lat + " - " + result.data.lng,
-          // });
-        } else {
-          let localData = getLocalStorage<ApiLocation[]>("list_location");
-          if (localData) {
-            localData = localData.filter(
-              (location) => location.id !== Number(Number(idParams))
-            );
-            setLocalStorage("list_location", localData);
-          }
+        }
+
+        // splitbee.track("view story", {
+        //   id: result.data.id,
+        //   title: result.data.title,
+        //   place_name: result.data.place_name,
+        //   coordinat: result.data.lat + " - " + result.data.lng,
+        // });
+      } else {
+        let localData = getLocalStorage<ApiLocation[]>("list_location");
+        if (localData) {
+          localData = localData.filter(
+            (location) => location.id !== Number(Number(idParams))
+          );
+          setLocalStorage("list_location", localData);
         }
       }
+    }
     // }
     // return ()=>setmount(false)
   }, [loading, result.data]);
 
   useEffect(() => {
-    if(mount){
+    if (mount) {
       if (!loadingUpdate && !resultUpdate.error) {
         setedit(false);
         props.onCloseEditor();
       }
     }
-    return ()=>setmount(false)
+    return () => setmount(false);
   }, [loadingUpdate, resultUpdate.error]);
 
   useEffect(() => {
@@ -223,6 +224,50 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
                   readOnly={edit ? false : true}
                 />
               </div>
+              {!edit && (
+                <div className="mt-10 flex justify-between">
+                  <div className="flex gap-2">
+                    <Button size="sm" variant="outline-gray">
+                      <span className="flex items-center gap-2">
+                        <img
+                          src={`/icon/outline/like-logo-outline.svg`}
+                          alt="like"
+                        />
+                        10
+                      </span>
+                    </Button>
+                    <Button size="sm" variant="outline-gray">
+                      <span className="flex items-center gap-2">
+                        <img
+                          src={`/icon/outline/unlike-logo-outline.svg`}
+                          alt="unlike"
+                        />
+                        10
+                      </span>
+                    </Button>
+                  </div>
+                  <div className="flex">
+                    <Button size="sm" variant="vanilla">
+                      <span className="flex items-center gap-2">
+                        <img
+                          src={`/icon/outline/report-logo-outline.svg`}
+                          alt="report"
+                        />
+                        Report
+                      </span>
+                    </Button>
+                    <Button size="sm" variant="vanilla">
+                      <span className="flex items-center gap-2">
+                        <img
+                          src={`/icon/outline/share-logo-outline.svg`}
+                          alt="share"
+                        />
+                        Share
+                      </span>
+                    </Button>
+                  </div>
+                </div>
+              )}
             </>
           )}
 
