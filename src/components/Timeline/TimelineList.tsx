@@ -1,4 +1,5 @@
 import parseDateString from "hooks/helper/parseDateString";
+import { Link } from "react-router-dom";
 
 
 type Props = {
@@ -20,7 +21,9 @@ export default function TimelineList({...props}:Props) {
 
       <div className="flex flex-col">
         <div className="w-full flex gap-4">
-          <p className="font-semibold">{props.username}</p>
+          <Link to={`/user/${props.username}`} className="hover:underline">
+            <p className="font-semibold">{props.username}</p>
+          </Link>
           <p>
             {" "}
             <span className="font-bold text-gray-400">.</span> {parseDateString(props.createdAt)}

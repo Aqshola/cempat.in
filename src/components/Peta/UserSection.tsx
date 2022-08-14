@@ -1,5 +1,5 @@
 import RightNav from "components/Nav/RightNav";
-import React, { useEffect, useRef} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ApiLocation, Story } from "types/types";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
@@ -28,54 +28,55 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [getUserDetail, result, loading] = useDetailUser();
+  const [mount, setmount] = useState(true)
+  
 
   const sheetRef = useRef<BottomSheetRef>(null);
 
   const idParams = searchParams.get("user");
 
   const handleOnClose = () => {
-    props.onCloseEditor();
-
+    
     if (props.handleHelmetTitle) {
       props.handleHelmetTitle("Peta", null);
     }
-
-    navigate("/peta");
+    props.onCloseEditor();
+    // navigate("/peta");
   };
   const [getSize, screenSize] = useScreenSize();
 
   useEffect(() => {
-    if (idParams) {
-      if (props.handleView) {
-        props.handleView();
+    // if(mount){
+      if (idParams) {
+        if (props.handleView) {
+          props.handleView();
+        }
+        getUserDetail(idParams);
+      }else{
+          handleOnClose()
       }
-      getUserDetail(idParams);
-    }
+    // }
+    // return ()=>setmount(false)
   }, [idParams]);
 
   useEffect(() => {
-    if (!loading) {
-      if (result.data) {
-        if (props.handleHelmetTitle) {
-          props.handleHelmetTitle(result.data.user.username, null);
+    if(mount){
+      if (!loading) {
+        if (result.data) {
+          if (props.handleHelmetTitle) {
+            props.handleHelmetTitle(result.data.user.username, null);
+          }
+  
+          // splitbee.track("view story", {
+          //   id: result.data.id,
+          //   title: result.data.title,
+          //   place_name: result.data.place_name,
+          //   coordinat: result.data.lat + " - " + result.data.lng,
+          // });
         }
-
-        // splitbee.track("view story", {
-        //   id: result.data.id,
-        //   title: result.data.title,
-        //   place_name: result.data.place_name,
-        //   coordinat: result.data.lat + " - " + result.data.lng,
-        // });
-      } else {
-        // let localData = getLocalStorage<ApiLocation[]>("list_location");
-        // if (localData) {
-        //   localData = localData.filter(
-        //     (location) => location.id !== Number(Number(idParams))
-        //   );
-        //   setLocalStorage("list_location", localData);
-        // }
       }
     }
+    return ()=>setmount(false)
   }, [loading, result.data]);
 
   useEffect(() => {
@@ -112,14 +113,11 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
 
           {!loading && result.data && (
             <div className="flex flex-col">
-              <Avatar
-                name={result.data.user.username}
-                className="mx-auto"
-              />
+              <Avatar name={result.data.user.username} className="mx-auto" />
               <h2 className="text-center font-nunito font-medium text-xl mt-2 capitalize">
                 {result.data.user.username}
               </h2>
-              <Link to={"/user/1"} className="w-full flex justify-center mt-5">
+              <Link to={`/user/${result.data.user.username}`} className="w-full flex justify-center mt-5">
                 <Button size="xs" className="w-fit">
                   Lihat profil seutuhnya
                 </Button>
@@ -130,18 +128,23 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
                 </h3>
                 <div className="flex flex-col space-y-3">
                   {result.data.story.slice(0, 4).map((story: Story) => (
-                    <ListBox
-                      title={story.title}
-                      rightText={parseDateString(story.created_at)}
-                      detail={
-                        <div className="flex gap-1 items-center mt-3">
-                          <MdLocationPin />
-                          <p className="font-nunito text-xs font-medium">
-                            {story.place_name}
-                          </p>
-                        </div>
-                      }
-                    />
+                    <Link
+                      to={`/peta?id=${story.id}&&lat=${story.lat}&&lng=${story.lng}`}
+                      key={story.id}
+                    >
+                      <ListBox
+                        title={story.title}
+                        rightText={parseDateString(story.created_at)}
+                        detail={
+                          <div className="flex gap-1 items-center mt-3">
+                            <MdLocationPin />
+                            <p className="font-nunito text-xs font-medium">
+                              {story.place_name}
+                            </p>
+                          </div>
+                        }
+                      />
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -153,6 +156,7 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
   }
   return (
     <BottomSheet
+      initialFocusRef={false}
       snapPoints={({ maxHeight }) => [
         maxHeight - maxHeight / 10,
         maxHeight / 4,
@@ -191,14 +195,14 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
 
           {!loading && result.data && (
             <div className="flex flex-col">
-              <Avatar
-                className="mx-auto"
-                name={result.data.user.username}
-              />
+              <Avatar className="mx-auto" name={result.data.user.username} />
               <h2 className="text-center font-nunito font-medium text-xl mt-2 capitalize">
                 {result.data.user.username}
               </h2>
-              <Link to={`/user/${result.data.user.username}`} className="w-full flex justify-center mt-5">
+              <Link
+                to={`/user/${result.data.user.username}`}
+                className="w-full flex justify-center mt-5"
+              >
                 <Button size="xs" className="w-fit">
                   Lihat profil seutuhnya
                 </Button>
@@ -209,18 +213,23 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
                 </h3>
                 <div className="flex flex-col space-y-3">
                   {result.data.story.slice(0, 4).map((story: Story) => (
-                    <ListBox
-                      title={story.title}
-                      rightText={parseDateString(story.created_at)}
-                      detail={
-                        <div className="flex gap-1 items-center mt-3">
-                          <MdLocationPin />
-                          <p className="font-nunito text-xs font-medium">
-                            {story.place_name}
-                          </p>
-                        </div>
-                      }
-                    />
+                    <Link
+                      to={`/peta?id=${story.id}&&lat=${story.lat}&&lng=${story.lng}`}
+                      key={story.id}
+                    >
+                      <ListBox
+                        title={story.title}
+                        rightText={parseDateString(story.created_at)}
+                        detail={
+                          <div className="flex gap-1 items-center mt-3">
+                            <MdLocationPin />
+                            <p className="font-nunito text-xs font-medium">
+                              {story.place_name}
+                            </p>
+                          </div>
+                        }
+                      />
+                    </Link>
                   ))}
                 </div>
               </div>

@@ -27,6 +27,7 @@ type Props = {
 
 function DetailStory({ titleEditor, viewData, ...props }: Props) {
   const navigate = useNavigate();
+
   const user_id = authStore((state) => state.authData?.user_id);
   const [getDetail, result, loading] = useDetail();
   const [searchParams] = useSearchParams();
@@ -36,6 +37,8 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
     title: "",
     content: EditorState.createEmpty(),
   });
+
+  const [mount, setmount] = useState<boolean>(true)
   const sheetRef = useRef<BottomSheetRef>(null);
   const [updateCerita, resultUpdate, loadingUpdate] = useUpdate();
 
@@ -70,58 +73,67 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
   const [getSize, screenSize] = useScreenSize();
 
   useEffect(() => {
-    if (!idParams) {
-      handleOnClose();
-    } else {
-      getDetail(Number(idParams) || 0);
-    }
+    // if(mount){
+      if (!idParams) {
+        handleOnClose();
+      } else {
+        getDetail(Number(idParams) || 0);
+      }
+    // }
+    // return ()=>setmount(false)
   }, [idParams]);
 
   useEffect(() => {
-    if (!loading) {
-      if (result.data) {
-        let editorState = EditorState.createWithContent(
-          convertFromRaw(JSON.parse(result.data?.content))
-        );
-        setformData({
-          ...formData,
-          title: result.data.title,
-          content: editorState,
-        });
-
-        if (props.handleHelmetTitle) {
-          let title = result.data.title.split("");
-          title[0] = title[0].toUpperCase();
-
-          props.handleHelmetTitle(
-            "Cerita " + title.join(""),
-            result.data.content.slice(0, 100)
+    // if(mount){
+      if (!loading) {
+        if (result.data) {
+          let editorState = EditorState.createWithContent(
+            convertFromRaw(JSON.parse(result.data?.content))
           );
-        }
-
-        // splitbee.track("view story", {
-        //   id: result.data.id,
-        //   title: result.data.title,
-        //   place_name: result.data.place_name,
-        //   coordinat: result.data.lat + " - " + result.data.lng,
-        // });
-      } else {
-        let localData = getLocalStorage<ApiLocation[]>("list_location");
-        if (localData) {
-          localData = localData.filter(
-            (location) => location.id !== Number(Number(idParams))
-          );
-          setLocalStorage("list_location", localData);
+          setformData({
+            ...formData,
+            title: result.data.title,
+            content: editorState,
+          });
+  
+          if (props.handleHelmetTitle) {
+            let title = result.data.title.split("");
+            title[0] = title[0].toUpperCase();
+  
+            props.handleHelmetTitle(
+              "Cerita " + title.join(""),
+              result.data.content.slice(0, 100)
+            );
+          }
+  
+          // splitbee.track("view story", {
+          //   id: result.data.id,
+          //   title: result.data.title,
+          //   place_name: result.data.place_name,
+          //   coordinat: result.data.lat + " - " + result.data.lng,
+          // });
+        } else {
+          let localData = getLocalStorage<ApiLocation[]>("list_location");
+          if (localData) {
+            localData = localData.filter(
+              (location) => location.id !== Number(Number(idParams))
+            );
+            setLocalStorage("list_location", localData);
+          }
         }
       }
-    }
+    // }
+    // return ()=>setmount(false)
   }, [loading, result.data]);
 
   useEffect(() => {
-    if (!loadingUpdate && !resultUpdate.error) {
-      setedit(false);
-      props.onCloseEditor();
+    if(mount){
+      if (!loadingUpdate && !resultUpdate.error) {
+        setedit(false);
+        props.onCloseEditor();
+      }
     }
+    return ()=>setmount(false)
   }, [loadingUpdate, resultUpdate.error]);
 
   useEffect(() => {

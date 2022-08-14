@@ -33,11 +33,14 @@ export default function EditorSection({
     title: "",
     content: EditorState.createEmpty(),
   });
+
+  const [mount, setmount] = useState<boolean>(true);
   const [create, result, loading] = useCreate();
   const user = authStore((state) => state.authData);
   const showSideNav = sideNavStore((state) => state.showSideNav);
   const [getSize, screenSize] = useScreenSize();
   const sheetRef = useRef<BottomSheetRef>(null);
+
   async function gettingInfo() {
     if (infoLocation) {
       let info = await getInfo(infoLocation.lng, infoLocation.lat);
@@ -85,24 +88,30 @@ export default function EditorSection({
   }
 
   useEffect(() => {
-    if (!loading && !result.error) {
-      if (result.data) {
-        showSideNav(false);
-        let res = result.data[0];
-        onSaveEditor({ ...res });
-        props.onCloseEditor();
-        setformData({
-          title: "",
-          content: EditorState.createEmpty(),
-        });
+    if (mount) {
+      if (!loading && !result.error) {
+        if (result.data) {
+          showSideNav(false);
+          let res = result.data[0];
+          onSaveEditor({ ...res });
+          props.onCloseEditor();
+          setformData({
+            title: "",
+            content: EditorState.createEmpty(),
+          });
+        }
       }
     }
+    return () => setmount(false);
   }, [loading, result.error]);
 
   useEffect(() => {
-    if (props.showEditor) {
-      gettingInfo();
+    if (mount) {
+      if (props.showEditor) {
+        gettingInfo();
+      }
     }
+    return () => setmount(false);
   }, [props.showEditor]);
 
   useEffect(() => {

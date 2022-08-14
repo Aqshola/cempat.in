@@ -10,7 +10,7 @@ type Props = {
 
 export default function ListBox({...props}: Props) {
   return (
-    <div className="flex flex-col p-3 border border-green-primary rounded-md">
+    <div className="transition-shadow cursor-pointer list-box flex flex-col p-3 border border-green-primary rounded-md">
       <div className="flex justify-between items-center">
         {props.leftElement}
         <h5 className="truncate font-semibold text-xl text-green-primary">{props.title}</h5>

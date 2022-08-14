@@ -121,7 +121,7 @@ export default function SideNav() {
           </div>
           <div
             className={clsx(
-              "col-span-4 md:col-span-3 text-left pl-1 md:pl-0 ",
+              "col-span-4 md:col-span-3 text-left pl-5 md:pl-0 ",
               !spanSideNav && ["md:hidden"]
             )}
           >
