@@ -20,8 +20,9 @@ export default function RegisUsername() {
   };
   const navigate = useNavigate();
   const [getSession, loadingSession] = useSession();
-  const [valid, setvalid] = useState(false);
-  const [mount, setmount] = useState<boolean>(true);
+  const [valid, setvalid] = useState<"check" | "found" | "finish" | "netral">(
+    "netral"
+  );
 
   const checkUserStatus = async () => {
     setTimeout(async () => {
@@ -40,15 +41,17 @@ export default function RegisUsername() {
   }, []);
 
   useEffect(() => {
-    if (mount) {
       if (!loadingCheck) {
-        setvalid(found);
+        console.log(loadingCheck || valid === "check" || valid === "found" || valid === "netral")
+        if (found && valid ==='check') {
+          setvalid("found");
+        } else {
+          setvalid("finish");
+        }
       }
-    }
-    return () => setmount(false);
   }, [loadingCheck]);
 
-  if (loadingSession) {
+  if (loadingCheck && valid=== 'netral') {
     return null;
   }
 
@@ -65,9 +68,11 @@ export default function RegisUsername() {
             <span className="font-semibold text-green-primary">username</span>{" "}
             kamu sebelum lanjut
           </p>
-          <Alert variant="danger" show={found}>
-            Yah, username udah dipake{" "}
-          </Alert>
+          {valid === "found" && (
+            <Alert variant="danger" show={true}>
+              Yah, username udah dipake{" "}
+            </Alert>
+          )}
           <form className="mt-5" onSubmit={_finishRegis}>
             <FormInput
               loading={loadingCheck}
@@ -76,7 +81,10 @@ export default function RegisUsername() {
               type="text"
               placeholder="Username"
               minLength={6}
-              onChange={(e) => setusername(e.target.value)}
+              onChange={(e) => {
+                setvalid("check");
+                setusername(e.target.value);
+              }}
               debounce={true}
               debounceCallback={() => {
                 if (username.trim() !== "") {
@@ -90,7 +98,7 @@ export default function RegisUsername() {
               </p>
             )}
             <Button
-              disabled={loadingCheck || valid}
+              disabled={loadingCheck || valid === "check" || valid === "found" || valid === "netral" || username.length<=6 }
               className="w-full mt-5"
               loading={loading}
             >

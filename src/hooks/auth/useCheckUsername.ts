@@ -26,9 +26,13 @@ export function useCheckUsername(): [
         .from("user")
         .select("username")
         .eq("username", username);
-      
+
+      if(data && data.length>0){
+        setfound(true);
+      }else{
+        setfound(false)
+      }
       setloading(false)
-      setfound(!!data?.length);
     },
     found,
     loading,
