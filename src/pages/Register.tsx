@@ -67,7 +67,7 @@ function Register() {
             Selamat datang
           </h1>
           <div className="mt-5 mx-auto bg-white py-10 px-5 rounded-lg shadow-auth-box">
-            <Alert show={!!errorUnregister || found} variant="danger">
+            <Alert show={!!errorUnregister || !!found} variant="danger">
               {!!errorUnregister && "Yah, akun belum kedaftar nih"}
               {found && "Yah, username udah dipake"}
             </Alert>

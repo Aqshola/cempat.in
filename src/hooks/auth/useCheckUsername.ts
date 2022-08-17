@@ -13,11 +13,11 @@ export async function checkUsername(username: string): Promise<boolean> {
 
 export function useCheckUsername(): [
   (username: string) => Promise<void>,
-  boolean,
+  boolean|null,
   boolean
 ] {
   const [loading, setloading] = useState<boolean>(false);
-  const [found, setfound] = useState<boolean>(false);
+  const [found, setfound] = useState<boolean|null>(null);
 
   return [
     async (username: string) => {

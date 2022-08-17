@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCheckUsername } from "hooks/auth/useCheckUsername";
 import Alert from "components/Alert/Alert";
+import Spinner from "components/Spinner/Spinner";
 
 export default function RegisUsername() {
   const [username, setusername] = useState<string>("");
@@ -19,7 +20,7 @@ export default function RegisUsername() {
     finishGoogle(username);
   };
   const navigate = useNavigate();
-  const [getSession, loadingSession] = useSession();
+  const [getSession] = useSession();
   const [valid, setvalid] = useState<"check" | "found" | "finish" | "netral">(
     "netral"
   );
@@ -33,6 +34,7 @@ export default function RegisUsername() {
       } else if (result === "unregister") {
         navigate("/register?error=unregister");
       }
+      setvalid("check")
     }, 500);
   };
 
@@ -41,8 +43,7 @@ export default function RegisUsername() {
   }, []);
 
   useEffect(() => {
-      if (!loadingCheck) {
-        console.log(loadingCheck || valid === "check" || valid === "found" || valid === "netral")
+      if (!loadingCheck && found !== null) {
         if (found && valid ==='check') {
           setvalid("found");
         } else {
@@ -51,8 +52,9 @@ export default function RegisUsername() {
       }
   }, [loadingCheck]);
 
-  if (loadingCheck && valid=== 'netral') {
-    return null;
+  console.log(valid)
+  if ( valid=== 'netral') {
+    return <Spinner loading={true}/>;
   }
 
   return (
@@ -98,7 +100,7 @@ export default function RegisUsername() {
               </p>
             )}
             <Button
-              disabled={loadingCheck || valid === "check" || valid === "found" || valid === "netral" || username.length<=6 }
+              disabled={loadingCheck  || valid === "check" || valid === "found"  || username.length<=6 }
               className="w-full mt-5"
               loading={loading}
             >
