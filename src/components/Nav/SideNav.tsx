@@ -28,6 +28,7 @@ const LINK_LIST = [
 ];
 
 export default function SideNav() {
+  const isAuth = authStore((state) => state.isAuth);
   const username = authStore((state) => state.authData?.username);
   const { showSideNav } = sideNavStore((state) => state);
   const [spanSideNav, setspanSideNav] = useState<boolean>(false);
@@ -64,7 +65,7 @@ export default function SideNav() {
     setspanSideNav(!spanSideNav);
   }
 
-  return isNotMainRoute ? (
+  return isNotMainRoute  || !isAuth ? (
     <></>
   ) : (
     <>

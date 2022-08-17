@@ -20,9 +20,9 @@ function App() {
   const [getSession, loading] = useSession();
 
   useEffect(() => {
-    teleAnalytic();
+    // teleAnalytic();
     // splitbee.init();
-    // getSession();
+    getSession();
   }, []);
 
   return (
@@ -33,9 +33,10 @@ function App() {
           <Route
             path="/peta"
             element={
-              <PrivateRoute loading={loading}>
                 <Peta />
-              </PrivateRoute>
+              // <PrivateRoute loading={loading}>
+              //   <Peta />
+              // </PrivateRoute>
             }
           />
           <Route

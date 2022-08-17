@@ -29,8 +29,8 @@ type Props = {
 };
 
 function DetailStory({ titleEditor, viewData, ...props }: Props) {
+  const isAuth = authStore((state) => state.isAuth);
   const navigate = useNavigate();
-
   const user_id = authStore((state) => state.authData?.user_id);
   const [getDetail, result, loading] = useDetail();
   const [updateCerita, resultUpdate, loadingUpdate] = useUpdate();
@@ -57,7 +57,6 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
     unlike_count: 0,
     status: null,
   });
-
 
   function _handleEdit(value: boolean) {
     setedit(value);
@@ -230,7 +229,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
               </h1>
             </>
           )}
-          {!loading && edit && result.data && (
+          {!loading && edit && result.data && isAuth && (
             <input
               aria-label="judul cerita"
               name="title"
@@ -275,59 +274,63 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
               {/* LIKING */}
               {!edit && (
                 <div className="mt-10 flex justify-between">
-                  <div className="flex gap-2">
-                    <Button
-                      loading={loadingLike || loadingLiking}
-                      size="sm"
-                      variant="outline-gray"
-                      onClick={() => {
-                        _postLike("like");
-                      }}
-                    >
-                      <span className="flex items-center gap-2">
-                        <img
-                          src={`
+                  {isAuth && (
+                    <div className="flex gap-2">
+                      <Button
+                        loading={loadingLike || loadingLiking}
+                        size="sm"
+                        variant="outline-gray"
+                        onClick={() => {
+                          _postLike("like");
+                        }}
+                      >
+                        <span className="flex items-center gap-2">
+                          <img
+                            src={`
                               /icon/${
                                 likingData.status === "like"
                                   ? "filled"
                                   : "outline"
                               }/like-logo-${
-                            likingData.status === "like" ? "filled" : "outline"
-                          }.svg`}
-                          alt="like"
-                        />
-                        {likingData.like_count}
-                      </span>
-                    </Button>
-                    <Button
-                      loading={loadingLike || loadingLiking}
-                      size="sm"
-                      variant="outline-gray"
-                      onClick={() => {
-                        _postLike("unlike");
-                      }}
-                    >
-                      <span className="flex items-center gap-2">
-                        <img
-                          src={`/icon/${
-                            likingData.status === "unlike"
-                              ? "filled"
-                              : "outline"
-                          }/unlike-logo-${
-                            likingData.status === "unlike"
-                              ? "filled"
-                              : "outline"
-                          }.svg`}
-                          alt="unlike"
-                        />
-                        {likingData.unlike_count}
-                      </span>
-                    </Button>
-                  </div>
-                  <div className="flex">
+                              likingData.status === "like"
+                                ? "filled"
+                                : "outline"
+                            }.svg`}
+                            alt="like"
+                          />
+                          {likingData.like_count}
+                        </span>
+                      </Button>
+                      <Button
+                        loading={loadingLike || loadingLiking}
+                        size="sm"
+                        variant="outline-gray"
+                        onClick={() => {
+                          _postLike("unlike");
+                        }}
+                      >
+                        <span className="flex items-center gap-2">
+                          <img
+                            src={`/icon/${
+                              likingData.status === "unlike"
+                                ? "filled"
+                                : "outline"
+                            }/unlike-logo-${
+                              likingData.status === "unlike"
+                                ? "filled"
+                                : "outline"
+                            }.svg`}
+                            alt="unlike"
+                          />
+                          {likingData.unlike_count}
+                        </span>
+                      </Button>
+                    </div>
+                  )}
+                  <div className="flex justify-end w-full">
                     <Button size="sm" variant="vanilla">
                       <span
-                        className="flex items-center gap-2"
+                        className="flex items-center justify-self-end gap-2 ml-auto"
                         onClick={_shareStory}
                       >
                         <img
@@ -343,7 +346,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
             </>
           )}
 
-          {result.data && edit && user_id === result.data?.user_id && (
+          {result.data && edit && user_id === result.data?.user_id && isAuth && (
             <div className="mt-5 flex justify-end gap-5">
               <Button variant="secondary" onClick={() => _handleEdit(false)}>
                 Batal
@@ -425,7 +428,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
               </h1>
             </>
           )}
-          {!loading && edit && result.data && (
+          {!loading && edit && result.data && isAuth && (
             <input
               aria-label="judul cerita"
               name="title"
@@ -469,56 +472,60 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
               {/* LIKING */}
               {!edit && (
                 <div className="mt-10 flex justify-between">
-                  <div className="flex gap-2">
-                    <Button
-                      loading={loadingLike || loadingLiking}
-                      size="sm"
-                      variant="outline-gray"
-                      onClick={() => {
-                        _postLike("like");
-                      }}
-                    >
-                      <span className="flex items-center gap-2">
-                        <img
-                          src={`
+                  {isAuth && (
+                    <div className="flex gap-2">
+                      <Button
+                        loading={loadingLike || loadingLiking}
+                        size="sm"
+                        variant="outline-gray"
+                        onClick={() => {
+                          _postLike("like");
+                        }}
+                      >
+                        <span className="flex items-center gap-2">
+                          <img
+                            src={`
                               /icon/${
                                 likingData.status === "like"
                                   ? "filled"
                                   : "outline"
                               }/like-logo-${
-                            likingData.status === "like" ? "filled" : "outline"
-                          }.svg`}
-                          alt="like"
-                        />
-                        {likingData.like_count}
-                      </span>
-                    </Button>
-                    <Button
-                      loading={loadingLike || loadingLiking}
-                      size="sm"
-                      variant="outline-gray"
-                      onClick={() => {
-                        _postLike("unlike");
-                      }}
-                    >
-                      <span className="flex items-center gap-2">
-                        <img
-                          src={`/icon/${
-                            likingData.status === "unlike"
-                              ? "filled"
-                              : "outline"
-                          }/unlike-logo-${
-                            likingData.status === "unlike"
-                              ? "filled"
-                              : "outline"
-                          }.svg`}
-                          alt="unlike"
-                        />
-                        {likingData.unlike_count}
-                      </span>
-                    </Button>
-                  </div>
-                  <div className="flex">
+                              likingData.status === "like"
+                                ? "filled"
+                                : "outline"
+                            }.svg`}
+                            alt="like"
+                          />
+                          {likingData.like_count}
+                        </span>
+                      </Button>
+                      <Button
+                        loading={loadingLike || loadingLiking}
+                        size="sm"
+                        variant="outline-gray"
+                        onClick={() => {
+                          _postLike("unlike");
+                        }}
+                      >
+                        <span className="flex items-center gap-2">
+                          <img
+                            src={`/icon/${
+                              likingData.status === "unlike"
+                                ? "filled"
+                                : "outline"
+                            }/unlike-logo-${
+                              likingData.status === "unlike"
+                                ? "filled"
+                                : "outline"
+                            }.svg`}
+                            alt="unlike"
+                          />
+                          {likingData.unlike_count}
+                        </span>
+                      </Button>
+                    </div>
+                  )}
+                  <div className="flex w-full justify-end">
                     <Button size="sm" variant="vanilla" onClick={_shareStory}>
                       <span className="flex items-center gap-2">
                         <img

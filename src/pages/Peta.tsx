@@ -18,10 +18,10 @@ import {
   getSessionStorage,
 } from "hooks/helper/useSessionStorage";
 
-
 import UserSection from "components/Peta/UserSection";
 import HelmetTitle from "components/Helper/HelmetTitle";
 import toast, { Toaster } from "react-hot-toast";
+import { authStore } from "store/authStore";
 
 // The following is required to stop "npm build" from transpiling mapbox code.
 // notice the exclamation point in the import.
@@ -37,7 +37,7 @@ import toast, { Toaster } from "react-hot-toast";
  */
 
 export default function Peta() {
-  
+  const isAuth = authStore((state) => state.isAuth);
   const mapGlRef = useRef<MapRef | null>(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -121,7 +121,7 @@ export default function Peta() {
         !pickedLocation ||
         (pickedLocation.lat === 0 && pickedLocation.lng === 0)
       ) {
-        toast.error("Hayoo, pilih tempat dulu ya")
+        toast.error("Hayoo, pilih tempat dulu ya");
       } else {
         setshowEditor(true);
       }
@@ -151,7 +151,7 @@ export default function Peta() {
         });
       });
     } else {
-      toast.error("Yah, browser kamu belum support lokasi nih 😟")
+      toast.error("Yah, browser kamu belum support lokasi nih 😟");
     }
   }
 
@@ -251,7 +251,7 @@ export default function Peta() {
   return (
     <>
       <HelmetTitle title={headContent.title} description={headContent.desc} />
-      <Toaster/>
+      <Toaster />
       <div className="h-screen" id="nav-btn" aria-label="nav-btn">
         <Search handleSearch={viewLocation} />
 
@@ -308,18 +308,6 @@ export default function Peta() {
           ))}
         </MapGL>
 
-        <EditorSection
-          showEditor={showEditor}
-          onCloseEditor={() => {
-            setshowEditor(false);
-          }}
-          onSaveEditor={_saveCallback}
-          onOutsideEditor={() => {
-            setshowEditor(false);
-          }}
-          infoLocation={pickedLocation}
-        />
-
         <DetailStory
           handleHelmetTitle={handleTitleHelmet}
           viewData={viewStory}
@@ -331,7 +319,6 @@ export default function Peta() {
             setstoryDetailView(false);
           }}
         />
-
         <UserSection
           handleHelmetTitle={handleTitleHelmet}
           viewData={viewStory}
@@ -346,44 +333,67 @@ export default function Peta() {
             setuserSectionView(true);
           }}
         />
+        {isAuth && (
+          <>
+            <EditorSection
+              showEditor={showEditor}
+              onCloseEditor={() => {
+                setshowEditor(false);
+              }}
+              onSaveEditor={_saveCallback}
+              onOutsideEditor={() => {
+                setshowEditor(false);
+              }}
+              infoLocation={pickedLocation}
+            />
 
-        <Button
-          variant="danger"
-          onClick={_cancelPick}
-          className={clsx(
-            "shadow w-max absolute left-10 md:left-40 bottom-20 md:right-20",
-            pickLocation && ["visible opacity-100"],
-            !pickLocation && [" invisible opacity-0"]
-          )}
-        >
-          Batal
-        </Button>
+            <Button
+              variant="danger"
+              onClick={_cancelPick}
+              className={clsx(
+                "shadow w-max absolute left-10 md:left-40 bottom-20 md:right-20",
+                pickLocation && ["visible opacity-100"],
+                !pickLocation && [" invisible opacity-0"]
+              )}
+            >
+              Batal
+            </Button>
 
-        <Button
-          onClick={_newStory}
-          className={clsx(
-            "absolute  right-5 bottom-20 md:right-20 shadow",
-            !pickLocation && ["visible opacity-100"],
-            pickLocation && [" invisible opacity-0"]
-          )}
-          variant={"primary"}
-        >
-          Buat Cerita
-        </Button>
+            <Button
+              onClick={_newStory}
+              className={clsx(
+                "absolute  right-5 bottom-20 md:right-20 shadow",
+                !pickLocation && ["visible opacity-100"],
+                pickLocation && [" invisible opacity-0"]
+              )}
+              variant={"primary"}
+            >
+              Buat Cerita
+            </Button>
 
-        <Button
-          onClick={_newStory}
-          className={clsx(
-            "absolute  right-5 bottom-20 md:right-20 shadow",
-            pickLocation && ["visible opacity-100"],
-            !pickLocation && [" invisible opacity-0"]
-          )}
-          variant={"secondary"}
-        >
-          Pilih lokasi
-        </Button>
+            <Button
+              onClick={_newStory}
+              className={clsx(
+                "absolute  right-5 bottom-20 md:right-20 shadow",
+                pickLocation && ["visible opacity-100"],
+                !pickLocation && [" invisible opacity-0"]
+              )}
+              variant={"secondary"}
+            >
+              Pilih lokasi
+            </Button>
+          </>
+        )}
 
-        
+        {!isAuth && (
+          <Button
+            onClick={()=>navigate("/login")}
+            className="absolute  right-5 bottom-20 md:right-20 shadow"
+            variant={"primary"}
+          >
+            Buat Cerita
+          </Button>
+        )}
       </div>
     </>
   );
