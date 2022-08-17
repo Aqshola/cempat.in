@@ -162,7 +162,7 @@ export default function SideNav() {
         </div>
 
         <div id="additional" className="mt-auto pb-5">
-          <LinkSideNav
+          {/* <LinkSideNav
             link="/pengaturan"
             className="flex items-center justify-center gap-5"
           >
@@ -186,7 +186,7 @@ export default function SideNav() {
             >
               Pengaturan
             </span>
-          </LinkSideNav>
+          </LinkSideNav> */}
 
           <button
             className="px-4 flex items-center justify-center gap-5  w-fit h-fit"

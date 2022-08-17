@@ -19,8 +19,6 @@ import useLiking from "hooks/cerita/useLiking";
 import useGetLiking from "hooks/cerita/useGetLiking";
 import toast from "react-hot-toast";
 
-
-
 type Props = {
   onOutsideEditor: () => void;
   showEditor: boolean;
@@ -60,9 +58,6 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
     status: null,
   });
 
-  const [mount, setmount] = useState<boolean>(true);
-
-  
 
   function _handleEdit(value: boolean) {
     setedit(value);
@@ -99,19 +94,19 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
     }
   }
 
-  function _shareStory(){  
-    if(!navigator.canShare){
-      navigator.clipboard.writeText(window.location.href)
-      toast.success("Link berhasil dicopy",{
-        position:"top-center",
-        className:"bg-green-primary font-poppins font-medium",
-      })
-    }else{
+  function _shareStory() {
+    if (!navigator.canShare) {
+      navigator.clipboard.writeText(window.location.href);
+      toast.success("Link berhasil dicopy", {
+        position: "top-center",
+        className: "bg-green-primary font-poppins font-medium",
+      });
+    } else {
       navigator.share({
-        url:window.location.href,
-        title:`${formData.title} di ${result.data?.place_name}`,
-        text:"Baca cerita lengkapnya di Cempat.in"
-      })
+        url: window.location.href,
+        title: `${formData.title} di ${result.data?.place_name}`,
+        text: "Baca cerita lengkapnya di Cempat.in",
+      });
     }
   }
 
@@ -120,7 +115,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
       handleOnClose();
     } else {
       getDetail(Number(idParams) || 0);
-      if(user_id){
+      if (user_id) {
         getLike(user_id, idParams);
       }
     }
@@ -167,13 +162,10 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
   }, [loading, result.data]);
 
   useEffect(() => {
-    if (mount) {
-      if (!loadingUpdate && !resultUpdate.error) {
-        setedit(false);
-        props.onCloseEditor();
-      }
+    if (!loadingUpdate && !resultUpdate.error) {
+      setedit(false);
+      props.onCloseEditor();
     }
-    return () => setmount(false);
   }, [loadingUpdate, resultUpdate.error]);
 
   useEffect(() => {
@@ -186,7 +178,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
 
   useEffect(() => {
     if (!loadingLike) {
-      if(user_id && idParams){
+      if (user_id && idParams) {
         getLike(user_id, idParams);
       }
     }
@@ -312,7 +304,6 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
                       size="sm"
                       variant="outline-gray"
                       onClick={() => {
-                        
                         _postLike("unlike");
                       }}
                     >
@@ -335,7 +326,10 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
                   </div>
                   <div className="flex">
                     <Button size="sm" variant="vanilla">
-                      <span className="flex items-center gap-2" onClick={_shareStory}>
+                      <span
+                        className="flex items-center gap-2"
+                        onClick={_shareStory}
+                      >
                         <img
                           src={`/icon/outline/share-logo-outline.svg`}
                           alt="share"
@@ -375,8 +369,6 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
       </>
     );
   }
-
-  
 
   return (
     <BottomSheet
@@ -506,7 +498,6 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
                       size="sm"
                       variant="outline-gray"
                       onClick={() => {
-                        
                         _postLike("unlike");
                       }}
                     >
