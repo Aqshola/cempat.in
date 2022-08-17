@@ -68,6 +68,7 @@ function Landing() {
         >
           <div className="w-full h-[300px] mt-10 md:mt-0  md:h-[600px] relative rounded-[50px] overflow-hidden   shadow-map-card ">
             <MapGL
+            
               reuseMaps={true}
               optimizeForTerrain={true}
               mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}

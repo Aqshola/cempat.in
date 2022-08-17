@@ -1,9 +1,7 @@
-import { Session } from "@supabase/supabase-js";
 import supabase from "lib/supabase";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authStore } from "store/authStore";
-import { UserData } from "types/types";
 import useLogout from "./useLogout";
 
 function useSession(): [() => void, boolean] {
@@ -22,13 +20,14 @@ function useSession(): [() => void, boolean] {
           .from("user")
           .select("username, email, id, user_id")
           .eq("user_id", session.user?.id)
-          .single();
 
-        if (data) {
-          setAuthStatus(true, data);
+        if (data && data.length>0) {
+          setAuthStatus(true, data[0]);
         } else {
           setAuthStatus(false, null);
-          navigate(link);
+          if(link!=="/"){
+            navigate(link);
+          }
         }
       } else {
         logout();

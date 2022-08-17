@@ -36,15 +36,6 @@ export default function FormInput({
 
   const [inputInvalid, setinputInvalid] = useState<boolean>(false);
 
-  const validate_email = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const emailPattern =
-      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-    const isValid = e.target.value.match(emailPattern);
-    setinputInvalid(isValid ? false : true);
-    e.target.setCustomValidity(
-      inputInvalid ? "" : props.invalidmsg || "Masukin input yang valid ya"
-    );
-  };
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   useEffect(() => {
@@ -74,10 +65,6 @@ export default function FormInput({
           {...props}
           type={typeInput}
           onChange={(e) => {
-            if (props.type === "email") {
-              validate_email(e);
-            }
-
             if (props.onChange) {
               props.onChange(e);
             }

@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
 import { convertToRaw, EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import RightNav from "components/Nav/RightNav";
@@ -13,6 +12,7 @@ import useScreenSize from "hooks/helper/useScreenSize";
 import { BottomSheet, BottomSheetRef } from "react-spring-bottom-sheet";
 import "react-spring-bottom-sheet/dist/style.css";
 import { CgClose } from "react-icons/cg";
+import toast from "react-hot-toast";
 
 type Props = {
   onOutsideEditor: () => void;
@@ -64,14 +64,11 @@ export default function EditorSection({
           (b) => b.text.trim() === ""
         )
       ) {
-        toast("Tulis cerita dulu ya", {
-          position: "bottom-right",
-          hideProgressBar: true,
-          autoClose: 1000,
-          closeOnClick: true,
-          draggable: true,
-          progress: undefined,
-        });
+        
+        toast.error("Tulis cerita dulu ya",{
+          position:"top-center",
+          className:"bg-green-primary font-poppins font-medium",
+        })
       } else {
         create(
           {
@@ -88,7 +85,7 @@ export default function EditorSection({
   }
 
   useEffect(() => {
-    if (mount) {
+    
       if (!loading && !result.error) {
         if (result.data) {
           showSideNav(false);
@@ -101,8 +98,6 @@ export default function EditorSection({
           });
         }
       }
-    }
-    return () => setmount(false);
   }, [loading, result.error]);
 
   useEffect(() => {

@@ -4,8 +4,7 @@ import {
   useForgotPassword,
   useUpdatePassword,
 } from "hooks/auth/useForgotPassword";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
 import useLogout from "hooks/auth/useLogout";
 import { Link } from "react-router-dom";
 import supabase from "lib/supabase";
@@ -22,7 +21,7 @@ export default function ForgotPassword() {
   });
   const [stepForgot, setstepForgot] = useState<
     "email" | "email-sent" | "new-password" | "password-finish"
-  >("password-finish");
+  >("email");
   const [recoveryToken, setrecoveryToken] = useState("");
 
   const [logout] = useLogout();
@@ -43,14 +42,14 @@ export default function ForgotPassword() {
           setstepForgot("password-finish");
         }
       } else {
-        toast("Konfirmasi sandi harus sama dengan kata sandi baru", {
-          position: "top-center",
-          hideProgressBar: true,
-          autoClose: 5000,
-          closeOnClick: true,
-          draggable: true,
-          progress: undefined,
-        });
+        // toast("Konfirmasi sandi harus sama dengan kata sandi baru", {
+        //   position: "top-center",
+        //   hideProgressBar: true,
+        //   autoClose: 5000,
+        //   closeOnClick: true,
+        //   draggable: true,
+        //   progress: undefined,
+        // });
       }
     }
   };
@@ -88,28 +87,28 @@ export default function ForgotPassword() {
 
   useEffect(() => {
     if (!loading && error) {
-      toast("Yah, user tidak ditemukan", {
-        position: "top-center",
-        hideProgressBar: true,
-        autoClose: 5000,
-        closeOnClick: true,
-        draggable: true,
-        progress: undefined,
-      });
+      // toast("Yah, user tidak ditemukan", {
+      //   position: "top-center",
+      //   hideProgressBar: true,
+      //   autoClose: 5000,
+      //   closeOnClick: true,
+      //   draggable: true,
+      //   progress: undefined,
+      // });
       setstepForgot("email");
     }
   }, [loading, error]);
 
   useEffect(() => {
     if ((!loading && error) || (!loadingUpdate && errorUpdate)) {
-      toast("Terjadi kesalahan saat update kata sandi", {
-        position: "top-center",
-        hideProgressBar: true,
-        autoClose: 5000,
-        closeOnClick: true,
-        draggable: true,
-        progress: undefined,
-      });
+      // toast("Terjadi kesalahan saat update kata sandi", {
+      //   position: "top-center",
+      //   hideProgressBar: true,
+      //   autoClose: 5000,
+      //   closeOnClick: true,
+      //   draggable: true,
+      //   progress: undefined,
+      // });
       setstepForgot("email");
     }
   }, [loadingUpdate, errorUpdate]);
@@ -143,7 +142,7 @@ export default function ForgotPassword() {
         <PasswordFinish/>
       )}
 
-      <ToastContainer bodyClassName={"font-semibold text-red-500"} />
+      {/* <ToastContainer bodyClassName={"font-semibold text-red-500"} /> */}
     </form>
   );
 }
@@ -249,8 +248,8 @@ function PasswordFinish() {
     <p className="text-center font-light md:text-xl mt-3 font-nunito">
       Kamu udah bisa lanjut ya sekarang
     </p>
-    <Link to={"/peta"} className="mt-10 font-medium text-center hover:underline">
-      <Button>Lanjut ke Peta</Button>
+    <Link to={"/login"} className="mt-10 font-medium text-center hover:underline">
+      <Button>Login</Button>
     </Link>
   </>);
 }

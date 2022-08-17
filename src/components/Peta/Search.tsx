@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { BiCurrentLocation } from "react-icons/bi";
-import { toast } from "react-toastify";
 import geocoder from "lib/MapboxGeocoder";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
+import toast from "react-hot-toast";
 
 type Props = {
   handleSearch: (...args: any) => void;
@@ -38,23 +38,12 @@ export default function Search({ handleSearch }: Props) {
       },()=>{
         toast("Yah, kamu gak ngijinin akses lokasi", {
           position: "bottom-center",
-          hideProgressBar: true,
-          autoClose: 5000,
-          closeOnClick: true,
-          draggable: true,
-          progress: undefined,
         });  
       });
     } else {
-      
       toast("Yah, browser kamu belum support fitur lokasi", {
         position: "bottom-center",
-        hideProgressBar: true,
-        autoClose: 5000,
-        closeOnClick: true,
-        draggable: true,
-        progress: undefined,
-      });
+      });  
     }
   };
 

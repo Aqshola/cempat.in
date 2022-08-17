@@ -17,6 +17,9 @@ import "react-spring-bottom-sheet/dist/style.css";
 import { CgClose } from "react-icons/cg";
 import useLiking from "hooks/cerita/useLiking";
 import useGetLiking from "hooks/cerita/useGetLiking";
+import toast from "react-hot-toast";
+
+
 
 type Props = {
   onOutsideEditor: () => void;
@@ -93,6 +96,22 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
   function _postLike(action: "like" | "unlike") {
     if (result.data) {
       postLike(user_id || "", result.data.id, action);
+    }
+  }
+
+  function _shareStory(){  
+    if(!navigator.canShare){
+      navigator.clipboard.writeText(window.location.href)
+      toast.success("Link berhasil dicopy",{
+        position:"top-center",
+        className:"bg-green-primary font-poppins font-medium",
+      })
+    }else{
+      navigator.share({
+        url:window.location.href,
+        title:`${formData.title} di ${result.data?.place_name}`,
+        text:"Baca cerita lengkapnya di Cempat.in"
+      })
     }
   }
 
@@ -270,7 +289,6 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
                       size="sm"
                       variant="outline-gray"
                       onClick={() => {
-                        
                         _postLike("like");
                       }}
                     >
@@ -317,16 +335,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
                   </div>
                   <div className="flex">
                     <Button size="sm" variant="vanilla">
-                      <span className="flex items-center gap-2">
-                        <img
-                          src={`/icon/outline/report-logo-outline.svg`}
-                          alt="report"
-                        />
-                        Report
-                      </span>
-                    </Button>
-                    <Button size="sm" variant="vanilla">
-                      <span className="flex items-center gap-2">
+                      <span className="flex items-center gap-2" onClick={_shareStory}>
                         <img
                           src={`/icon/outline/share-logo-outline.svg`}
                           alt="share"
@@ -367,6 +376,8 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
     );
   }
 
+  
+
   return (
     <BottomSheet
       initialFocusRef={false}
@@ -380,7 +391,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
       blocking={true}
       ref={sheetRef}
     >
-      <div className="px-6 flex items-center">
+      <div className="px-6 flex items-center ">
         <button
           className="w-fit h-fit"
           onClick={() => {
@@ -472,7 +483,6 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
                       size="sm"
                       variant="outline-gray"
                       onClick={() => {
-                        
                         _postLike("like");
                       }}
                     >
@@ -518,16 +528,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
                     </Button>
                   </div>
                   <div className="flex">
-                    <Button size="sm" variant="vanilla">
-                      <span className="flex items-center gap-2">
-                        <img
-                          src={`/icon/outline/report-logo-outline.svg`}
-                          alt="report"
-                        />
-                        Report
-                      </span>
-                    </Button>
-                    <Button size="sm" variant="vanilla">
+                    <Button size="sm" variant="vanilla" onClick={_shareStory}>
                       <span className="flex items-center gap-2">
                         <img
                           src={`/icon/outline/share-logo-outline.svg`}

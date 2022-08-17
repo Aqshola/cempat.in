@@ -52,7 +52,7 @@ export default function RegisUsername() {
       }
   }, [loadingCheck]);
 
-  console.log(valid)
+  
   if ( valid=== 'netral') {
     return <Spinner loading={true}/>;
   }

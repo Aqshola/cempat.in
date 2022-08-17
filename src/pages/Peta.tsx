@@ -17,10 +17,11 @@ import {
   setSessionStorage,
   getSessionStorage,
 } from "hooks/helper/useSessionStorage";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
+
 import UserSection from "components/Peta/UserSection";
 import HelmetTitle from "components/Helper/HelmetTitle";
+import toast, { Toaster } from "react-hot-toast";
 
 // The following is required to stop "npm build" from transpiling mapbox code.
 // notice the exclamation point in the import.
@@ -36,6 +37,7 @@ import HelmetTitle from "components/Helper/HelmetTitle";
  */
 
 export default function Peta() {
+  
   const mapGlRef = useRef<MapRef | null>(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -119,14 +121,7 @@ export default function Peta() {
         !pickedLocation ||
         (pickedLocation.lat === 0 && pickedLocation.lng === 0)
       ) {
-        toast("Pilih tempat dulu yaa", {
-          position: "bottom-center",
-          hideProgressBar: true,
-          autoClose: 5000,
-          closeOnClick: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.error("Hayoo, pilih tempat dulu ya")
       } else {
         setshowEditor(true);
       }
@@ -156,7 +151,7 @@ export default function Peta() {
         });
       });
     } else {
-      console.log("not allowed");
+      toast.error("Yah, browser kamu belum support lokasi nih 😟")
     }
   }
 
@@ -256,6 +251,7 @@ export default function Peta() {
   return (
     <>
       <HelmetTitle title={headContent.title} description={headContent.desc} />
+      <Toaster/>
       <div className="h-screen" id="nav-btn" aria-label="nav-btn">
         <Search handleSearch={viewLocation} />
 
@@ -387,10 +383,7 @@ export default function Peta() {
           Pilih lokasi
         </Button>
 
-        <ToastContainer
-          className="z-50"
-          bodyClassName={" text-xs font-poppins text-red-600"}
-        />
+        
       </div>
     </>
   );
