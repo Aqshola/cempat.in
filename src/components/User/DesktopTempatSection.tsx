@@ -22,8 +22,9 @@ export default function DesktopTempatSection({ ...props }: Props) {
             pageState.active * pageState.length,
             pageState.active * pageState.length + pageState.length
           )
-          .map((item) => (
+          .map((item,i) => (
             <ListBox
+            key={i+"cerita"}
               leftElement={
                 <MdLocationPin className="w-7 h-7 text-green-primary" />
               }

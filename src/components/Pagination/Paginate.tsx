@@ -25,12 +25,9 @@ export function Paginate({ ...props }: Props) {
   let identifier = props.id ? `btn-num-${props.id}` : `btn-num`;
   function _handlePage(page: number) {
     props.pageStateHandler({ ...props.pageState, active: page });
-    let listBtn = Array.from(
-      document.getElementsByClassName(
-        identifier
-      ) as HTMLCollectionOf<HTMLElement>
-    );
+  }
 
+  function _generateTranslate(page: number) {
     let translateStyle = `translateX(${-(36 * (page - 1))}px)`;
 
     if (page === 0) {
@@ -39,11 +36,8 @@ export function Paginate({ ...props }: Props) {
       translateStyle = `translateX(${-(36 * props.totalPage)}px)`;
     }
 
-    listBtn.forEach((e) => {
-      e.style.transform = translateStyle;
-    });
+    return translateStyle;
   }
-
   return (
     <div
       className={clsx(
@@ -94,6 +88,12 @@ export function Paginate({ ...props }: Props) {
               _handlePage(el);
             }}
             key={el}
+            style={{
+              transform:
+                props.pageState.active > 0
+                  ? _generateTranslate(props.pageState.active)
+                  : "",
+            }}
             className={clsx(
               "border  w-9 h-9 transition-all text-sm flex justify-center items-center rounded-lg p-2  font-nunito",
               identifier,

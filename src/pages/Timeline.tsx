@@ -9,7 +9,7 @@ import {
 } from "hooks/helper/useSessionStorage";
 import useRefreshTimeline from "hooks/timeline/useRefreshTimeline";
 import { BiRefresh } from "react-icons/bi";
-import Button from "components/Button/Button"
+import Button from "components/Button/Button";
 import { Link } from "react-router-dom";
 
 export default function Timeline() {
@@ -92,10 +92,10 @@ export default function Timeline() {
     }
   }
 
-  function refreshDesktop(){
-    if(timelineData.length>0){
-      setLoading(true)
-      refreshData(timelineData[0].created_at)
+  function refreshDesktop() {
+    if (timelineData.length > 0) {
+      setLoading(true);
+      refreshData(timelineData[0].created_at);
     }
   }
 
@@ -143,8 +143,6 @@ export default function Timeline() {
     }
   }, [timelineData]);
 
-  
-
   return (
     <section
       onTouchStart={onTouchStart}
@@ -161,7 +159,7 @@ export default function Timeline() {
           Timeline
         </h1>
         <Button className="w-fit h-fit" size="sm" onClick={refreshDesktop}>
-          <BiRefresh className="w-5 h-5"/>
+          <BiRefresh className="w-5 h-5" />
         </Button>
       </div>
 
@@ -176,15 +174,16 @@ export default function Timeline() {
 
       <div className="flex flex-col gap-4 w-full md:mt-10">
         {timelineData.map((el) => (
-          <Link className="cursor-pointer" to={`/peta?id=${el.id}&&lat=${el.lat}&&lng=${el.lng}`} key={el.id}>
-            <TimelineList
-              createdAt={el.created_at}
-              title={el.title}
-              placeName={el.place_name || ""}
-              username={el.user.username}
-              
-            />
-          </Link>
+          <TimelineList
+            key={el.id}
+            lat={el.lat}
+            lng={el.lng}
+            id={el.id}
+            createdAt={el.created_at}
+            title={el.title}
+            placeName={el.place_name || ""}
+            username={el.user.username}
+          />
         ))}
       </div>
 

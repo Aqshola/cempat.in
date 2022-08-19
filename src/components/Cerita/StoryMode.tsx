@@ -8,8 +8,6 @@ import {
   useReactTable,
   getCoreRowModel,
   flexRender,
-  getPaginationRowModel,
-  getFilteredRowModel,
 } from "@tanstack/react-table";
 import { usePaginate, Paginate } from "components/Pagination/Paginate";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
@@ -84,9 +82,9 @@ export default function StoryMode({ screenSize, ...props }: Props) {
 
   const [dataTable, setDataTable] = useState(() => [...props.data]);
   const [pageState, handlerPage] = usePaginate();
-  
 
   const [searchValue, setsearchValue] = useState<string>("");
+  const [searchPageLength, setsearchPageLength] = useState<number>(0);
 
   const [searchParams] = useSearchParams();
 
@@ -94,25 +92,16 @@ export default function StoryMode({ screenSize, ...props }: Props) {
 
   const table = useReactTable({
     data: dataTable,
+    manualPagination: true,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     debugTable: true,
-    onGlobalFilterChange: setsearchValue,
-    globalFilterFn: (row, columnId, value, addMeta) => {
-      const valueRow = row.getValue(columnId) as string;
-      return valueRow.toLowerCase().includes(searchValue.toLowerCase());
-    },
-
-    getFilteredRowModel: getFilteredRowModel(),
-    state: {
-      globalFilter: searchValue,
-    },
   });
 
   useEffect(() => {
     setDataTable([...props.data]);
     table.setPageSize(pageState.length);
+    setsearchPageLength(props.data.length);
   }, [props.data]);
 
   useEffect(() => {
@@ -140,7 +129,16 @@ export default function StoryMode({ screenSize, ...props }: Props) {
   }
 
   function _searchStory(e: React.ChangeEvent<HTMLInputElement>) {
-    setsearchValue(e.target.value);
+    if (e.target.value.trim() === "") {
+      setsearchPageLength(props.data.length);
+    } else {
+      setsearchValue(e.target.value);
+      let totalSearchLength = props.data.filter((item) =>
+        item.title.toLowerCase().includes(searchValue.toLowerCase())
+      ).length;
+
+      setsearchPageLength(Math.ceil(totalSearchLength / pageState.length));
+    }
   }
 
   async function _deleteList(id: string, place_name: string) {
@@ -213,26 +211,38 @@ export default function StoryMode({ screenSize, ...props }: Props) {
                 </tr>
               )}
               {table.getRowModel().rows.length > 0 &&
-                table.getRowModel().rows.map((row) => (
-                  <tr key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
-                      <td
-                        className={clsx(
-                          "px-8 py-3",
-                          cell.column.id === "judul" && [
-                            "font-semibold text-green-primary",
-                          ]
-                        )}
-                        key={cell.id}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
+                table
+                  .getRowModel()
+                  .rows.filter((item) => {
+                    let judul = item.getValue("judul") as string;
+                    return judul
+                      .toLowerCase()
+                      .includes(searchValue.toLowerCase());
+                  })
+                  .slice(
+                    pageState.active * pageState.length,
+                    pageState.active * pageState.length + pageState.length
+                  )
+                  .map((row) => (
+                    <tr key={row.id}>
+                      {row.getVisibleCells().map((cell) => (
+                        <td
+                          className={clsx(
+                            "px-8 py-3",
+                            cell.column.id === "judul" && [
+                              "font-semibold text-green-primary",
+                            ]
+                          )}
+                          key={cell.id}
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
             </tbody>
           </table>
         </div>
@@ -319,7 +329,7 @@ export default function StoryMode({ screenSize, ...props }: Props) {
         className="ml-auto mt-5"
         pageState={pageState}
         pageStateHandler={handlerPage}
-        totalPage={props.data.length}
+        totalPage={searchPageLength}
       />
     </div>
   );

@@ -44,7 +44,7 @@ export default function User() {
           </h1>
         </div>
 
-        <section id="mobile-switch" className="md:hidden">
+        <section id="mobile-switch">
           <div className="pt-24 flex gap-2 justify-center">
             <Button
               className={clsx(
@@ -83,18 +83,6 @@ export default function User() {
               <MobileCeritaSection listStory={result.data?.story} />
             )}
             {mode === "tempat" && <MobileTempatSection listLocation={result.data.location}/>}
-
-            <section
-              id="desktop-view"
-              className="w-full hidden md:grid grid-cols-2 py-24"
-            >
-              <div className="col-span-1">
-                <DesktopCeritaSection listStory={result.data.story}/>
-              </div>
-              <div className="col-span-1">
-                <DesktopTempatSection listLocation={result.data.location}/>
-              </div>
-            </section>
           </>
         )}
         {!result.data && !loading && (

@@ -57,15 +57,6 @@ function Cerita() {
   const deleteCallback = (id: string, place_name:string) => {
     setstoryList(storyList.filter((story) => story.id !== id));
     setlocationList(locationList.filter((location) => location.place_name !== place_name));
-
-    // deleteCerita(id, user_id || "");
-    // let localData = getSessionStorage<ApiLocation[]>("list_location");
-    // if (localData) {
-    //   localData = localData.filter(
-    //     (location: ApiLocation) => location.id !== Number(id)
-    //   );
-    //   setSessionStorage("list_location", localData);
-    // }
   };
 
   return (
