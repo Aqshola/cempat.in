@@ -29,7 +29,7 @@ export default function User() {
   return (
     <section
       id="user-profile"
-      className="h-screen w-full pb-3 transition-all relative"
+      className="overflow-y-scroll h-screen w-full pb-3 transition-all relative"
     >
       <div className="w-full h-56 bg-green-primary flex justify-center items-center">
         <p className="text-white  font-light font-nunito text-4xl ">

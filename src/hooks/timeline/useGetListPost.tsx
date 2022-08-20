@@ -24,98 +24,58 @@ export default function useGetListPost(): [
   return [
     async (skip: number = 0) => {
       setloading(true);
+      let from = paginateInfinite.from;
+      let to = paginateInfinite.from + paginateInfinite.limit;
 
       const { data: Count } = await supabase
         .from("cerita")
         .select("count(*")
         .single();
       if (Count) {
-        if (paginateInfinite.from >= Count.count || skip>=Count.count) {
-          let totalCount = Count.count as number;
-          setpaginateInfinite({
-            ...paginateInfinite,
-            from: totalCount,
-            to: totalCount + 10,
+        if (skip === 0 && paginateInfinite.from === 0) {
+          from = 0;
+          to = paginateInfinite.limit;
+        } else if (skip>0){
+            from=skip;
+            to=skip+paginateInfinite.limit;
+        } else if(skip>=Count){
+            from=Count+1
+            to=Count+paginateInfinite.limit;
+        }
+
+        const { data, error } = await supabase
+          .from("cerita")
+          .select(
+            `id,
+                lng,lat,
+                place_name,title,
+                created_at,
+                user(
+                    username
+                )
+                `
+          )
+          .range(from, to)
+          .order("created_at", {
+            ascending: false,
           });
+
+        if (data) {
           setresult({
-            data: [],
+            data,
             error: null,
           });
         } else {
-          if (paginateInfinite.from === 0 && skip > 0) {
-            const { data, error } = await supabase
-              .from("cerita")
-              .select(
-                `id,
-                lng,lat,
-                place_name,title,
-                created_at,
-                user(
-                    username
-                )
-                `
-              )
-              .range(skip, skip + paginateInfinite.limit)
-              .order("created_at", {
-                ascending: false,
-              });
-
-            if (data) {
-              setresult({
-                data,
-                error: null,
-              });
-            } else {
-              setresult({
-                data: [],
-                error: error,
-              });
-            }
-            setpaginateInfinite({
-              limit: 10,
-              from: skip,
-              to: skip + paginateInfinite.limit,
-            });
-          } else {
-            const newFrom =
-              (paginateInfinite.from + 1) * paginateInfinite.limit + 1;
-            const newTo = newFrom + paginateInfinite.limit;
-            setpaginateInfinite({
-              limit: 10,
-              from: newFrom,
-              to: newTo,
-            });
-
-            const { data, error } = await supabase
-              .from("cerita")
-              .select(
-                `id,
-                lng,lat,
-                place_name,title,
-                created_at,
-                user(
-                    username
-                )
-                `
-              )
-              .range(paginateInfinite.from, paginateInfinite.to)
-              .order("created_at", {
-                ascending: false,
-              });
-
-            if (data) {
-              setresult({
-                data,
-                error: null,
-              });
-            } else {
-              setresult({
-                data: [],
-                error: error,
-              });
-            }
-          }
+          setresult({
+            data: [],
+            error: error,
+          });
         }
+      } else {
+        setresult({
+          data: [],
+          error: null,
+        });
       }
       setloading(false);
     },

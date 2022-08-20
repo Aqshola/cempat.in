@@ -10,9 +10,10 @@ import {
 import useRefreshTimeline from "hooks/timeline/useRefreshTimeline";
 import { BiRefresh } from "react-icons/bi";
 import Button from "components/Button/Button";
-import { Link } from "react-router-dom";
+import { sideNavStore } from "store/navStore";
 
 export default function Timeline() {
+  const { setTimelineAction } = sideNavStore((state) => state);
   const listParent = useRef<HTMLDivElement>(null);
   const [currentScroll, setcurrentScroll] = useState<number>(-1);
   const [touchStart, settouchStart] = useState({
@@ -93,9 +94,16 @@ export default function Timeline() {
   }
 
   function refreshDesktop() {
-    if (timelineData.length > 0) {
+    let sessionTimeline = getSessionStorage("timeline") as Story[];
+    if (sessionTimeline.length > 0) {
+      listParent.current?.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
       setLoading(true);
-      refreshData(timelineData[0].created_at);
+      setTimeout(() => {
+        refreshData(sessionTimeline[0].created_at);
+      }, 1000);
     }
   }
 
@@ -109,6 +117,7 @@ export default function Timeline() {
   }, [loadingRefresh]);
 
   useEffect(() => {
+    setTimelineAction(refreshDesktop);
     let sessionTimeline = getSessionStorage("timeline") as Story[];
     if (!sessionTimeline || sessionTimeline.length === 0) {
       getList(0);
@@ -158,9 +167,6 @@ export default function Timeline() {
         <h1 className="top-12 text-xl font-semibold font-nunito  capitalize text-black hidden md:inline">
           Timeline
         </h1>
-        <Button className="w-fit h-fit" size="sm" onClick={refreshDesktop}>
-          <BiRefresh className="w-5 h-5" />
-        </Button>
       </div>
 
       <span

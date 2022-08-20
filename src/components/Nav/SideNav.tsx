@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { sideNavStore } from "store/navStore";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import LinkSideNav from "./Link/LinkSideNav";
 import useLogout from "hooks/auth/useLogout";
 import { authStore } from "store/authStore";
@@ -30,10 +30,11 @@ const LINK_LIST = [
 export default function SideNav() {
   const isAuth = authStore((state) => state.isAuth);
   const username = authStore((state) => state.authData?.username);
-  const { showSideNav } = sideNavStore((state) => state);
+  const { showSideNav, timelineAction } = sideNavStore((state) => state);
   const [spanSideNav, setspanSideNav] = useState<boolean>(false);
   const [getSize, screenSize] = useScreenSize();
   const route = useLocation();
+  const navigate = useNavigate();
 
   const isNotMainRoute =
     route.pathname === "/" ||
@@ -58,6 +59,9 @@ export default function SideNav() {
   function _handleLogout() {
     logout();
     showSideNav(false);
+    setTimeout(() => {
+      navigate("/login");
+    }, 500);
     splitbee.reset();
   }
 
@@ -65,7 +69,7 @@ export default function SideNav() {
     setspanSideNav(!spanSideNav);
   }
 
-  return isNotMainRoute  || !isAuth ? (
+  return isNotMainRoute || !isAuth ? (
     <></>
   ) : (
     <>
@@ -118,7 +122,7 @@ export default function SideNav() {
         </button>
         <div className="grid grid-cols-12 md:grid-cols-4 items-center md:gap-5 w-full  mt-16">
           <div className="col-span-1">
-            <Avatar size="sm" name={username||""}/>
+            <Avatar size="sm" name={username || ""} />
           </div>
           <div
             className={clsx(
@@ -126,7 +130,9 @@ export default function SideNav() {
               !spanSideNav && ["md:hidden"]
             )}
           >
-            <span className="font-bold text-blue-primary text-lg capitalize">{username}</span>
+            <span className="font-bold text-blue-primary text-lg capitalize">
+              {username}
+            </span>
           </div>
         </div>
 
@@ -139,6 +145,11 @@ export default function SideNav() {
                 link={link.link}
                 active={active}
                 className="flex items-center justify-center gap-5"
+                onClick={
+                  route.pathname === "/timeline" && link.link === "/timeline"
+                    ? timelineAction
+                    : () => {}
+                }
               >
                 <img
                   className="w-7"

@@ -34,7 +34,7 @@ export default function RegisUsername() {
       } else if (result === "unregister") {
         navigate("/register?error=unregister");
       }
-      setvalid("check")
+      setvalid("check");
     }, 500);
   };
 
@@ -43,18 +43,21 @@ export default function RegisUsername() {
   }, []);
 
   useEffect(() => {
-      if (!loadingCheck && found !== null) {
-        if (found && valid ==='check') {
-          setvalid("found");
-        } else {
-          setvalid("finish");
-        }
+    if (!loadingCheck && found !== null) {
+      if (found && valid === "check") {
+        setvalid("found");
+      } else {
+        setvalid("finish");
       }
+    }
   }, [loadingCheck]);
 
-  
-  if ( valid=== 'netral') {
-    return <Spinner loading={true}/>;
+  if (valid === "netral") {
+    return (
+      <div className="h-screen flex justify-center items-center">
+        <Spinner loading={true} />;
+      </div>
+    );
   }
 
   return (
@@ -100,7 +103,12 @@ export default function RegisUsername() {
               </p>
             )}
             <Button
-              disabled={loadingCheck  || valid === "check" || valid === "found"  || username.length<=6 }
+              disabled={
+                loadingCheck ||
+                valid === "check" ||
+                valid === "found" ||
+                username.length <= 6
+              }
               className="w-full mt-5"
               loading={loading}
             >
