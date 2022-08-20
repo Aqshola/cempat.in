@@ -30,7 +30,9 @@ const LINK_LIST = [
 export default function SideNav() {
   const isAuth = authStore((state) => state.isAuth);
   const username = authStore((state) => state.authData?.username);
-  const { showSideNav, timelineAction } = sideNavStore((state) => state);
+  const { showSideNav, timelineAction, mobileNavTitle } = sideNavStore(
+    (state) => state
+  );
   const [spanSideNav, setspanSideNav] = useState<boolean>(false);
   const [getSize, screenSize] = useScreenSize();
   const route = useLocation();
@@ -90,9 +92,14 @@ export default function SideNav() {
             />
           </button>
         </div>
-        <div className="col-span-7">
+        <div
+          className={clsx(
+            "col-span-7",
+            route.pathname === "/peta" && ["hidden"]
+          )}
+        >
           <h1 className="top-12 text-xl font-semibold font-nunito  capitalize text-black w-full text-center">
-            {/* {route.pathname.slice(1, route.pathname.length)} */}
+            {mobileNavTitle}
           </h1>
         </div>
       </div>

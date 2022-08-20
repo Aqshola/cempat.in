@@ -59,20 +59,26 @@ export function Paginate({ ...props }: Props) {
               props.buttonCallback(0);
             }
           }}
-          disabled={props.pageState.active === 0}
-          className="border-gray-100 w-7 h-7 text-sm flex justify-center items-center rounded-lg  font-nunito"
+          disabled={props.pageState.active === 0 || generatedArray.length === 0}
+          className={clsx(
+            "border-gray-100 w-7 h-7 text-sm flex justify-center items-center rounded-lg  font-nunito",
+            generatedArray.length === 0 && ["opacity-0"]
+          )}
         >
           <HiChevronDoubleLeft className="w-5  h-5" />
         </button>
         <button
-          disabled={props.pageState.active === 0}
+          disabled={props.pageState.active === 0 || generatedArray.length === 0}
           onClick={(e) => {
             _handlePage(props.pageState.active - 1);
             if (props.buttonCallback) {
               props.buttonCallback(props.pageState.active - 1);
             }
           }}
-          className="border-gray-100 w-7 h-7 text-sm flex justify-center items-center rounded-lg  font-nunito"
+          className={clsx(
+            "border-gray-100 w-7 h-7 text-sm flex justify-center items-center rounded-lg  font-nunito",
+            generatedArray.length === 0 && ["opacity-0"]
+          )}
         >
           <MdKeyboardArrowLeft className="w-5  h-5" />
         </button>
@@ -126,7 +132,8 @@ export function Paginate({ ...props }: Props) {
         <button
           disabled={
             props.pageState.active ===
-            Math.ceil(props.totalPage / props.pageState.length) - 1
+              Math.ceil(props.totalPage / props.pageState.length) - 1 ||
+            generatedArray.length === 0
           }
           onClick={(e) => {
             _handlePage(props.pageState.active + 1);
@@ -134,7 +141,10 @@ export function Paginate({ ...props }: Props) {
               props.buttonCallback(props.pageState.active + 1);
             }
           }}
-          className="border-gray-100 w-7 h-7 text-sm flex justify-center items-center rounded-lg  font-nunito"
+          className={clsx(
+            "border-gray-100 w-7 h-7 text-sm flex justify-center items-center rounded-lg  font-nunito",
+            generatedArray.length === 0 && ["opacity-0"]
+          )}
         >
           <MdKeyboardArrowRight className="w-5  h-5" />
         </button>
@@ -151,9 +161,13 @@ export function Paginate({ ...props }: Props) {
           }}
           disabled={
             props.pageState.active ===
-            Math.ceil(props.totalPage / props.pageState.length) - 1
+              Math.ceil(props.totalPage / props.pageState.length) - 1 ||
+            generatedArray.length === 0
           }
-          className="border-gray-100 w-7 h-7 text-sm flex justify-center items-center rounded-lg  font-nunito"
+          className={clsx(
+            "border-gray-100 w-7 h-7 text-sm flex justify-center items-center rounded-lg  font-nunito",
+            generatedArray.length === 0 && ["opacity-0"]
+          )}
         >
           <HiChevronDoubleRight className="w-5  h-5" />
         </button>

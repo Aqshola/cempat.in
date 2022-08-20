@@ -8,11 +8,10 @@ import {
   useReactTable,
   getCoreRowModel,
   flexRender,
-  getPaginationRowModel,
-  getFilteredRowModel,
 } from "@tanstack/react-table";
 import { usePaginate, Paginate } from "components/Pagination/Paginate";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { sideNavStore } from "store/navStore";
 
 type Props = {
   data: Location[];
@@ -47,6 +46,7 @@ const columns: ColumnDef<Location>[] = [
 ];
 
 export default function LocationMode({ screenSize, ...props }: Props) {
+  const { setMobileNavTitle } = sideNavStore((state) => state);
   const [dataTable, setDataTable] = useState(() => [...props.data]);
   const [pageState, handlerPage] = usePaginate();
   const [searchValue, setsearchValue] = useState<string>("");
@@ -63,6 +63,10 @@ export default function LocationMode({ screenSize, ...props }: Props) {
 
   const queryPage = searchParams.get("page");
   const [searchPageLength, setsearchPageLength] = useState<number>(0);
+
+  useEffect(() => {
+    setMobileNavTitle("Tempat");
+  }, []);
 
   useEffect(() => {
     setDataTable([...props.data]);

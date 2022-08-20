@@ -3,31 +3,36 @@ import React, { useEffect, useState } from "react";
 
 import { authStore } from "store/authStore";
 
-import { Story, Location } from "types/types";
+import { Story, Location, ApiLocation } from "types/types";
 import StoryCard from "components/Cerita/StoryCard";
 
 import useScreenSize from "hooks/helper/useScreenSize";
 
 import LocationMode from "components/Cerita/LocationMode";
-import {useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import StoryMode from "components/Cerita/StoryMode";
 import HelmetTitle from "components/Helper/HelmetTitle";
 import useGetLocations from "hooks/cerita/useGetLocations";
-
+import {
+  getSessionStorage,
+  setSessionStorage,
+} from "hooks/helper/useSessionStorage";
+import useDelete from "hooks/cerita/useDelete";
 
 function Cerita() {
   const [storyList, setstoryList] = useState<Story[]>([]);
   const [locationList, setlocationList] = useState<Location[]>([]);
   const user_id = authStore((state) => state.authData?.user_id);
   const navigate = useNavigate();
+  const [deleteStory] = useDelete();
 
   const [searchParams] = useSearchParams();
   const listMode = searchParams.get("mode");
 
   const [getSize, screenSize] = useScreenSize();
   const [getUserStory, data, loading] = useUserStory();
-  const [getUserLocationStory, dataLocation, loadingLocation] =useGetLocations();
-  
+  const [getUserLocationStory, dataLocation, loadingLocation] =
+    useGetLocations();
 
   useEffect(() => {
     getSize();
@@ -54,9 +59,20 @@ function Cerita() {
     }
   }, [loadingLocation]);
 
-  const deleteCallback = (id: string, place_name:string) => {
+  const deleteCallback = (id: string, place_name: string) => {
+    deleteStory(id, user_id || "");
     setstoryList(storyList.filter((story) => story.id !== id));
-    setlocationList(locationList.filter((location) => location.place_name !== place_name));
+    setlocationList(
+      locationList.filter((location) => location.place_name !== place_name)
+    );
+
+    const sessionData = getSessionStorage<ApiLocation[]>("list_location");
+    if (sessionData) {
+      setSessionStorage(
+        "list_locatioin",
+        sessionData.filter((data) => data.id !== Number(data.id))
+      );
+    }
   };
 
   return (

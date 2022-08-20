@@ -27,8 +27,7 @@ import { authStore } from "store/authStore";
 // notice the exclamation point in the import.
 // @ts-ignore
 // eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
-// mapboxgl.workerClass =
-//   require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
+mapboxgl.workerClass =require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
 /*
  *TODO: Fetch location by bounding box ✅

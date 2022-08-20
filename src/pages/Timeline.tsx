@@ -8,12 +8,10 @@ import {
   getSessionStorage,
 } from "hooks/helper/useSessionStorage";
 import useRefreshTimeline from "hooks/timeline/useRefreshTimeline";
-import { BiRefresh } from "react-icons/bi";
-import Button from "components/Button/Button";
 import { sideNavStore } from "store/navStore";
 
 export default function Timeline() {
-  const { setTimelineAction } = sideNavStore((state) => state);
+  const { setTimelineAction,setMobileNavTitle } = sideNavStore((state) => state);
   const listParent = useRef<HTMLDivElement>(null);
   const [currentScroll, setcurrentScroll] = useState<number>(-1);
   const [touchStart, settouchStart] = useState({
@@ -117,6 +115,7 @@ export default function Timeline() {
   }, [loadingRefresh]);
 
   useEffect(() => {
+    setMobileNavTitle("Timeline")
     setTimelineAction(refreshDesktop);
     let sessionTimeline = getSessionStorage("timeline") as Story[];
     if (!sessionTimeline || sessionTimeline.length === 0) {

@@ -18,6 +18,8 @@ import { CgClose } from "react-icons/cg";
 import useLiking from "hooks/cerita/useLiking";
 import useGetLiking from "hooks/cerita/useGetLiking";
 import toast from "react-hot-toast";
+import formatLikeNumber from "hooks/helper/formatLikeNumber";
+import LikeAction from "./DetailSection/LikeAction";
 
 type Props = {
   onOutsideEditor: () => void;
@@ -275,57 +277,14 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
               {!edit && (
                 <div className="mt-10 flex justify-between">
                   {isAuth && (
-                    <div className="flex gap-2 w-full">
-                      <Button
-                        loading={loadingLike || loadingLiking}
-                        size="sm"
-                        variant="outline-gray"
-                        onClick={() => {
-                          _postLike("like");
-                        }}
-                      >
-                        <span className="flex items-center gap-2">
-                          <img
-                            src={`
-                              /icon/${
-                                likingData.status === "like"
-                                  ? "filled"
-                                  : "outline"
-                              }/like-logo-${
-                              likingData.status === "like"
-                                ? "filled"
-                                : "outline"
-                            }.svg`}
-                            alt="like"
-                          />
-                          {likingData.like_count}
-                        </span>
-                      </Button>
-                      <Button
-                        loading={loadingLike || loadingLiking}
-                        size="sm"
-                        variant="outline-gray"
-                        onClick={() => {
-                          _postLike("unlike");
-                        }}
-                      >
-                        <span className="flex items-center gap-2">
-                          <img
-                            src={`/icon/${
-                              likingData.status === "unlike"
-                                ? "filled"
-                                : "outline"
-                            }/unlike-logo-${
-                              likingData.status === "unlike"
-                                ? "filled"
-                                : "outline"
-                            }.svg`}
-                            alt="unlike"
-                          />
-                          {likingData.unlike_count}
-                        </span>
-                      </Button>
-                    </div>
+                    <LikeAction
+                      likeCallback={() => _postLike("like")}
+                      unlikeCallback={() => _postLike("unlike")}
+                      likeCount={likingData.like_count}
+                      unlikeCount={likingData.unlike_count}
+                      loading={loadingLike || loadingLiking}
+                      status={likingData.status}
+                    />
                   )}
                   <div className="flex justify-end w-full">
                     <Button size="sm" variant="vanilla">
@@ -473,57 +432,14 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
               {!edit && (
                 <div className="mt-10 flex justify-between">
                   {isAuth && (
-                    <div className="flex gap-2 w-full">
-                      <Button
-                        loading={loadingLike || loadingLiking}
-                        size="sm"
-                        variant="outline-gray"
-                        onClick={() => {
-                          _postLike("like");
-                        }}
-                      >
-                        <span className="flex items-center gap-2">
-                          <img
-                            src={`
-                              /icon/${
-                                likingData.status === "like"
-                                  ? "filled"
-                                  : "outline"
-                              }/like-logo-${
-                              likingData.status === "like"
-                                ? "filled"
-                                : "outline"
-                            }.svg`}
-                            alt="like"
-                          />
-                          {likingData.like_count}
-                        </span>
-                      </Button>
-                      <Button
-                        loading={loadingLike || loadingLiking}
-                        size="sm"
-                        variant="outline-gray"
-                        onClick={() => {
-                          _postLike("unlike");
-                        }}
-                      >
-                        <span className="flex items-center gap-2">
-                          <img
-                            src={`/icon/${
-                              likingData.status === "unlike"
-                                ? "filled"
-                                : "outline"
-                            }/unlike-logo-${
-                              likingData.status === "unlike"
-                                ? "filled"
-                                : "outline"
-                            }.svg`}
-                            alt="unlike"
-                          />
-                          {likingData.unlike_count}
-                        </span>
-                      </Button>
-                    </div>
+                    <LikeAction
+                      likeCallback={() => _postLike("like")}
+                      unlikeCallback={() => _postLike("unlike")}
+                      likeCount={likingData.like_count}
+                      unlikeCount={likingData.unlike_count}
+                      loading={loadingLike || loadingLiking}
+                      status={likingData.status}
+                    />
                   )}
                   <div className="flex w-full justify-end">
                     <Button size="sm" variant="vanilla" onClick={_shareStory}>

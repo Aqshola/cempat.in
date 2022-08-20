@@ -21,7 +21,7 @@ export default function TimelineList({...props}:Props) {
   return (
     <div
     onClick={_navigateCerita}
-      className="group transition-all peer hover:-translate-y-1 cursor-pointer rounded px-1 hover:bg-green-primary  flex w-full border-b-2 py-2 border-green-primary gap-5 items-start text-sm bg-white"
+      className="group md:w-1/2 md:mx-auto transition-all peer hover:-translate-y-1 cursor-pointer rounded px-1 hover:bg-green-primary  flex w-full border-b-2 py-2 border-green-primary gap-5 items-start text-sm bg-white"
     >
       <div className="font-nunito w-7 h-7 font-bold bg-blue-primary rounded-full flex justify-center items-center text-white">
         {props.username.charAt(0).toUpperCase()}

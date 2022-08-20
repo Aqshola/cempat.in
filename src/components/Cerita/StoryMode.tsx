@@ -13,6 +13,7 @@ import { usePaginate, Paginate } from "components/Pagination/Paginate";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import parseDateString from "hooks/helper/parseDateString";
 import { useAnimation, motion } from "framer-motion";
+import { sideNavStore } from "store/navStore";
 
 type Props = {
   data: Story[];
@@ -23,6 +24,7 @@ type Props = {
 export default function StoryMode({ screenSize, ...props }: Props) {
   const animation = useAnimation();
   const navigate = useNavigate();
+  const { setMobileNavTitle } = sideNavStore((state) => state);
 
   const columns: ColumnDef<Story>[] = [
     {
@@ -97,6 +99,10 @@ export default function StoryMode({ screenSize, ...props }: Props) {
     getCoreRowModel: getCoreRowModel(),
     debugTable: true,
   });
+
+  useEffect(() => {
+    setMobileNavTitle("Cerita");
+  }, []);
 
   useEffect(() => {
     setDataTable([...props.data]);
