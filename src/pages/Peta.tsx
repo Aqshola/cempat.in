@@ -11,7 +11,7 @@ import useGet from "hooks/cerita/useGet";
 import { ApiLocation, Location } from "types/types";
 import DetailStory from "components/Peta/DetailStory";
 import removeDuplicate from "hooks/helper/useRemoveDuplicate";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 import {
   setSessionStorage,
@@ -254,6 +254,14 @@ export default function Peta() {
       <Toaster />
       <div className="h-screen" id="nav-btn" aria-label="nav-btn">
         <Search handleSearch={viewLocation} />
+
+        {!isAuth && (
+          <div className="absolute left-5 md:left-10 top-10 w-64 md:w-auto z-10">
+            <Link to={"/"} className=" rounded-md p-2 font-bold font-nunito bg-white w-10 h-10 flex" >
+              <img className="w-full" src="/icon/filled/cempatin-logo-filled.svg" alt="cempatin logo" />
+            </Link>
+          </div>
+        )}
 
         <MapGL
           onLoad={() => {

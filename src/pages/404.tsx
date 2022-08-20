@@ -1,12 +1,11 @@
 import Button from "components/Button/Button";
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { authStore } from "store/authStore";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
-type Props = {};
+
+
 
 export default function NotFound() {
-  const isLogin = authStore((state) => state.isAuth);
   const navigate=useNavigate();
   return (
     <div className="h-screen flex items-center  flex-col w-full">
@@ -24,7 +23,6 @@ export default function NotFound() {
           Kembali ke awal
         </Button>
       </div>
-      {/* <p className="mt-2">Yuk balik ke {isLogin?<Link className="underline hover:bg-green-primary transition-all p-0.5 rounded-sm hover:text-white hover:no-underline" to={"/peta"}>Peta</Link>:<Link className="underline hover:bg-green-primary transition-all p-0.5 rounded-sm hover:text-white hover:no-underline" to={"/"}>Halaman awal</Link>}</p> */}
     </div>
   );
 }

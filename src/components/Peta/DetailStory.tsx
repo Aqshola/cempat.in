@@ -275,7 +275,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
               {!edit && (
                 <div className="mt-10 flex justify-between">
                   {isAuth && (
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 w-full">
                       <Button
                         loading={loadingLike || loadingLiking}
                         size="sm"
@@ -473,7 +473,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
               {!edit && (
                 <div className="mt-10 flex justify-between">
                   {isAuth && (
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 w-full">
                       <Button
                         loading={loadingLike || loadingLiking}
                         size="sm"

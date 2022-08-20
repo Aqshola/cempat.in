@@ -34,9 +34,6 @@ function App() {
             path="/peta"
             element={
                 <Peta />
-              // <PrivateRoute loading={loading}>
-              //   <Peta />
-              // </PrivateRoute>
             }
           />
           <Route
@@ -100,7 +97,6 @@ function App() {
             }
           />
 
-          {/* <Route path="/404" element={<NotFound />} /> */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>
