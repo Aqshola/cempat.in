@@ -1,7 +1,8 @@
 import Button from "components/Button/Button";
 import { Link } from "react-router-dom";
 import MapGL from "react-map-gl";
-
+import 'mapbox-gl/dist/mapbox-gl.css';
+import mapboxgl from 'mapbox-gl';
 import "mapbox-gl/dist/mapbox-gl.css";
 import { motion } from "framer-motion";
 import {

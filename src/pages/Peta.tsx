@@ -22,6 +22,8 @@ import UserSection from "components/Peta/UserSection";
 import HelmetTitle from "components/Helper/HelmetTitle";
 import toast, { Toaster } from "react-hot-toast";
 import { authStore } from "store/authStore";
+import mapboxgl from 'mapbox-gl';
+import "mapbox-gl/dist/mapbox-gl.css";
 
 // The following is required to stop "npm build" from transpiling mapbox code.
 // notice the exclamation point in the import.
