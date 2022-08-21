@@ -9,9 +9,10 @@ import useLogout from "hooks/auth/useLogout";
 import { Link } from "react-router-dom";
 import supabase from "lib/supabase";
 import FormInput from "components/Input/FormInput";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function ForgotPassword() {
-  const [forgotPassword, error, loading] = useForgotPassword();
+  const [forgotPassword, data, loading] = useForgotPassword();
   const [updatePassword, errorUpdate, loadingUpdate] = useUpdatePassword();
 
   const [email, setemail] = useState<string>("");
@@ -31,25 +32,19 @@ export default function ForgotPassword() {
 
     if (stepForgot === "email") {
       forgotPassword(email);
-      if (!loading && !error) {
-        setstepForgot("email-sent");
-      }
+      // if (!loading && !error) {
+      //   setstepForgot("email-sent");
+      // }
     } else if (stepForgot === "new-password") {
       if (pasword.new_pass === pasword.confirm_pass) {
         updatePassword(recoveryToken, pasword.new_pass);
-        console.log(errorUpdate);
         if (!loadingUpdate && !errorUpdate) {
           setstepForgot("password-finish");
         }
       } else {
-        // toast("Konfirmasi sandi harus sama dengan kata sandi baru", {
-        //   position: "top-center",
-        //   hideProgressBar: true,
-        //   autoClose: 5000,
-        //   closeOnClick: true,
-        //   draggable: true,
-        //   progress: undefined,
-        // });
+        toast.error(
+          "Konfirmasi sandi harus sama dengan kata sandi yang baru ya"
+        );
       }
     }
   };
@@ -86,29 +81,21 @@ export default function ForgotPassword() {
   }, []);
 
   useEffect(() => {
-    if (!loading && error) {
-      // toast("Yah, user tidak ditemukan", {
-      //   position: "top-center",
-      //   hideProgressBar: true,
-      //   autoClose: 5000,
-      //   closeOnClick: true,
-      //   draggable: true,
-      //   progress: undefined,
-      // });
-      setstepForgot("email");
+    if (!loading) {
+      if (data.error && !data.data) {
+        toast.error("Yah, email kamu gak ketemu nih 😟");
+        setstepForgot("email");
+      }
+
+      if(!data.error && data.data){
+        setstepForgot("email-sent");
+      }
     }
-  }, [loading, error]);
+  }, [loading]);
 
   useEffect(() => {
-    if ((!loading && error) || (!loadingUpdate && errorUpdate)) {
-      // toast("Terjadi kesalahan saat update kata sandi", {
-      //   position: "top-center",
-      //   hideProgressBar: true,
-      //   autoClose: 5000,
-      //   closeOnClick: true,
-      //   draggable: true,
-      //   progress: undefined,
-      // });
+    if (!loadingUpdate && errorUpdate) {
+      toast.error("yah, ada kesalahan sistem saat update sandi");
       setstepForgot("email");
     }
   }, [loadingUpdate, errorUpdate]);
@@ -118,6 +105,7 @@ export default function ForgotPassword() {
       className="min-h-screen w-full flex items-center flex-col"
       onSubmit={_handleForgot}
     >
+      <Toaster />
       {stepForgot === "email" && (
         <EmailStep
           loading={loading}
@@ -138,9 +126,7 @@ export default function ForgotPassword() {
         />
       )}
 
-      {stepForgot === "password-finish" && (
-        <PasswordFinish/>
-      )}
+      {stepForgot === "password-finish" && <PasswordFinish />}
 
       {/* <ToastContainer bodyClassName={"font-semibold text-red-500"} /> */}
     </form>
@@ -240,16 +226,25 @@ function NewPassword({ ...props }: newPassword) {
 }
 
 function PasswordFinish() {
-  return (<>
-    <img src="/illust/reset-success-illust.png" aria-label="Lupa password" className="mt-5" />
-    <h1 className="text-center text-xl md:text-3xl font-bold font-nunito">
-      Yey, reset password berhasil
-    </h1>
-    <p className="text-center font-light md:text-xl mt-3 font-nunito">
-      Kamu udah bisa lanjut ya sekarang
-    </p>
-    <Link to={"/login"} className="mt-10 font-medium text-center hover:underline">
-      <Button>Login</Button>
-    </Link>
-  </>);
+  return (
+    <>
+      <img
+        src="/illust/reset-success-illust.png"
+        aria-label="Lupa password"
+        className="mt-5"
+      />
+      <h1 className="text-center text-xl md:text-3xl font-bold font-nunito">
+        Yey, reset password berhasil
+      </h1>
+      <p className="text-center font-light md:text-xl mt-3 font-nunito">
+        Kamu udah bisa lanjut ya sekarang
+      </p>
+      <Link
+        to={"/login"}
+        className="mt-10 font-medium text-center hover:underline"
+      >
+        <Button>Login</Button>
+      </Link>
+    </>
+  );
 }

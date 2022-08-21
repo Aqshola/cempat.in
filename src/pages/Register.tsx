@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { BsGoogle } from "react-icons/bs";
-import Landmark from "components/Icon/Landmark";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import useRegis from "hooks/auth/useRegis";
-import ErrorBox from "components/Error/ErrorBox";
 import FormInput from "components/Input/FormInput";
 import Button from "components/Button/Button";
 import splitbee from "@splitbee/web";
@@ -65,9 +62,10 @@ function Register() {
             Selamat datang
           </h1>
           <div className="mt-5 mx-auto bg-white py-10 px-5 rounded-lg shadow-auth-box">
-            <Alert show={!!errorUnregister || !!found} variant="danger">
+            <Alert show={!!errorUnregister || !!found || !!error} variant="danger">
               {!!errorUnregister && "Yah, akun belum kedaftar nih"}
               {found && "Yah, username udah dipake"}
+              {error && "Email ini udah dipake ya"}
             </Alert>
             <form className="space-y-5 mt-5" onSubmit={_register}>
               <FormInput
@@ -110,12 +108,14 @@ function Register() {
                 className="w-full"
                 size="lg"
                 disabled={
+                  loading||
                   loadingCheck ||
                   found ||
                   formData.username.trim() === "" ||
                   formData.email.trim() === "" ||
                   formData.password.trim() === ""
                 }
+                loading={loading}
               >
                 Register
               </Button>

@@ -18,7 +18,6 @@ import { CgClose } from "react-icons/cg";
 import useLiking from "hooks/cerita/useLiking";
 import useGetLiking from "hooks/cerita/useGetLiking";
 import toast from "react-hot-toast";
-import formatLikeNumber from "hooks/helper/formatLikeNumber";
 import LikeAction from "./DetailSection/LikeAction";
 
 type Props = {

@@ -5,19 +5,22 @@ export async function checkUsername(username: string): Promise<boolean> {
   const { data } = await supabase
     .from("user")
     .select("username")
-    .eq("username", username)
-    .single();
+    .eq("username", username);
 
-  return !!data;
+  if (data) {
+    return data.length > 0;
+  } else {
+    return false;
+  }
 }
 
 export function useCheckUsername(): [
   (username: string) => Promise<void>,
-  boolean|null,
+  boolean | null,
   boolean
 ] {
   const [loading, setloading] = useState<boolean>(false);
-  const [found, setfound] = useState<boolean|null>(null);
+  const [found, setfound] = useState<boolean | null>(null);
 
   return [
     async (username: string) => {
@@ -27,12 +30,12 @@ export function useCheckUsername(): [
         .select("username")
         .eq("username", username);
 
-      if(data && data.length>0){
+      if (data && data.length > 0) {
         setfound(true);
-      }else{
-        setfound(false)
+      } else {
+        setfound(false);
       }
-      setloading(false)
+      setloading(false);
     },
     found,
     loading,

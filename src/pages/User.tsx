@@ -1,13 +1,12 @@
 import Avatar from "components/Avatar/Avatar";
 import React, { useEffect } from "react";
 import Button from "components/Button/Button";
-import DesktopCeritaSection from "components/User/DesktopCeritaSection";
-import DesktopTempatSection from "components/User/DesktopTempatSection";
 import MobileCeritaSection from "components/User/MobileCeritaSection";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import clsx from "clsx";
 import MobileTempatSection from "components/User/MobileTempatSection";
 import useDetailUser from "hooks/user/useDetailUser";
+import { sideNavStore } from "store/navStore";
 
 export default function User() {
   const [searchParam] = useSearchParams();
@@ -15,11 +14,17 @@ export default function User() {
   const navigate = useNavigate();
   const { username } = useParams();
   const [getDetailUser, result, loading] = useDetailUser();
+  const { setMobileNavTitle } = sideNavStore((state) => state);
 
   function _handleMode(mode: string) {
     navigate(`?mode=${mode}`);
   }
 
+
+  useEffect(() => {
+    setMobileNavTitle("")
+  }, [])
+  
   useEffect(() => {
     if (username) {
       getDetailUser(username);

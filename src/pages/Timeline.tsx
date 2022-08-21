@@ -66,7 +66,7 @@ export default function Timeline() {
   function isPullDown(dY: number, dX: number) {
     return (
       dY < 0 &&
-      ((Math.abs(dX) <= 100 && Math.abs(dY) >= 200) ||
+      ((Math.abs(dX) <= 100 && Math.abs(dY) >= 100) ||
         (Math.abs(dX) / Math.abs(dY) <= 0.3 && dY >= 60))
     );
   }

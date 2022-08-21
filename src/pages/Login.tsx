@@ -97,7 +97,7 @@ function Login() {
               >
                 Lupa Password ?
               </Link>
-              <Button loading={loading} className="w-full" size="lg">
+              <Button disabled={loading} loading={loading} className="w-full" size="lg">
                 Login
               </Button>
             </form>

@@ -105,7 +105,7 @@ export default function SideNav() {
       </div>
       <aside
         className={clsx(
-          "sidenav-animate  h-full transition-all   px-2 min-h-screen rounded-tb-3xl rounded-tr-3xl bg-white z-50 pt-12 flex flex-col ",
+          "sidenav-animate  duration-500  h-full transition-all   px-2 min-h-screen rounded-tb-3xl rounded-tr-3xl bg-white z-50 pt-12 flex flex-col ",
           spanSideNav
             ? ["md:w-64 w-full absolute"]
             : ["md:w-20 w-0 overflow-hidden px-0 md:px-2 absolute"],

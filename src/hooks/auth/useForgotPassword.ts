@@ -1,33 +1,62 @@
 import { ApiError } from "@supabase/supabase-js";
 import supabase from "lib/supabase";
 import React, { useState } from "react";
-
+import { Result } from "types/types";
 
 export function useForgotPassword(): [
   (email: string) => Promise<void>,
-  ApiError | null,
+  Result<boolean | null, ApiError | null>,
   boolean
 ] {
   const [loading, setloading] = useState<boolean>(false);
-  const [error, seterror] = useState<ApiError | null>(null);
-  
+  const [result, setresult] = useState<Result<boolean | null, ApiError | null>>(
+    {
+      data: null,
+      error: null,
+    }
+  );
 
   return [
     async (email: string) => {
       setloading(true);
+      const urlOrigin = window.location.origin;
 
-      const urlOrigin=window.location.origin
-      const { error } = await supabase.auth.api.resetPasswordForEmail(email, {
-        redirectTo: `${urlOrigin}/lupa-sandi`,
-      });
+      const { data } = await supabase
+        .from("user")
+        .select("email")
+        .eq("email", email);
 
-      if (error) {
-        seterror(error);
+      console.log(data)
+
+      if (!data || data.length === 0) {
+        setresult({
+          data: false,
+          error: {
+            message: "Email tidak ditemukan",
+            status: 400,
+          },
+        });
+      } else {
+        const { error } = await supabase.auth.api.resetPasswordForEmail(email, {
+          redirectTo: `${urlOrigin}/lupa-sandi`,
+        });
+
+        if (error) {
+          setresult({
+            data: false,
+            error,
+          });
+        } else {
+          setresult({
+            data: true,
+            error: null,
+          });
+        }
       }
 
       setloading(false);
     },
-    error,
+    result,
     loading,
   ];
 }

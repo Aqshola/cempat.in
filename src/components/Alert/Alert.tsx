@@ -68,7 +68,7 @@ export default function Alert({ show, children, variant = "info" }: Props) {
             {variant === "success" && (
               <IoMdCheckmarkCircle className="text-white w-5 h-5" />
             )}
-            <span className="ml-2">{children}</span>
+            <span className="ml-2 md:text-base text-sm">{children}</span>
             <button onClick={() => setshowAlert(false)} className=" ml-auto">
               <IoMdClose className="w-5 h-5" />
             </button>

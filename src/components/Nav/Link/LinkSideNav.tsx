@@ -1,8 +1,7 @@
 import clsx from "clsx";
-import { AnimatePresence, AnimateSharedLayout, motion } from "framer-motion";
-import React, { useEffect } from "react";
-import { IconType } from "react-icons";
-import { Link, useLocation } from "react-router-dom";
+import { AnimatePresence,  motion } from "framer-motion";
+import React from "react";
+import { Link} from "react-router-dom";
 
 type Props = {
   link: string;
@@ -23,7 +22,7 @@ function LinkSideNav({
     <AnimatePresence>
       <Link
         to={link}
-        className="relative w-fit h-fit"
+        className="relative  w-full flex h-fit"
         onClick={() => {
           if (onClick) {
             onClick();
