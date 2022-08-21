@@ -256,6 +256,9 @@ export default function StoryMode({ screenSize, ...props }: Props) {
 
       {screenSize < 720 && (
         <div className="mt-5 space-y-3 min-h-[300px]">
+          {props.data.length === 0 && (
+            <div className="px-8 py-3 text-center tracking-wide" >Yah,kamu belum punya cerita nih 😟</div>
+          )}
           {props.data.length > 0 &&
             props.data
               .filter((item) =>

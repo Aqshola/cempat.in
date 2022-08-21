@@ -18,6 +18,7 @@ import {
   setSessionStorage,
 } from "hooks/helper/useSessionStorage";
 import useDelete from "hooks/cerita/useDelete";
+import clsx from "clsx";
 
 function Cerita() {
   const [storyList, setstoryList] = useState<Story[]>([]);
@@ -31,8 +32,9 @@ function Cerita() {
 
   const [getSize, screenSize] = useScreenSize();
   const [getUserStory, data, loading] = useUserStory();
-  const [getUserLocationStory, dataLocation, loadingLocation] =
-    useGetLocations();
+  const [getUserLocationStory, dataLocation, loadingLocation] =useGetLocations();
+
+  const [currentScroll, setcurrentScroll] = useState<number>(-1);
 
   useEffect(() => {
     getSize();
@@ -78,7 +80,15 @@ function Cerita() {
   return (
     <>
       <HelmetTitle title="Cerita" />
-      <section className="h-screen py-32 md:py-12 px-5 w-full md:px-14 overflow-y-hidden transition-all">
+      <section
+        onScroll={(e) => {
+          setcurrentScroll(e.currentTarget.scrollTop);
+        }}
+        className={clsx(
+          "min-h-screen md:h-screen py-32 md:py-12 px-5 w-full md:px-14 overflow-y-hidden transition-all",
+          currentScroll > 0 && [" bg-white z-50"]
+        )}
+      >
         <h1 className="top-12 text-xl font-semibold font-nunito  capitalize text-black w-full text-center hidden md:inline">
           Cerita
         </h1>

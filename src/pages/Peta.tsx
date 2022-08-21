@@ -86,6 +86,9 @@ export default function Peta() {
 
   const [userSectionView, setuserSectionView] = useState<boolean>(false);
 
+  const [isClash, setisClash] = useState(false)
+
+
   function _saveCallback({ lat, lng, id, place_name }: ApiLocation) {
     setlistLocation([...listLocation, { lat, lng, id, place_name }]);
     setpickLocation(false);
@@ -101,12 +104,18 @@ export default function Peta() {
 
     const detail = mapGlRef.current?.queryRenderedFeatures(obj.point);
 
-    if (pickLocation) {
-      setpickedLocation({
-        lng,
-        lat,
-        place_name: detail ? detail[0]?.properties?.name : null,
-      });
+    if(!isClash){
+      if (pickLocation) {
+        setpickedLocation({
+          lng,
+          lat,
+          place_name: detail ? detail[0]?.properties?.name : null,
+        });
+      }
+    }else{
+      setpickedLocation(null)
+      
+      setisClash(false)
     }
   }
 
@@ -309,6 +318,9 @@ export default function Peta() {
               onClick={() => {
                 if (!pickLocation) {
                   _handleStoryView(loc.jml_cerita || 0, loc);
+                }else{
+                  toast.error("Disini udah ada cerita, jangan nimpa ya")
+                  setisClash(true)
                 }
               }}
               lat={loc.lat}

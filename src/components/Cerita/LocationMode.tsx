@@ -99,19 +99,17 @@ export default function LocationMode({ screenSize, ...props }: Props) {
   }
 
   function _searchLokasi(e: React.ChangeEvent<HTMLInputElement>) {
-
     setsearchValue(e.target.value);
-    if(e.target.value.trim() === ""){
+    if (e.target.value.trim() === "") {
       setsearchPageLength(props.data.length);
-    }else{
+    } else {
       let totalSearchLength = props.data.filter((item) => {
-        let lokasi=item.place_name || ""
+        let lokasi = item.place_name || "";
         return lokasi.toLowerCase().includes(searchValue.toLowerCase());
       }).length;
-  
+
       setsearchPageLength(Math.ceil(totalSearchLength / pageState.length));
     }
-    
   }
 
   return (
@@ -208,19 +206,27 @@ export default function LocationMode({ screenSize, ...props }: Props) {
 
       {screenSize < 720 && (
         <div className="mt-5 space-y-3 flex flex-col gap-2  min-h-[300px]">
-          {props.data
-            .filter((item) =>
-              item.place_name?.toLowerCase().includes(searchValue.toLowerCase())
-            )
-            .slice(
-              pageState.active * pageState.length,
-              pageState.active * pageState.length + pageState.length
-            )
-            .map((item, index) => (
-              <Link key={index} to={`/peta?lat=${item.lat}&&lng=${item.lng}`}>
-                <BoxMobile title={item.place_name} />
-              </Link>
-            ))}
+          {props.data.length === 0 && (
+            <div className="px-8 py-3 text-center tracking-wide">
+              Yah,kamu pernah kemana-mana nih 😟
+            </div>
+          )}
+          {props.data.length > 0 &&
+            props.data
+              .filter((item) =>
+                item.place_name
+                  ?.toLowerCase()
+                  .includes(searchValue.toLowerCase())
+              )
+              .slice(
+                pageState.active * pageState.length,
+                pageState.active * pageState.length + pageState.length
+              )
+              .map((item, index) => (
+                <Link key={index} to={`/peta?lat=${item.lat}&&lng=${item.lng}`}>
+                  <BoxMobile title={item.place_name} />
+                </Link>
+              ))}
         </div>
       )}
       <Paginate
