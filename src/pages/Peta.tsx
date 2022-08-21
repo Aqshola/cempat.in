@@ -319,7 +319,7 @@ export default function Peta() {
                 if (!pickLocation) {
                   _handleStoryView(loc.jml_cerita || 0, loc);
                 }else{
-                  toast.error("Disini udah ada cerita, jangan nimpa ya")
+                  toast.error("Eitsss, disini udah ada cerita. jangan nimpa ya 🙏")
                   setisClash(true)
                 }
               }}
