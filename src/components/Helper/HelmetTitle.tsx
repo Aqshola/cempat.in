@@ -25,6 +25,7 @@ export default function HelmetTitle({ ...props }: Props) {
       {props.description && (
         <meta property="twitter:description" content={props.description} />
       )}
+      <meta name="google-site-verification" content="RY2HgnHgyC1yMJw8lzudKTK5vxraRtHxYBhTNUYF000" />
     </Helmet>
   );
 }
