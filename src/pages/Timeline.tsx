@@ -79,8 +79,8 @@ export default function Timeline() {
     if (listParent.current) {
       const { scrollTop, scrollHeight, clientHeight } = listParent.current;
       const bottomPosition = scrollTop + clientHeight;
-
-      if (bottomPosition >= scrollHeight) {
+      
+      if (bottomPosition >=  (scrollHeight-10)) {
         let sessionTimeline = getSessionStorage("timeline") as Story[];
         let timeout = setTimeout(() => {
           getList(sessionTimeline.length || 0);
@@ -162,7 +162,7 @@ export default function Timeline() {
         currentScroll > 0 && [" bg-white z-50"]
       )}
     >
-      <div className="md:flex gap-5 justify-center w-full items-center hidden">
+      <div className="md:flex gap-5 justify-center bg-white transition-all w-full items-center hidden">
         <h1 className="top-12 text-xl font-semibold font-nunito  capitalize text-black hidden md:inline">
           Timeline
         </h1>
@@ -177,7 +177,7 @@ export default function Timeline() {
         )}
       ></span>
 
-      <div className="flex flex-col gap-4 w-full md:mt-10">
+      <div className="flex flex-col space-y-4 w-full md:mt-10">
         {timelineData.map((el) => (
           <TimelineList
             key={el.id}

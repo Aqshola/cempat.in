@@ -58,17 +58,13 @@ export default function EditorSection({
 
   function _createStory(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    let plainContent = formData.content.getCurrentContent().getPlainText();
     if (user) {
-      if (
-        convertToRaw(formData.content.getCurrentContent()).blocks.every(
-          (b) => b.text.trim() === ""
-        )
-      ) {
-        
-        toast.error("Tulis cerita dulu ya",{
-          position:"top-center",
-          className:"bg-green-primary font-poppins font-medium",
-        })
+      if (plainContent.trim() === "" || formData.title.trim()==="") {
+        toast.error("Eitts, tulis judul dan cerita dulu ya", {
+          position: "top-center",
+          className: "bg-green-primary font-poppins font-medium",
+        });
       } else {
         create(
           {
@@ -85,19 +81,18 @@ export default function EditorSection({
   }
 
   useEffect(() => {
-    
-      if (!loading && !result.error) {
-        if (result.data) {
-          showSideNav(false);
-          let res = result.data[0];
-          onSaveEditor({ ...res });
-          props.onCloseEditor();
-          setformData({
-            title: "",
-            content: EditorState.createEmpty(),
-          });
-        }
+    if (!loading && !result.error) {
+      if (result.data) {
+        showSideNav(false);
+        let res = result.data[0];
+        onSaveEditor({ ...res });
+        props.onCloseEditor();
+        setformData({
+          title: "",
+          content: EditorState.createEmpty(),
+        });
       }
+    }
   }, [loading, result.error]);
 
   useEffect(() => {
@@ -159,11 +154,7 @@ export default function EditorSection({
 
   return (
     <BottomSheet
-      snapPoints={({ maxHeight }) => [
-        maxHeight - maxHeight / 10,
-        maxHeight / 4,
-        maxHeight * 0.6,
-      ]}
+      snapPoints={({ maxHeight }) => [maxHeight - maxHeight / 10, 400]}
       open={props.showEditor}
       className="w-full z-50 absolute bottom-0 py-5"
       blocking={true}

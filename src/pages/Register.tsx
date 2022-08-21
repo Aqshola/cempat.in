@@ -35,6 +35,9 @@ function Register() {
 
   function _register(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    if (formData.password.length < 6) {
+    }
     regis(formData.email, formData.password, formData.username);
     splitbee.user.set({
       email: formData.email,
@@ -62,13 +65,17 @@ function Register() {
             Selamat datang
           </h1>
           <div className="mt-5 mx-auto bg-white py-10 px-5 rounded-lg shadow-auth-box">
-            <Alert show={!!errorUnregister || !!found || !!error} variant="danger">
+            <Alert
+              show={!!errorUnregister || !!found || !!error}
+              variant="danger"
+            >
               {!!errorUnregister && "Yah, akun belum kedaftar nih"}
               {found && "Yah, username udah dipake"}
               {error && "Email ini udah dipake ya"}
             </Alert>
             <form className="space-y-5 mt-5" onSubmit={_register}>
               <FormInput
+                minLength={4}
                 name="username"
                 debounce={true}
                 debounceCallback={() => checkUsername(formData.username)}
@@ -103,12 +110,13 @@ function Register() {
                 type={"password"}
                 label="Password"
                 name="password"
+                minLength={6}
               />
               <Button
                 className="w-full"
                 size="lg"
                 disabled={
-                  loading||
+                  loading ||
                   loadingCheck ||
                   found ||
                   formData.username.trim() === "" ||

@@ -19,6 +19,7 @@ import useLiking from "hooks/cerita/useLiking";
 import useGetLiking from "hooks/cerita/useGetLiking";
 import toast from "react-hot-toast";
 import LikeAction from "./DetailSection/LikeAction";
+import clsx from "clsx";
 
 type Props = {
   onOutsideEditor: () => void;
@@ -27,7 +28,7 @@ type Props = {
   titleEditor?: string;
   viewData: ApiLocation;
   handleHelmetTitle?: (title: string, desc: string | null) => void;
-  flying:(lng:number, lat:number)=>void
+  flying: (lng: number, lat: number) => void;
 };
 
 function DetailStory({ titleEditor, viewData, ...props }: Props) {
@@ -111,6 +112,23 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
     }
   }
 
+  function _updateCerita() {
+    let plainContent = formData.content.getCurrentContent().getPlainText();
+
+    if (formData.title.trim() === "" || plainContent.trim() === "") {
+      toast.error("Hayoo, judul dan isi gaboleh kosong yaa");
+      return;
+    }
+    updateCerita(viewData.id || 0, user_id || "", {
+      title: formData.title,
+      content: formData.content,
+    });
+
+    if (result.data?.title) {
+      result.data.title = formData.title;
+    }
+  }
+
   useEffect(() => {
     if (!idParams) {
       handleOnClose();
@@ -125,7 +143,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
   useEffect(() => {
     if (!loading) {
       if (result.data) {
-        props.flying(result.data.lng,result.data.lat)
+        props.flying(result.data.lng, result.data.lat);
         let editorState = EditorState.createWithContent(
           convertFromRaw(JSON.parse(result.data?.content))
         );
@@ -336,11 +354,9 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
   return (
     <BottomSheet
       initialFocusRef={false}
-      snapPoints={({ maxHeight }) => [
-        maxHeight - maxHeight / 10,
-        maxHeight / 4,
-        maxHeight * 0.6,
-      ]}
+      snapPoints={({ maxHeight }) => {
+        return [maxHeight - maxHeight / 10, 400, 330];
+      }}
       open={props.showEditor}
       className="w-full z-50 absolute bottom-0"
       blocking={true}
@@ -389,37 +405,59 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
             </>
           )}
           {!loading && edit && result.data && isAuth && (
-            <input
-              aria-label="judul cerita"
-              name="title"
-              type="text"
-              onChange={_setTitle}
-              placeholder="Judul Cerita..."
-              className="text-green-primary outline-none border rounded p-1 border-green-primary text-lg placeholder:text-lg  w-full"
-              value={formData.title}
-            />
+            <>
+              <label
+                htmlFor="judul-input"
+                className="mb-1 font-nunito font-medium"
+              >
+                Judul
+              </label>
+              <input
+                id="judul-input"
+                aria-label="judul cerita"
+                name="title"
+                type="text"
+                onChange={_setTitle}
+                placeholder="Judul Cerita..."
+                className="text-green-primary outline-none border-b focus:border-b-2 transition-all rounded p-1 border-b-green-primary text-lg placeholder:text-lg  w-full"
+                value={formData.title}
+              />
+            </>
           )}
 
           {!loading && result.data && (
             <>
-              <h1 className="capitalize text-2xl text-center text-green-primary font-bold">
-                {result.data?.title}
-              </h1>
-              <h2 className="text-center font-nunito mt-2">
-                oleh{" "}
-                <Link
-                  to={`?user=${result.data?.user.username}`}
-                  className="hover:cursor-pointer capitalize hover:underline underline-offset-1 transition-all"
-                >
-                  {result.data?.user.username}
-                </Link>
-              </h2>
-              <h3 className="text-xs font-light font-nunito text-center">
-                {result.data.created_at
-                  ? parseDateString(result.data.created_at)
-                  : ""}
-              </h3>
-              <div className="mt-5">
+              {!edit && (
+                <>
+                  <h1 className="capitalize text-2xl text-center text-green-primary font-bold">
+                    {result.data?.title}
+                  </h1>
+                  <h2 className="text-center font-nunito mt-2">
+                    oleh{" "}
+                    <Link
+                      to={`?user=${result.data?.user.username}`}
+                      className="hover:cursor-pointer capitalize hover:underline underline-offset-1 transition-all"
+                    >
+                      {result.data?.user.username}
+                    </Link>
+                  </h2>
+                  <h3 className="text-xs font-light font-nunito text-center">
+                    {result.data.created_at
+                      ? parseDateString(result.data.created_at)
+                      : ""}
+                  </h3>
+                </>
+              )}
+
+              {edit && (
+                <label className="mb-1 mt-10 flex font-nunito font-medium">Content</label>
+              )}
+              <div
+                className={clsx(
+                  "mt-5",
+                  edit && ["mt-0 border-b border-b-blue-primary rounded"]
+                )}
+              >
                 <Editor
                   ariaLabel="isi cerita"
                   placeholder="Tulis ceritamu disini"
@@ -463,19 +501,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
               <Button variant="secondary" onClick={() => _handleEdit(false)}>
                 Batal
               </Button>
-              <Button
-                loading={loadingUpdate}
-                onClick={() => {
-                  updateCerita(viewData.id || 0, user_id || "", {
-                    title: formData.title,
-                    content: formData.content,
-                  });
-
-                  if (result.data?.title) {
-                    result.data.title = formData.title;
-                  }
-                }}
-              >
+              <Button loading={loadingUpdate} onClick={_updateCerita}>
                 Simpan
               </Button>
             </div>
