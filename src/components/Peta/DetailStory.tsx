@@ -27,6 +27,7 @@ type Props = {
   titleEditor?: string;
   viewData: ApiLocation;
   handleHelmetTitle?: (title: string, desc: string | null) => void;
+  flying:(lng:number, lat:number)=>void
 };
 
 function DetailStory({ titleEditor, viewData, ...props }: Props) {
@@ -124,6 +125,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
   useEffect(() => {
     if (!loading) {
       if (result.data) {
+        props.flying(result.data.lng,result.data.lat)
         let editorState = EditorState.createWithContent(
           convertFromRaw(JSON.parse(result.data?.content))
         );

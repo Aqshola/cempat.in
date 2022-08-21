@@ -192,6 +192,14 @@ export default function Peta() {
     });
   }
 
+  function flyTo(lng:number, lat:number){
+    mapGlRef.current?.flyTo({
+      center: [lng, lat],
+      essential: true,
+      zoom:13
+    });
+  }
+
   useEffect(() => {
     _getCurrentPosition();
     let localData = getSessionStorage<ApiLocation[]>("list_location");
@@ -324,6 +332,7 @@ export default function Peta() {
         </MapGL>
 
         <DetailStory
+          flying={flyTo}
           handleHelmetTitle={handleTitleHelmet}
           viewData={viewStory}
           showEditor={storyDetailView}
