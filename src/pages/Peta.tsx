@@ -1,28 +1,28 @@
-import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MapGL, { MapRef } from "react-map-gl";
-import { GiHamburgerMenu } from "react-icons/gi";
-
-import "mapbox-gl/dist/mapbox-gl.css";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { sideNavStore } from "store/navStore";
-import EditorSection from "components/Main/EditorSection";
-import Search from "components/Main/Search";
-import { StoryMarker, PickedMarker } from "components/Main/Marker";
+import EditorSection from "components/Peta/EditorSection";
+import Search from "components/Peta/Search";
+import { StoryMarker, PickedMarker } from "components/Peta/Marker";
 import Button from "components/Button/Button";
 import clsx from "clsx";
 import useGet from "hooks/cerita/useGet";
 import { ApiLocation, Location } from "types/types";
-import StoryList from "components/Main/ListStory";
-import DetailStory from "components/Main/DetailStory";
-import useRemoveDuplicate from "hooks/helper/useRemoveDuplicate";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import mapboxgl from "mapbox-gl";
+import DetailStory from "components/Peta/DetailStory";
+import removeDuplicate from "hooks/helper/useRemoveDuplicate";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+
 import {
-  setLocalStorage,
-  getLocalStorage,
-} from "hooks/helper/useLocalStorage";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+  setSessionStorage,
+  getSessionStorage,
+} from "hooks/helper/useSessionStorage";
+
+import UserSection from "components/Peta/UserSection";
+import HelmetTitle from "components/Helper/HelmetTitle";
+import toast, { Toaster } from "react-hot-toast";
+import { authStore } from "store/authStore";
+import mapboxgl from 'mapbox-gl';
+import "mapbox-gl/dist/mapbox-gl.css";
 
 // The following is required to stop "npm build" from transpiling mapbox code.
 // notice the exclamation point in the import.
@@ -30,21 +30,24 @@ import "react-toastify/dist/ReactToastify.css";
 // eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
 mapboxgl.workerClass =require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
-/*
- *TODO: Fetch location by bounding box ✅
- *TODO: Get story detail ✅
- *TODO: Add Toast ✅
- */
 
 export default function Peta() {
+  const isAuth = authStore((state) => state.isAuth);
   const mapGlRef = useRef<MapRef | null>(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const latParams = searchParams.get("lat");
   const lngParams = searchParams.get("lng");
+  const id = searchParams.get("id");
 
-  const { showSideNav } = sideNavStore((state) => state);
+  const [headContent, setheadContent] = useState<{
+    title: string;
+    desc: string | null;
+  }>({
+    title: "Peta",
+    desc: null,
+  });
 
   const [pickLocation, setpickLocation] = useState<boolean>(false);
 
@@ -65,8 +68,6 @@ export default function Peta() {
 
   const [getMarker, dataMarker, loading] = useGet();
 
-  const [storyListView, setstoryListView] = useState<boolean>(false);
-
   const [storyDetailView, setstoryDetailView] = useState<boolean>(false);
 
   const [viewStory, setviewStory] = useState<ApiLocation>({
@@ -77,12 +78,17 @@ export default function Peta() {
     place_name: "",
   });
 
-  const _saveCallback = ({ lat, lng, id, place_name }: ApiLocation) => {
+  const [userSectionView, setuserSectionView] = useState<boolean>(false);
+
+  const [isClash, setisClash] = useState(false)
+
+
+  function _saveCallback({ lat, lng, id, place_name }: ApiLocation) {
     setlistLocation([...listLocation, { lat, lng, id, place_name }]);
     setpickLocation(false);
-  };
+  }
 
-  const _pickLocation = (obj: any) => {
+  function _pickLocation(obj: any) {
     const { lng, lat } = obj.lngLat;
 
     mapGlRef.current?.flyTo({
@@ -92,44 +98,43 @@ export default function Peta() {
 
     const detail = mapGlRef.current?.queryRenderedFeatures(obj.point);
 
-    if (pickLocation) {
-      setpickedLocation({
-        lng,
-        lat,
-        place_name: detail ? detail[0]?.properties?.name : null,
-      });
+    if(!isClash){
+      if (pickLocation) {
+        setpickedLocation({
+          lng,
+          lat,
+          place_name: detail ? detail[0]?.properties?.name : null,
+        });
+      }
+    }else{
+      setpickedLocation(null)
+      
+      setisClash(false)
     }
-  };
+  }
 
-  const _cancelPick = () => {
+  function _cancelPick() {
     setshowEditor(false);
     setpickedLocation(null);
     setpickLocation(false);
-  };
+  }
 
-  const _newStory = () => {
+  function _newStory() {
     if (pickLocation) {
       if (
         !pickedLocation ||
         (pickedLocation.lat === 0 && pickedLocation.lng === 0)
       ) {
-        toast("Pilih tempat dulu yaa", {
-          position: "bottom-center",
-          hideProgressBar: true,
-          autoClose: 5000,
-          closeOnClick: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.error("Hayoo, pilih tempat dulu ya");
       } else {
         setshowEditor(true);
       }
     } else {
       setpickLocation(true);
     }
-  };
+  }
 
-  const _handleGet = () => {
+  function _handleGet() {
     const bound = mapGlRef.current?.getBounds();
     let zoomLevel = mapGlRef.current?.getZoom() || 0;
 
@@ -139,8 +144,9 @@ export default function Peta() {
 
       getMarker(ne.lng, sw.lng, ne.lat, sw.lat);
     }
-  };
-  const _getCurrentPosition = () => {
+  }
+
+  function _getCurrentPosition() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((e) => {
         setinitialLocation({
@@ -149,63 +155,81 @@ export default function Peta() {
         });
       });
     } else {
-      console.log("not allowed");
+      toast.error("Yah, browser kamu belum support lokasi nih 😟");
     }
-  };
+  }
 
-  const _handleStoryView = (count: number, data: ApiLocation) => {
+  function _handleStoryView(count: number, data: ApiLocation) {
     setviewStory(data);
-    if (count > 1) {
-      setstoryListView(true);
-      setstoryDetailView(false);
-    } else {
-      navigate(`?id=${data.id}`);
-      setstoryDetailView(true);
-      setstoryListView(false);
-    }
-  };
+    navigate(`?id=${data.id}`);
+    setstoryDetailView(true);
+    setuserSectionView(false);
+  }
 
-  const _loadLocationStory = () => {
-    const pushedArray = useRemoveDuplicate(listLocation, dataMarker.data, "id");
-    if (pushedArray.length > 0) {
-      setlistLocation([...pushedArray]);
-      setLocalStorage<ApiLocation[]>("list_location", listLocation);
-    }
-  };
-
-  const viewLocation = (
+  function viewLocation(
     lat: number,
     long: number,
     bbox: [number, number, number, number],
     type: string
-  ) => {
+  ) {
     if (type === "poi") {
       mapGlRef.current?.flyTo({
         center: [lat, long],
         essential: true,
+        zoom: 15,
       });
     } else {
-      mapGlRef.current?.fitBounds(bbox);
+      mapGlRef.current?.fitBounds(bbox, {
+        zoom: 15,
+      });
     }
-  };
+  }
+
+  function handleTitleHelmet(title: string, desc: string | null) {
+    setheadContent({
+      title,
+      desc,
+    });
+  }
+
+  function flyTo(lng:number, lat:number){
+    mapGlRef.current?.flyTo({
+      center: [lng, lat],
+      essential: true,
+      zoom:13
+    });
+  }
 
   useEffect(() => {
     _getCurrentPosition();
-    let localData = getLocalStorage<ApiLocation[]>("list_location");
+    let localData = getSessionStorage<ApiLocation[]>("list_location");
     if (localData != null) {
       setlistLocation([...localData]);
     }
   }, []);
 
   useEffect(() => {
-    _handleGet();
-  }, []);
+    _getCurrentPosition();
+    let localData = getSessionStorage<ApiLocation[]>("list_location");
+    if (localData == null) {
+      const bound = mapGlRef.current?.getBounds();
+      if (bound) {
+        const ne = bound.getNorthEast();
+        const sw = bound.getSouthWest();
+        getMarker(ne.lng, sw.lng, ne.lat, sw.lat);
+      }
+    }
+  }, [mapGlRef.current]);
 
   useEffect(() => {
-    if (!loading) {
-      _loadLocationStory();
+    if (!loading && dataMarker.data.length > 0) {
+      const pushedArray = removeDuplicate(listLocation, dataMarker.data, "id");
+      if (pushedArray.length > 0) {
+        setlistLocation([...pushedArray]);
+        setSessionStorage<ApiLocation[]>("list_location", listLocation);
+      }
     }
-  }, [loading]);
+  }, [loading, dataMarker.data]);
 
   useEffect(() => {
     if (loadedMap) {
@@ -214,6 +238,7 @@ export default function Peta() {
         mapGlRef.current?.flyTo({
           center: [parseFloat(lngParams), parseFloat(latParams)],
           essential: true,
+          zoom: 15,
         });
 
         mapGlRef.current?.on("flyend", () => {
@@ -222,7 +247,6 @@ export default function Peta() {
 
         mapGlRef.current?.on("moveend", () => {
           if (flying) {
-            setstoryDetailView(true);
             flying = false;
           }
         });
@@ -230,124 +254,171 @@ export default function Peta() {
     }
   }, [loadedMap, latParams, lngParams]);
 
+  useEffect(() => {
+    if (id) {
+      setstoryDetailView(true);
+    }
+  }, [id]);
+
   return (
-    <div className="h-screen" id="nav-btn" aria-label="nav-btn">
-      <Button
-        id="nav-btn"
-        shape="round"
-        className="p-2 absolute top-10 left-5 md:left-10 z-20"
-        onClick={() => showSideNav(true)}
-      >
-        <GiHamburgerMenu className="w-5 h-5 md:w-6 md:h-6 text-white" />
-      </Button>
+    <>
+      <HelmetTitle title={headContent.title} description={headContent.desc} />
+      <Toaster />
+      <div className="h-screen" id="nav-btn" aria-label="nav-btn">
+        <Search handleSearch={viewLocation} />
 
-      <Search handleSearch={viewLocation} />
-
-      <MapGL
-        onLoad={() => {
-          setLocalStorage<ApiLocation[]>("list_location", []);
-          _handleGet();
-        }}
-        reuseMaps={true}
-        onMoveEnd={_handleGet}
-        onZoomEnd={_handleGet}
-        optimizeForTerrain={true}
-        ref={(e) => {
-          mapGlRef.current = e;
-
-          if (mapGlRef.current !== null) {
-            setloadedMap(true);
-          }
-        }}
-        onClick={(el) => _pickLocation(el)}
-        mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
-        initialViewState={{
-          longitude: initialLocation.lat,
-          latitude: initialLocation.long,
-          zoom: 10,
-        }}
-        attributionControl={false}
-        mapStyle="mapbox://styles/mapbox/streets-v9"
-        style={{
-          width: "100%",
-          height: "100%",
-        }}
-      >
-        {pickedLocation && (
-          <PickedMarker lat={pickedLocation.lat} lng={pickedLocation.lng} />
+        {!isAuth && (
+          <div className="absolute left-5 md:left-10 top-10 w-64 md:w-auto z-10">
+            <Link to={"/"} className=" rounded-md p-2 font-bold font-nunito bg-white w-10 h-10 flex" >
+              <img className="w-full" src="/icon/filled/cempatin-logo-filled.svg" alt="cempatin logo" />
+            </Link>
+          </div>
         )}
 
-        {listLocation.map((loc, i) => (
-          <StoryMarker
-            key={i}
-            onClick={() => {
-              if (!pickLocation) {
-                _handleStoryView(loc.jml_cerita || 0, loc);
-              }
-            }}
-            lat={loc.lat}
-            lng={loc.lng}
-          />
-        ))}
-      </MapGL>
+        <MapGL
+          onLoad={() => {
+            _handleGet();
+          }}
+          reuseMaps={true}
+          onMoveEnd={_handleGet}
+          onZoomEnd={_handleGet}
+          optimizeForTerrain={true}
+          ref={(e) => {
+            mapGlRef.current = e;
 
-      <EditorSection
-        showEditor={showEditor}
-        onCloseEditor={() => {
-          setshowEditor(false);
-        }}
-        onSaveEditor={_saveCallback}
-        onOutsideEditor={() => {
-          setshowEditor(false);
-        }}
-        infoLocation={pickedLocation}
-      />
+            if (mapGlRef.current !== null) {
+              setloadedMap(true);
+            }
+          }}
+          onClick={(el) => _pickLocation(el)}
+          mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
+          initialViewState={{
+            longitude: initialLocation.lat,
+            latitude: initialLocation.long,
+            zoom: 10,
+          }}
+          attributionControl={false}
+          mapStyle="mapbox://styles/mapbox/streets-v9"
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          {pickedLocation && (
+            <PickedMarker
+              markerId={1}
+              className="z-10"
+              lat={pickedLocation.lat}
+              lng={pickedLocation.lng}
+            />
+          )}
 
-      <StoryList
-        showEditor={storyListView}
-        onCloseEditor={() => {
-          setstoryListView(false);
-        }}
-        onOutsideEditor={() => {
-          setstoryListView(false);
-        }}
-      />
+          {listLocation.map((loc, i) => (
+            <StoryMarker
+              markerId={i}
+              key={i}
+              onClick={() => {
+                if (!pickLocation) {
+                  _handleStoryView(loc.jml_cerita || 0, loc);
+                }else{
+                  toast.error("Eitsss, disini udah ada cerita. jangan nimpa ya 🙏")
+                  setisClash(true)
+                }
+              }}
+              lat={loc.lat}
+              lng={loc.lng}
+            />
+          ))}
+        </MapGL>
 
-      <DetailStory
-        viewData={viewStory}
-        showEditor={storyDetailView}
-        onCloseEditor={() => {
-          setstoryDetailView(false);
-        }}
-        onOutsideEditor={() => {
-          setstoryDetailView(false);
-        }}
-      />
+        <DetailStory
+          flying={flyTo}
+          handleHelmetTitle={handleTitleHelmet}
+          viewData={viewStory}
+          showEditor={storyDetailView}
+          onCloseEditor={() => {
+            setstoryDetailView(false);
+          }}
+          onOutsideEditor={() => {
+            setstoryDetailView(false);
+          }}
+        />
+        <UserSection
+          handleHelmetTitle={handleTitleHelmet}
+          viewData={viewStory}
+          showEditor={userSectionView}
+          onCloseEditor={() => {
+            setuserSectionView(false);
+          }}
+          onOutsideEditor={() => {
+            setuserSectionView(false);
+          }}
+          handleView={() => {
+            setuserSectionView(true);
+          }}
+        />
+        {isAuth && (
+          <>
+            <EditorSection
+              showEditor={showEditor}
+              onCloseEditor={() => {
+                setshowEditor(false);
+              }}
+              onSaveEditor={_saveCallback}
+              onOutsideEditor={() => {
+                setshowEditor(false);
+              }}
+              infoLocation={pickedLocation}
+            />
 
-      <Button
-        variant="danger"
-        onClick={_cancelPick}
-        className={clsx(
-          "shadow w-max absolute z-10 left-10 bottom-20 md:right-20",
-          pickLocation && ["visible opacity-100"],
-          !pickLocation && [" invisible opacity-0"]
+            <Button
+              variant="danger"
+              onClick={_cancelPick}
+              className={clsx(
+                "shadow w-max absolute left-10 md:left-40 bottom-20 md:right-20",
+                pickLocation && ["visible opacity-100"],
+                !pickLocation && [" invisible opacity-0"]
+              )}
+            >
+              Batal
+            </Button>
+
+            <Button
+              onClick={_newStory}
+              className={clsx(
+                "absolute  right-5 bottom-20 md:right-20 shadow",
+                !pickLocation && ["visible opacity-100"],
+                pickLocation && [" invisible opacity-0"]
+              )}
+              variant={"primary"}
+            >
+              Buat Cerita
+            </Button>
+
+            <Button
+              onClick={_newStory}
+              className={clsx(
+                "absolute  right-5 bottom-20 md:right-20 shadow",
+                pickLocation && ["visible opacity-100"],
+                !pickLocation && [" invisible opacity-0"]
+              )}
+              variant={"secondary"}
+            >
+              Pilih lokasi
+            </Button>
+          </>
         )}
-      >
-        Batal
-      </Button>
 
-      <Button
-        onClick={_newStory}
-        className="absolute z-10 right-5 bottom-20 md:right-20 shadow"
-        variant={pickLocation ? "secondary" : "primary"}
-      >
-        {pickLocation ? "Pilih lokasi " : "Tulis cerita"}
-      </Button>
-
-      <ToastContainer
-        className="z-50"
-        bodyClassName={" text-xs font-poppins text-red-600"}
-      />
-    </div>
+        {!isAuth && (
+          <Button
+            onClick={()=>navigate("/login")}
+            className="absolute  right-5 bottom-20 md:right-20 shadow"
+            variant={"primary"}
+          >
+            Buat Cerita
+          </Button>
+        )}
+      </div>
+    </>
   );
 }

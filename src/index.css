@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -9,23 +9,75 @@
   body {
     scroll-behavior: smooth;
   }
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  button,
-  input,
-  textarea,
-  select,
-  a,
-  p {
-    @apply font-poppins;
-  }
+  
 }
 
 
+/* shadow */
+.shadow-story-card{
+  box-shadow: 5px 10px 0px #00AA13;
+}
+.shadow-map-card{
+  animation: bounce-map-shadow;
+  animation-duration: 3s;
+  box-shadow: -10px 15px 0px #00AA13;
+}
+
+
+.list-box:hover, 
+.box-mobile:hover{
+  box-shadow: 0px 5px 0px #00AA13;
+}
+.shadow-btn-landing{
+  box-shadow: 0px 5px 0px #116530;
+}
+
+.shadow-btn-landing:hover{
+  box-shadow: 0px 10px 0px #116530 !important;
+}
+.shadow-btn-landing:focus{
+  box-shadow: none !important;
+  transform: translateY(5px) !important;
+}
+
+.shadow-auth-box{
+  box-shadow: -10px 15px 0px #116530;
+}
+
+.shadow-mapbox-ctrl{
+  box-shadow: 0px 6px 0px #C5C5C5;
+}
+
+.shadow-sidenav{
+  box-shadow: 22px 0px 0px #00AA13;
+}
+
+
+
+/* button */
+.btn-primary:hover{
+  box-shadow: 0px 5px 0px #116530;
+}
+
+.btn-secondary:hover{
+  box-shadow: 0px 5px 0px rgb(22, 106, 112);
+}
+
+.btn-danger:hover{
+  box-shadow: 0px 5px 0px #ca2533;
+}
+
+.btn:disabled{
+  opacity: 0.5;
+}
+.btn:active{
+  box-shadow: none;
+  transform: translateY(5px);
+}
+
+
+
+/* additional */
 .form-input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 1000px white inset !important;
   
@@ -41,11 +93,12 @@
 .mapboxgl-ctrl{
   min-width: 0px !important;
   box-shadow: none !important;
-  @apply md:text-base flex items-center text-sm h-10 md:w-full !important
+  @apply md:text-base flex items-center text-sm h-10 md:w-full font-medium py-3 pl-0 focus:outline-none focus:border-none outline-none border-none  !important
 }
 
 .mapboxgl-ctrl-geocoder--icon{
   top: 10px !important;
+  fill: black !important;
   
 }
 
@@ -57,30 +110,14 @@
   @apply w-5 h-5 m-auto !important
 }
 
-#type-animate{
-  animation-name: word-ping;
-  animation-duration: 0.5s;
-  animation-iteration-count: infinite;
-}
 
-@keyframes scale-up {
-    from{
-      transform:scale(0)
-    }
 
-    50%{
-      transform:scale(1.5)
-    }
-    to{
-      to:scale(1)
-    }
-}
-
-@keyframes word-ping{
-  from{
-    border-right-color: #03C88E;
+@keyframes bounce-map-shadow {
+  0%{
+    box-shadow: 0px 0px 0px #00AA13;
   }
-  to{
-    border-right-color: black;
-  }
-}
+  0%, 20%, 50%, 80%  {box-shadow: -5px 10px 0px #00AA13;} 
+  40%,60% {box-shadow: -10px 0px 0px #00AA13;} 
+   
+  100%{box-shadow: -10px 15px 0px #00AA13;}
+} 

@@ -1,14 +1,12 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
-import { useLocation } from "react-router-dom";
 
 export default function Head() {
-  const location = useLocation();
-  const currentPage = location.pathname.replace("/", "");
   return (
     <div className="application">
       <Helmet>
-        <title>Cempat.in {currentPage !== "" ? `| ${currentPage}` : ""} </title>
+        <title>Cempat.in</title>
+        
         <meta name="google-site-verification" content="RY2HgnHgyC1yMJw8lzudKTK5vxraRtHxYBhTNUYF000" />
         <meta
           name="description"

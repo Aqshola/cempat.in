@@ -3,7 +3,7 @@ import { ApiError, PostgrestError } from "@supabase/supabase-js";
 import supabase from "lib/supabase";
 import React, { useState } from "react";
 import { authStore } from "store/authStore";
-import checkUsername from "./useCheckUsername";
+import {checkUsername} from "./useCheckUsername";
 
 function useRegis(): [
   (email: string, password: string, username: string) => Promise<void>,

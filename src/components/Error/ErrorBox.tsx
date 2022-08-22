@@ -1,4 +1,3 @@
-import gsap from "gsap";
 import React, { useLayoutEffect, useRef, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 
@@ -11,35 +10,12 @@ function ErrorBox({ message }: Props) {
 
   useLayoutEffect(() => {
     if (ref.current) {
-      gsap.fromTo(
-        ref.current,
-        {
-          opacity: 0,
-          height: 0,
-          paddingTop: "0",
-          paddingBottom: "0",
-        },
-        {
-          paddingTop: "auto",
-          paddingBottom: "auto",
-          height: "50px",
-          opacity: 1,
-        }
-      );
+     
     }
   }, []);
 
   const handleClose = () => {
-    gsap.to(ref.current, {
-      opacity: 0,
-      height: 0,
-      paddingTop: "0",
-      paddingBottom: "0",
-      onComplete: () => {
-        setshow(false);
-      },
-      animation: "fadeOut",
-    });
+  
   };
 
   if (show) {

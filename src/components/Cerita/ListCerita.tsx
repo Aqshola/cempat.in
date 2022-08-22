@@ -1,5 +1,5 @@
 import Button from "components/Button/Button";
-import gsap from "gsap";
+
 import useDelete from "hooks/cerita/useDelete";
 import parseDateString from "hooks/helper/parseDateString";
 import React, { useRef } from "react";
@@ -34,20 +34,6 @@ function ListCerita({
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.stopPropagation();
-    gsap
-      .to(ListCeritaRef.current, {
-        height: 0,
-        paddingBottom: 0,
-        paddingTop: 0,
-        overflow: "hidden",
-        border: "none",
-      })
-      .then(() => {
-        if (user_id) {
-          deleteCallback(id);
-          deleteCerita(id, user_id);
-        }
-      });
   };
 
   const _handleClick = () => {

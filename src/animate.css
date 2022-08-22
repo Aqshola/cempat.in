@@ -1,0 +1,75 @@
+.handwave:hover {
+  cursor: pointer;
+  display: inline-block;
+  animation: handwave 2.1s 0.5s infinite;
+  transform-origin: 75% 75%;
+}
+
+.shadow-auth-box {
+  animation: bounce-auth-shadow;
+  animation-delay: 1s;
+  animation-duration: 3s;
+}
+
+.sidenav-animate{
+  animation: sidenav;
+  animation-delay: 0.5s;
+  animation-duration: 1s;
+}
+
+@keyframes handwave {
+  0% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(16deg);
+  }
+  20% {
+    transform: rotate(-6deg);
+  }
+  30% {
+    transform: rotate(16deg);
+  }
+  40% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(16deg);
+  }
+  60% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+
+
+@keyframes bounce-auth-shadow {
+  0% {
+    box-shadow: -10px 15px 0px #116530;
+  }
+  0%,
+  20%,
+  50%,
+  80% {
+    box-shadow: -5px 10px 0px #116530;
+  }
+  40%,
+  60% {
+    box-shadow: -10px 0px 0px #116530;
+  }
+
+  100% {
+    box-shadow: -10px 15px 0px #116530;
+  }
+}
+
+@keyframes sidenav {
+  from{
+    transform: translateX(-100%);
+  }to{
+    transform: translateX(0);
+  }
+}

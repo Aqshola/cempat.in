@@ -5,11 +5,17 @@ module.exports = {
   theme: {
     extend: {
       fontFamily:{
-        poppins: ["Poppins", "sans-serif"],
+        nunito: ["Nunito", "sans-serif"],
       },
       colors:{
         green:{
-          primary:"#03C88E"
+          primary:"#00AA13"
+        },
+        red:{
+          primary:"#EE2737"
+        },
+        blue:{
+          primary:"#00AED6"
         }
       }
     },

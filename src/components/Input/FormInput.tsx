@@ -1,16 +1,29 @@
-import Button from "components/Button/Button";
-import React, { useState } from "react";
-import { FiEye, FiEyeOff } from "react-icons/fi";
+import clsx from "clsx";
+import React, { useEffect, useRef, useState } from "react";
+
 
 type Props = {
   logo?: React.ReactNode;
   label: string;
+  leftButton?: React.ReactNode;
+  hideLabel?: boolean;
+  invalidmsg?: string;
+  loading?: boolean;
+  error?: boolean;
+  debounce?: boolean;
+  debounceCallback?: () => void;
 };
 
 export default function FormInput({
   logo,
+  loading,
   label,
   className,
+  hideLabel = false,
+  error,
+  debounce,
+  debounceCallback,
+  leftButton,
   ...props
 }: Props &
   React.DetailedHTMLProps<
@@ -19,62 +32,90 @@ export default function FormInput({
   >) {
   const [passwordVisible, setpasswordVisible] = useState<boolean>(false);
   const [typeInput, settypeInput] = useState(props.type);
+
+  const [inputInvalid, setinputInvalid] = useState<boolean>(false);
+
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  useEffect(() => {
+    const debounceFn = setTimeout(() => {
+      if (debounceCallback && inputRef.current?.value.trim() !== "") {
+        debounceCallback();
+      }
+    }, 1000);
+    return () => clearTimeout(debounceFn);
+  }, [inputRef.current?.value]);
+
   return (
-    <span className="relative flex items-center">
-      <input
-        {...props}
-        type={typeInput}
-        className={`
-                peer
-                py-2
-                text-sm
-                w-full
-                border-b-2 
-                border-gray-300
-                outline-none
-                focus:outline-none
-                placeholder-transparent
-                focus:border-green-primary
-                font-medium 
-                transition-all
-                autofill:!bg-white
-                form-input
-                focus:invalid:border-red-600
-                
-               ${className}`}
-      />
-      <label
-        htmlFor={props.id}
-        className="transition-all text-sm absolute left-0 peer-placeholder-shown:top-2 -top-4  peer-placeholder-shown:text-gray-400 text-black"
+    <span className="flex flex-col space-y-2">
+      {!hideLabel && <label htmlFor={props.id}>{label}</label>}
+      <div
+        className={clsx(
+          "transition-all px-3 py-4 border border-gray-300 rounded-lg flex items-center",
+          !inputInvalid && ["focus-within:border-red-primary"],
+          inputInvalid && ["focus-within:border-green-primary"],
+          error && ["border-red-primary"],
+          className
+        )}
       >
-        {label}
-      </label>
-
-      {typeInput === "password" && !logo && (
-        <button
-          type="button"
-          onClick={() => {
-            settypeInput("text");
-            setpasswordVisible(true);
+        <input
+          ref={inputRef}
+          autoComplete={typeInput === "password" ? "current-password" : ""}
+          {...props}
+          type={typeInput}
+          onChange={(e) => {
+            if (props.onChange) {
+              props.onChange(e);
+            }
           }}
-        >
-          <FiEye className="w-5 h-5 text-gray-500" />
-        </button>
-      )}
+          className="form-input md:placeholder:text-base placeholder:text-sm border-none outline-none focus:border-none focus:outline-none w-full"
+        />
 
-      {passwordVisible && !logo && (
-        <button
-          type="button"
-          onClick={() => {
-            settypeInput("password");
-            setpasswordVisible(false);
-          }}
-        >
-          <FiEyeOff className="w-5 h-5 text-gray-500" />
-        </button>
-      )}
+        {!loading && leftButton && leftButton}
+        {!loading && typeInput === "email" && !leftButton && (
+          <label htmlFor={props.id}>
+            <img src="/icon/filled/mail-logo-filled.svg" alt="email" />
+          </label>
+        )}
+        {!loading &&
+          typeInput === "password" &&
+          !passwordVisible &&
+          !leftButton && (
+            <button
+              onClick={() => {
+                settypeInput("text");
+                setpasswordVisible(true);
+              }}
+              aria-label="password visible"
+            >
+              <img
+                src="/icon/filled/eye-logo-filled.svg"
+                alt="password visible"
+              />
+            </button>
+          )}
+        {!loading &&
+          typeInput === "text" &&
+          passwordVisible &&
+          !leftButton && (
+            <button
+              onClick={() => {
+                settypeInput("password");
+                setpasswordVisible(false);
+              }}
+              aria-label="password invisible"
+            >
+              <img
+                src="/icon/filled/eye-closed-logo-filled.svg"
+                alt="password invisible"
+              />
+            </button>
+          )}
 
-      {logo}
+        {loading && (
+          <span className=" border-t-2 border-t-green-primary animate-spin rounded-full w-6 h-6  border-2"></span>
+        )}
+      </div>
     </span>
   );
 }

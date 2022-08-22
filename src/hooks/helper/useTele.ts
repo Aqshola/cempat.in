@@ -3,7 +3,7 @@ let teleChat = process.env.REACT_APP_TELE_CHAT;
 
 export function teleAnalytic() {
   let string =
-    `https://api.telegram.org/${teleBOT}/sendMessage?chat_id=${teleChat}&text=` +
+    `https://api.telegram.org/bot${teleBOT}/sendMessage?chat_id=${teleChat}&text=` +
     window.navigator.userAgent;
 
   var xhr = new XMLHttpRequest();
@@ -15,14 +15,24 @@ export function teleAnalytic() {
   xhr.send(null);
 }
 
-export function teleModeration(id: string, title: string, content: string, action:string) {
-  let string = `https://api.telegram.org/${teleBOT}/sendMessage?chat_id=${teleChat}&text=
-    Posted Story ${"\n"}
-    action:${action} ${"\n"}
-    id: ${id} ${"\n"}
-    title: ${title} ${"\n"}
-    content:${content} ${"\n"}
-    `;
+export function teleModeration(
+  id: string,
+  title: string,
+  content: string,
+  action: string
+) {
+  const generateHTML = `
+  Posted Story  \n 
+  action: <b>${action} Story</b> \n
+  id: <b>${id}</b>  \n
+  title: <b>${title}</b> \n 
+  content: ${content} \n
+  date: ${new Date()}
+  
+  `;
+  let string = `https://api.telegram.org/bot${teleBOT}/sendMessage?chat_id=${teleChat}&text=
+    ${encodeURIComponent(generateHTML)}  
+    &parse_mode=html`;
 
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function () {

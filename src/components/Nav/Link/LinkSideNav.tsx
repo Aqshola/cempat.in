@@ -1,26 +1,45 @@
+import clsx from "clsx";
+import { AnimatePresence,  motion } from "framer-motion";
 import React from "react";
-import { IconType } from "react-icons";
-import { Link } from "react-router-dom";
+import { Link} from "react-router-dom";
 
 type Props = {
-  Icon: IconType;
   link: string;
   children: React.ReactNode;
   active?: boolean;
+  className?: string;
+  onClick?: () => void;
 };
 
-function LinkSideNav({ Icon, link, children, active = false }: Props) {
+function LinkSideNav({
+  link,
+  children,
+  active = false,
+  className,
+  onClick,
+}: Props) {
   return (
-    <Link
-      to={link}
-      className={
-        " transition-all px-3 py-3 text-lg flex  " +
-        (active ? " rounded-md bg-white text-green-primary" : " text-white")
-      }
-    >
-      <Icon className={"transition-colors w-7 h-7 mr-5 "+(active?" text-green-primary":"text-white")} />
-      <span>{children}</span>
-    </Link>
+    <AnimatePresence>
+      <Link
+        to={link}
+        className="relative  w-full flex h-fit"
+        onClick={() => {
+          if (onClick) {
+            onClick();
+          }
+        }}
+      >
+        {active && (
+          <motion.div
+            layoutId="box-active"
+            className="block w-full h-full z-10 absolute bg-green-primary rounded-xl"
+          ></motion.div>
+        )}
+        <div className={clsx("p-4 relative z-40 text-white", className)}>
+          {children}
+        </div>
+      </Link>
+    </AnimatePresence>
   );
 }
 
