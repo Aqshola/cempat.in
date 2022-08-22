@@ -85,7 +85,7 @@ function Cerita() {
           setcurrentScroll(e.currentTarget.scrollTop);
         }}
         className={clsx(
-          "min-h-screen md:h-screen py-32 md:py-12 px-5 w-full md:px-14 overflow-y-hidden transition-all",
+          "min-h-screen md:h-screen py-32 md:py-12 px-5 w-full md:px-14 overflow-y-scroll transition-all",
           currentScroll > 0 && [" bg-white z-50"]
         )}
       >

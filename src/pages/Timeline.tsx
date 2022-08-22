@@ -9,9 +9,12 @@ import {
 } from "hooks/helper/useSessionStorage";
 import useRefreshTimeline from "hooks/timeline/useRefreshTimeline";
 import { sideNavStore } from "store/navStore";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function Timeline() {
-  const { setTimelineAction,setMobileNavTitle } = sideNavStore((state) => state);
+  const { setTimelineAction, setMobileNavTitle } = sideNavStore(
+    (state) => state
+  );
   const listParent = useRef<HTMLDivElement>(null);
   const [currentScroll, setcurrentScroll] = useState<number>(-1);
   const [touchStart, settouchStart] = useState({
@@ -31,6 +34,10 @@ export default function Timeline() {
   const [timelineData, settimelineData] = useState<Story[]>([]);
 
   const [refreshData, resultRefresh, loadingRefresh] = useRefreshTimeline();
+  const [checkRefresh, checkResultRefresh, checkLoadingRefresh] =
+    useRefreshTimeline();
+  const [popUpCheckRefresh, setpopUpCheckRefresh] = useState<boolean>(false);
+  const [dataCheck, setdataCheck] = useState<Story[]>([]);
 
   function onTouchStart(e: React.TouchEvent<HTMLElement>) {
     const touch = e.targetTouches[0];
@@ -79,8 +86,8 @@ export default function Timeline() {
     if (listParent.current) {
       const { scrollTop, scrollHeight, clientHeight } = listParent.current;
       const bottomPosition = scrollTop + clientHeight;
-      
-      if (bottomPosition >=  (scrollHeight-10)) {
+
+      if (bottomPosition >= scrollHeight - 10) {
         let sessionTimeline = getSessionStorage("timeline") as Story[];
         let timeout = setTimeout(() => {
           getList(sessionTimeline.length || 0);
@@ -105,6 +112,24 @@ export default function Timeline() {
     }
   }
 
+  function _onClickAutoRefresh() {
+    if (dataCheck.length > 0) {
+      settimelineData([...dataCheck, ...timelineData]);
+      setdataCheck([]);
+      setpopUpCheckRefresh(false);
+    }
+  }
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (timelineData.length > 0) {
+        console.log("popup", popUpCheckRefresh);
+        checkRefresh(timelineData[0].created_at);
+      }
+    }, 5000);
+    return () => clearInterval(intervalId);
+  }, [timelineData]);
+
   useEffect(() => {
     if (!loadingRefresh) {
       if (resultRefresh.data.length > 0) {
@@ -115,7 +140,7 @@ export default function Timeline() {
   }, [loadingRefresh]);
 
   useEffect(() => {
-    setMobileNavTitle("Timeline")
+    setMobileNavTitle("Timeline");
     setTimelineAction(refreshDesktop);
     let sessionTimeline = getSessionStorage("timeline") as Story[];
     if (!sessionTimeline || sessionTimeline.length === 0) {
@@ -151,6 +176,16 @@ export default function Timeline() {
     }
   }, [timelineData]);
 
+  useEffect(() => {
+    if (!checkLoadingRefresh) {
+      setdataCheck(checkResultRefresh.data);
+
+      if (dataCheck.length > 0) {
+        setpopUpCheckRefresh(true);
+      }
+    }
+  }, [checkLoadingRefresh]);
+
   return (
     <section
       onTouchStart={onTouchStart}
@@ -162,6 +197,16 @@ export default function Timeline() {
         currentScroll > 0 && [" bg-white z-50"]
       )}
     >
+      <div
+        onClick={_onClickAutoRefresh}
+        className={clsx(
+          "absolute transition-all top-5 left-0 right-0 bg-green-primary rounded-lg shadow p-2 mx-auto text-sm text-white z-20 w-fit",
+          !popUpCheckRefresh && ["-translate-y-full opacity-0"],
+          popUpCheckRefresh && ["translate-y-0 opacity-100"]
+        )}
+      >
+        Ada cerita baru nih
+      </div>
       <div className="md:flex gap-5 justify-center bg-white transition-all w-full items-center hidden">
         <h1 className="top-12 text-xl font-semibold font-nunito  capitalize text-black hidden md:inline">
           Timeline
