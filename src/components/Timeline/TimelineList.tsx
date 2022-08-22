@@ -15,7 +15,10 @@ type Props = {
 export default function TimelineList({...props}:Props) {
   const navigate=useNavigate()
   function _navigateCerita(){
-    navigate(`/peta?id=${props.id}&&lat=${props.lat}&&lng=${props.lng}`)
+
+    // window.location.origin
+    window.open(`${window.location.origin}/peta?id=${props.id}&&lat=${props.lat}&&lng=${props.lng}`, '_blank', 'noopener,noreferrer');
+    // navigate(`/peta?id=${props.id}&&lat=${props.lat}&&lng=${props.lng}`)
   }
   
   return (
