@@ -1,7 +1,6 @@
 import clsx from "clsx";
-import Button from "components/Button/Button";
 import React, { useEffect, useRef, useState } from "react";
-import { FiEye, FiEyeOff } from "react-icons/fi";
+
 
 type Props = {
   logo?: React.ReactNode;

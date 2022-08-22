@@ -1,5 +1,4 @@
 import React, { useRef } from "react";
-import useOutsideClick from "hooks/helper/useOutsideClick";
 import { CgClose } from "react-icons/cg";
 
 type Props = {
