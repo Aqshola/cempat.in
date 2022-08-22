@@ -8,36 +8,34 @@ import Layout from "components/Layout/Layout";
 import { PrivateRoute, PublicRoute } from "components/Route/Route";
 import Spinner from "components/Spinner/Spinner";
 
-import Cerita from "pages/Cerita";
-import Login from "pages/Login";
-import Peta from "pages/Peta";
-import Register from "pages/Register";
-import RegisUsername from "pages/RegisUsername";
-import Timeline from "pages/Timeline";
-import User from "pages/User";
-import ForgotPassword from "pages/ForgotPassword";
-import NotFound from "pages/404";
-
-
 const Landing = lazy(() => import("pages/Landing"));
-// const Cerita = lazy(() => import("pages/Cerita"));
-// const Login = lazy(() => import("pages/Login"));
-// const Peta = lazy(() => import("pages/Peta"));
-// const Register = lazy(() => import("pages/Register"));
-// const RegisUsername = lazy(() => import("pages/RegisUsername"));
-// const Timeline = lazy(() => import("pages/Timeline"));
-// const User = lazy(() => import("pages/User"));
-// const ForgotPassword = lazy(() => import("pages/ForgotPassword"));
-// const NotFound = lazy(() => import("pages/404"));
+const Cerita = lazy(() => import("pages/Cerita"));
+const Login = lazy(() => import("pages/Login"));
+const Peta = lazy(() => import("pages/Peta"));
+const Register = lazy(() => import("pages/Register"));
+const RegisUsername = lazy(() => import("pages/RegisUsername"));
+const Timeline = lazy(() => import("pages/Timeline"));
+const User = lazy(() => import("pages/User"));
+const ForgotPassword = lazy(() => import("pages/ForgotPassword"));
+const NotFound = lazy(() => import("pages/404"));
 
-
+// import Cerita from "pages/Cerita";
+// import Landing from "pages/Landing";
+// import Login from "pages/Login";
+// import Peta from "pages/Peta";
+// import Register from "pages/Register";
+// import RegisUsername from "pages/RegisUsername";
+// import Timeline from "pages/Timeline";
+// import User from "pages/User";
+// import ForgotPassword from "pages/ForgotPassword";
+// import NotFound from "pages/404";
 
 function App() {
   const [getSession, loading] = useSession();
 
   useEffect(() => {
-    // teleAnalytic();
-    // splitbee.init();
+    teleAnalytic();
+    splitbee.init();
     getSession();
   }, []);
 
