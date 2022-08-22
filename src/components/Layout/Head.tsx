@@ -6,6 +6,7 @@ export default function Head() {
     <div className="application">
       <Helmet>
         <title>Cempat.in</title>
+        
         <meta name="google-site-verification" content="RY2HgnHgyC1yMJw8lzudKTK5vxraRtHxYBhTNUYF000" />
         <meta
           name="description"

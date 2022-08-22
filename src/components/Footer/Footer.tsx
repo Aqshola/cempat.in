@@ -20,16 +20,16 @@ export default function Footer() {
           rel="noreferrer"
           aria-label="repo cempatin"
         >
-          <img src="/icon/filled/gh-logo-filled.svg" alt="github" />
+          <img src="/icon/filled/gh-logo-filled.svg" alt="github"  width={10} height={10}/>
         </a>
-        <a
+        {/* <a
           href="https://twitter.com/Anyauwuu"
           target={"_blank"}
           rel="noreferrer"
           aria-label="repo cempatin"
         >
           <img src="/icon/filled/tw-logo-filled.svg" alt="twitter" />
-        </a>
+        </a> */}
       </div>
     </footer>
   ) : (
