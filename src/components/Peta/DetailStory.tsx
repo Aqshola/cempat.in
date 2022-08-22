@@ -163,12 +163,12 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
           );
         }
 
-        // splitbee.track("view story", {
-        //   id: result.data.id,
-        //   title: result.data.title,
-        //   place_name: result.data.place_name,
-        //   coordinat: result.data.lat + " - " + result.data.lng,
-        // });
+        splitbee.track("view story", {
+          id: result.data.id,
+          title: result.data.title,
+          place_name: result.data.place_name,
+          coordinat: result.data.lat + " - " + result.data.lng,
+        });
       } else {
         let localData = getLocalStorage<ApiLocation[]>("list_location");
         if (localData) {
