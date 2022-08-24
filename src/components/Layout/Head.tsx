@@ -7,13 +7,11 @@ export default function Head() {
       <Helmet>
         <title>Cempat.in</title>
         
-        <meta name="google-site-verification" content="RY2HgnHgyC1yMJw8lzudKTK5vxraRtHxYBhTNUYF000" />
         <meta
           name="description"
           content="Platform untuk menulis cerita tiap tempat yang dikunjungi"
         />
-        <meta name="robots" content="index, follow" />
-        <meta name='keyword' content ='Cempatin, maps, jalan-jalan, cerita'/>
+        
         <link
           rel="apple-touch-icon"
           sizes="180x180"
