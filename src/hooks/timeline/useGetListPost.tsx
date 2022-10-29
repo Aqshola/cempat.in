@@ -39,6 +39,7 @@ export default function useGetListPost(): [
             from=skip;
             to=skip+paginateInfinite.limit;
         } else if(skip>=Count){
+            console.log(Count+paginateInfinite)
             from=Count+1
             to=Count+paginateInfinite.limit;
         }

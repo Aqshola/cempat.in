@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { opacityPageTransition } from "lib/Transition";
 import Alert from "components/Alert/Alert";
 import { useCheckUsername } from "hooks/auth/useCheckUsername";
+import { googleProvider } from "hooks/auth/useOAuthGoogle";
 
 /**
  * TODO: Onchange check username and email
@@ -134,6 +135,7 @@ function Register() {
             <Button
               variant="outline-gray"
               className="w-full flex justify-center gap-5"
+              onClick={googleProvider}
             >
               <span>
                 <img src="/icon/filled/google-icon-filled.svg" alt="google" />

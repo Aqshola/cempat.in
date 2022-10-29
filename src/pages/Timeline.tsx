@@ -9,13 +9,25 @@ import {
 } from "hooks/helper/useSessionStorage";
 import useRefreshTimeline from "hooks/timeline/useRefreshTimeline";
 import { sideNavStore } from "store/navStore";
-import toast, { Toaster } from "react-hot-toast";
+
 
 export default function Timeline() {
+
+  //REF
+  const listParent = useRef<HTMLDivElement>(null);
+
+
   const { setTimelineAction, setMobileNavTitle } = sideNavStore(
     (state) => state
   );
-  const listParent = useRef<HTMLDivElement>(null);
+
+  //HOOKS
+  const [getList, resultList, loadingList] = useGetListPost();
+  const [refreshData, resultRefresh, loadingRefresh] = useRefreshTimeline();
+  const [checkRefresh, checkResultRefresh, checkLoadingRefresh] =
+    useRefreshTimeline();
+
+  //STATE
   const [currentScroll, setcurrentScroll] = useState<number>(-1);
   const [touchStart, settouchStart] = useState({
     x: 0,
@@ -30,14 +42,14 @@ export default function Timeline() {
 
   const [bottomLoading, setbottomLoading] = useState<boolean>(false);
 
-  const [getList, result, loadingList] = useGetListPost();
+  
   const [timelineData, settimelineData] = useState<Story[]>([]);
 
-  const [refreshData, resultRefresh, loadingRefresh] = useRefreshTimeline();
-  const [checkRefresh, checkResultRefresh, checkLoadingRefresh] =
-    useRefreshTimeline();
+  
   const [popUpCheckRefresh, setpopUpCheckRefresh] = useState<boolean>(false);
   const [dataCheck, setdataCheck] = useState<Story[]>([]);
+
+  //FUNCTION
 
   function onTouchStart(e: React.TouchEvent<HTMLElement>) {
     const touch = e.targetTouches[0];
@@ -79,6 +91,7 @@ export default function Timeline() {
   }
   function onScroll(e: React.UIEvent<HTMLElement, UIEvent>) {
     setcurrentScroll(e.currentTarget.scrollTop);
+    setSessionStorage("scroll", e.currentTarget.scrollTop);
     scrollDownUpdate();
   }
 
@@ -121,9 +134,45 @@ export default function Timeline() {
   }
 
   useEffect(() => {
+
+    //get cache timeline from session storage
+    let sessionTimeline = getSessionStorage("timeline") as Story[];
+    if (!sessionTimeline || sessionTimeline.length === 0) {
+      getList(0);
+    } else {
+      settimelineData(sessionTimeline);
+    }
+
+    
+  }, []);
+
+
+  useEffect(() => {
+    //set to last scroll position
+    const historyScroll = getSessionStorage("scroll") as number;
+    if (historyScroll) {
+      let timeout=setTimeout(() => {
+        listParent.current?.scrollTo({
+          top: historyScroll,
+        });
+        clearTimeout(timeout)
+      }, 500);
+    }
+  }, [])
+
+  useEffect(() => {
+    if(!loadingList){
+      settimelineData([...resultList.data])
+    }
+    
+  
+    
+  }, [loadingList])
+  
+
+  useEffect(() => {
     const intervalId = setInterval(() => {
       if (timelineData.length > 0) {
-        console.log("popup", popUpCheckRefresh);
         checkRefresh(timelineData[0].created_at);
       }
     }, 5000);
@@ -152,8 +201,8 @@ export default function Timeline() {
 
   useEffect(() => {
     if (!loadingList) {
-      settimelineData([...timelineData, ...result.data]);
-      if (result.data.length === 0) {
+      settimelineData([...timelineData, ...resultList.data]);
+      if (resultList.data.length === 0) {
         setTimeout(() => {
           if (listParent.current) {
             const scrollTop = listParent.current.scrollHeight || 0;
