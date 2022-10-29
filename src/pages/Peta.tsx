@@ -32,7 +32,8 @@ mapboxgl.workerClass =require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker
 
 
 export default function Peta() {
-  const isAuth = authStore((state) => state.isAuth);
+
+  const authData= authStore(state=>state)
   const mapGlRef = useRef<MapRef | null>(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -41,6 +42,16 @@ export default function Peta() {
   const lngParams = searchParams.get("lng");
   const id = searchParams.get("id");
 
+  
+
+
+  //HOOKS
+  const [getMarker, dataMarker, loading] = useGet();
+
+
+  //STATE
+
+  //STATE FOR HEAD
   const [headContent, setheadContent] = useState<{
     title: string;
     desc: string | null;
@@ -48,25 +59,96 @@ export default function Peta() {
     title: "Peta",
     desc: null,
   });
+  //STATE FOR PICKED LOCATION
 
   const [pickLocation, setpickLocation] = useState<boolean>(false);
-
   const [pickedLocation, setpickedLocation] = useState<Location | null>({
     lng: 0,
     lat: 0,
   });
+
+  const [pickedLocationData, setpickedLocationData] = useState<Location | null>({
+    lng: 0,
+    lat: 0,
+  });
+
+  //STATE FOR USER ACTION
+  const [userEvent, setuserEvent] = useState<'netral'|'picking_location'|'picked_location'|"create_story">("netral")
+
+  //STATE FOR SECTION VIEW
+  const [detailSectionView, setdetailSectionView] = useState<boolean>(false)
+  const [editorSectionView, seteditorSectionView] = useState<boolean>(false)
+  const [userSectionView, setuserSectionView] = useState<boolean>(false);
+
+  //STATE FOR COMPONENT KIADED
+  const [loadedMap, setloadedMap] = useState<boolean>(false);
+
+  //STATE FOR DATA
+  const [listLocation, setlistLocation] = useState<ApiLocation[]>([]);
+
+  //HELPER STATE
+  const [isClash, setisClash] = useState(false)
+  const [flying, setflying] = useState(false)
+
+
+  
+
+
+
+  //FUNCTION FOR COMPONENT ACTION
+  function storyMarkerAction(dataLocation:ApiLocation){
+      if(userEvent=='netral'){
+        navigate(`?id=${dataLocation.id}`);
+        flyTo(dataLocation.lng,dataLocation.lat)
+      }
+  }
+
+  function handleDetailSectionView(state:boolean){
+      setdetailSectionView(state)
+      if(state){
+        seteditorSectionView(false)
+        setuserSectionView(false)
+      }
+  }
+
+  function handleUserSectionView(state:boolean){
+    setuserSectionView(state)
+    if(userSectionView){
+      setdetailSectionView(false)
+      seteditorSectionView(false)
+    }
+  }
+
+  function handleEditorSectionView(state:boolean){
+    seteditorSectionView(state)
+    if(state){
+      setdetailSectionView(false)
+      setuserSectionView(false)
+    }
+  }
+
+  function newStory(){
+    if(userEvent==="picking_location"){
+        toast.error("Hayoo, pilih tempat dulu ya")
+    }else{
+      handleDetailSectionView(true)
+    }
+  }
+
+  function cancelNewStory(){
+    setpickedLocationData(null)
+    handleEditorSectionView(false)
+    setuserEvent("netral")
+  }
+
+
+  
   const [showEditor, setshowEditor] = useState<boolean>(false);
 
   const [initialLocation, setinitialLocation] = useState({
     lat: 106.816666,
     long: -6.2,
   });
-
-  const [loadedMap, setloadedMap] = useState<boolean>(false);
-
-  const [listLocation, setlistLocation] = useState<ApiLocation[]>([]);
-
-  const [getMarker, dataMarker, loading] = useGet();
 
   const [storyDetailView, setstoryDetailView] = useState<boolean>(false);
 
@@ -76,12 +158,7 @@ export default function Peta() {
     id: 0,
     jml_cerita: 0,
     place_name: "",
-  });
-
-  const [userSectionView, setuserSectionView] = useState<boolean>(false);
-
-  const [isClash, setisClash] = useState(false)
-
+  }); 
 
   function _saveCallback({ lat, lng, id, place_name }: ApiLocation) {
     setlistLocation([...listLocation, { lat, lng, id, place_name }]);
@@ -193,13 +270,39 @@ export default function Peta() {
   }
 
   function flyTo(lng:number, lat:number){
-    mapGlRef.current?.flyTo({
-      center: [lng, lat],
-      essential: true,
-      zoom:13
-    });
+    mapGlRef.current?.once("moveend",()=>{
+      if(flying){
+        setflying(false)
+      }
+    })
+    setTimeout(() => {
+      mapGlRef.current?.flyTo({
+        center: [lng, lat],
+        essential: true,
+        zoom:15,
+        duration:2000,
+      });
+    }, 0);
+
+
+    
+
+    
+
+    // mapGlRef.current?.on("flyend", () => {
+    //   console.log('sasa')
+    //   setflying(false)
+    // });
+
+    // mapGlRef.current?.on("moveend", () => {
+    //   if (flying) {
+    //     setflying(false)
+    //   }
+    // });
   }
 
+
+  
   useEffect(() => {
     _getCurrentPosition();
     let localData = getSessionStorage<ApiLocation[]>("list_location");
@@ -267,7 +370,7 @@ export default function Peta() {
       <div className="h-screen" id="nav-btn" aria-label="nav-btn">
         <Search handleSearch={viewLocation} />
 
-        {!isAuth && (
+        {!authData.isAuth && (
           <div className="absolute left-5 md:left-10 top-10 w-64 md:w-auto z-10">
             <Link to={"/"} className=" rounded-md p-2 font-bold font-nunito bg-white w-10 h-10 flex" >
               <img className="w-full" src="/icon/filled/cempatin-logo-filled.svg" alt="cempatin logo" />
@@ -317,14 +420,7 @@ export default function Peta() {
             <StoryMarker
               markerId={i}
               key={i}
-              onClick={() => {
-                if (!pickLocation) {
-                  _handleStoryView(loc.jml_cerita || 0, loc);
-                }else{
-                  toast.error("Eitsss, disini udah ada cerita. jangan nimpa ya 🙏")
-                  setisClash(true)
-                }
-              }}
+              onClick={(()=>storyMarkerAction(loc))}
               lat={loc.lat}
               lng={loc.lng}
             />
@@ -332,18 +428,16 @@ export default function Peta() {
         </MapGL>
 
         <DetailStory
+          authData={authData}
           flying={flyTo}
           handleHelmetTitle={handleTitleHelmet}
           viewData={viewStory}
-          showEditor={storyDetailView}
-          onCloseEditor={() => {
-            setstoryDetailView(false);
-          }}
-          onOutsideEditor={() => {
-            setstoryDetailView(false);
-          }}
+          handleDetailView={handleDetailSectionView}
+          stateDetailView={detailSectionView}
+          stateFlying={flying}
+          
         />
-        <UserSection
+        {/* <UserSection
           handleHelmetTitle={handleTitleHelmet}
           viewData={viewStory}
           showEditor={userSectionView}
@@ -417,7 +511,7 @@ export default function Peta() {
           >
             Buat Cerita
           </Button>
-        )}
+        )} */}
       </div>
     </>
   );

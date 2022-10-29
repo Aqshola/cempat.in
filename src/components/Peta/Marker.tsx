@@ -32,7 +32,7 @@ const StoryMarker = ({ onClick, lng, lat,markerId }: StoryMarkerProps) => {
 
 
   return (
-    <Marker longitude={lng} latitude={lat} anchor="bottom" onClick={onClick}>
+    <Marker longitude={lng} latitude={lat} anchor="bottom"  onClick={onClick}>
       <motion.div ref={refMarker} initial={{scale:0}} animate={{scale:1}} transition={{
         type:"spring",
         bounce:0.5,

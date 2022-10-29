@@ -22,35 +22,42 @@ import LikeAction from "./DetailSection/LikeAction";
 import clsx from "clsx";
 
 type Props = {
-  onOutsideEditor: () => void;
-  showEditor: boolean;
-  onCloseEditor: () => void;
+  authData:any
+  handleDetailView:(state:boolean)=>void
+  stateDetailView:boolean
   titleEditor?: string;
   viewData: ApiLocation;
   handleHelmetTitle?: (title: string, desc: string | null) => void;
   flying: (lng: number, lat: number) => void;
+  stateFlying:boolean
 };
 
 function DetailStory({ titleEditor, viewData, ...props }: Props) {
-  const isAuth = authStore((state) => state.isAuth);
+  
+
+  //REF
+  const sheetRef = useRef<BottomSheetRef>(null);
+  //HOOKS
   const navigate = useNavigate();
-  const user_id = authStore((state) => state.authData?.user_id);
   const [getDetail, result, loading] = useDetail();
   const [updateCerita, resultUpdate, loadingUpdate] = useUpdate();
   const [postLike, likeResult, loadingLike] = useLiking();
   const [getLike, likingResult, loadingLiking] = useGetLiking();
   const [getSize, screenSize] = useScreenSize();
-  const sheetRef = useRef<BottomSheetRef>(null);
-
   const [searchParams] = useSearchParams();
+
+
+
+  //HELPER
+  const user_id = props.authData.authData?.user_id
   const idParams = searchParams.get("id");
 
+  //STATE
   const [edit, setedit] = useState<boolean>(false);
   const [formData, setformData] = useState({
     title: "",
     content: EditorState.createEmpty(),
   });
-
   const [likingData, setlikingData] = useState<{
     like_count: number;
     unlike_count: number;
@@ -61,6 +68,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
     status: null,
   });
 
+  //FUNCTION
   function _handleEdit(value: boolean) {
     setedit(value);
     if (edit) {
@@ -85,9 +93,8 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
     if (props.handleHelmetTitle) {
       props.handleHelmetTitle("Peta", null);
     }
-    props.onCloseEditor();
+    props.handleDetailView(false)
     _handleEdit(false);
-    // navigate("/peta")
   }
 
   function _postLike(action: "like" | "unlike") {
@@ -137,13 +144,22 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
       if (user_id) {
         getLike(user_id, idParams);
       }
+      if(!props.stateFlying){
+        let timeout=setTimeout(() => {
+          props.handleDetailView(true)
+          clearTimeout(timeout)
+        }, 2000);
+        
+      }
+
     }
+
   }, [idParams]);
 
   useEffect(() => {
     if (!loading) {
       if (result.data) {
-        props.flying(result.data.lng, result.data.lat);
+        // props.flying(result.data.lng, result.data.lat);
         let editorState = EditorState.createWithContent(
           convertFromRaw(JSON.parse(result.data?.content))
         );
@@ -162,6 +178,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
             result.data.content.slice(0, 100)
           );
         }
+        
 
         splitbee.track("view story", {
           id: result.data.id,
@@ -184,7 +201,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
   useEffect(() => {
     if (!loadingUpdate && !resultUpdate.error) {
       setedit(false);
-      props.onCloseEditor();
+      props.handleDetailView(false)
     }
   }, [loadingUpdate, resultUpdate.error]);
 
@@ -218,6 +235,10 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
             </h2>
           }
           {...props}
+          showEditor={props.stateDetailView}
+          onOutsideEditor={()=>{
+            handleOnClose()
+          }}
           onCloseEditor={() => {
             handleOnClose();
             navigate("/peta");
@@ -250,7 +271,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
               </h1>
             </>
           )}
-          {!loading && edit && result.data && isAuth && (
+          {!loading && edit && result.data && props.authData.isAuth && (
             <input
               aria-label="judul cerita"
               name="title"
@@ -295,7 +316,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
               {/* LIKING */}
               {!edit && (
                 <div className="mt-10 flex justify-between">
-                  {isAuth && (
+                  {props.authData.isAuth && (
                     <LikeAction
                       likeCallback={() => _postLike("like")}
                       unlikeCallback={() => _postLike("unlike")}
@@ -324,7 +345,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
             </>
           )}
 
-          {result.data && edit && user_id === result.data?.user_id && isAuth && (
+          {result.data && edit && user_id === result.data?.user_id && props.authData.isAuth && (
             <div className="mt-5 flex justify-end gap-5">
               <Button variant="secondary" onClick={() => _handleEdit(false)}>
                 Batal
@@ -357,7 +378,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
       snapPoints={({ maxHeight }) => {
         return [maxHeight - maxHeight / 10, 400, 330];
       }}
-      open={props.showEditor}
+      open={props.stateDetailView}
       className="w-full z-50 absolute bottom-0"
       blocking={true}
       ref={sheetRef}
@@ -404,7 +425,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
               </h1>
             </>
           )}
-          {!loading && edit && result.data && isAuth && (
+          {!loading && edit && result.data && props.authData.isAuth && (
             <>
               <label
                 htmlFor="judul-input"
@@ -470,7 +491,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
               {/* LIKING */}
               {!edit && (
                 <div className="mt-10 flex justify-between">
-                  {isAuth && (
+                  {props.authData.isAuth && (
                     <LikeAction
                       likeCallback={() => _postLike("like")}
                       unlikeCallback={() => _postLike("unlike")}

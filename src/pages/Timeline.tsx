@@ -103,7 +103,9 @@ export default function Timeline() {
       if (bottomPosition >= scrollHeight - 10) {
         let sessionTimeline = getSessionStorage("timeline") as Story[];
 
-        if(!loadingList){
+        
+        if(!bottomLoading){
+
           let timeout = setTimeout(() => {
             getList(sessionTimeline.length || 0);
             clearTimeout(timeout);
@@ -168,7 +170,7 @@ export default function Timeline() {
       if (timelineData.length > 0) {
         checkRefresh(timelineData[0].created_at);
       }
-    }, 5000);
+    }, 60*1000);
     return () => clearInterval(intervalId);
   }, [timelineData]);
 
