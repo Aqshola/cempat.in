@@ -27,23 +27,33 @@ export default function useGetListPost(): [
       let from = paginateInfinite.from;
       let to = paginateInfinite.from + paginateInfinite.limit;
 
+      
+
       const { data: Count } = await supabase
         .from("cerita")
         .select("count(*")
         .single();
+
+        
+
       if (Count) {
         if (skip === 0 && paginateInfinite.from === 0) {
+          
           from = 0;
           to = paginateInfinite.limit;
-        } else if (skip>0){
-            from=skip;
-            to=skip+paginateInfinite.limit;
-        } else if(skip>=Count){
-            console.log(Count+paginateInfinite)
-            from=Count+1
-            to=Count+paginateInfinite.limit;
+        } else if (skip >= Count.count) {
+          
+          from = Count.count + 1;
+          to = Count.count + paginateInfinite.limit;
+        } else if (skip > 0) {
+          
+          from = skip;
+          to = skip + paginateInfinite.limit;
         }
 
+        
+
+        
         const { data, error } = await supabase
           .from("cerita")
           .select(

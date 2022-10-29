@@ -102,10 +102,13 @@ export default function Timeline() {
 
       if (bottomPosition >= scrollHeight - 10) {
         let sessionTimeline = getSessionStorage("timeline") as Story[];
-        let timeout = setTimeout(() => {
-          getList(sessionTimeline.length || 0);
-          clearTimeout(timeout);
-        }, 500);
+
+        if(!loadingList){
+          let timeout = setTimeout(() => {
+            getList(sessionTimeline.length || 0);
+            clearTimeout(timeout);
+          }, 500);
+        }
         setbottomLoading(true);
       }
     }
@@ -159,16 +162,6 @@ export default function Timeline() {
       }, 500);
     }
   }, [])
-
-  useEffect(() => {
-    if(!loadingList){
-      settimelineData([...resultList.data])
-    }
-    
-  
-    
-  }, [loadingList])
-  
 
   useEffect(() => {
     const intervalId = setInterval(() => {
