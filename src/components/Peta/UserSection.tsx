@@ -17,18 +17,17 @@ import parseDateString from "hooks/helper/parseDateString";
 type Props = {
   showEditor: boolean;
   titleEditor?: string;
-  handleUserView:(state:boolean)=>void
-  stateUserView:boolean
+  handleUserView: (state: boolean) => void;
+  stateUserView: boolean;
   handleView?: () => void;
   handleHelmetTitle?: (title: string, desc: string | null) => void;
 };
 
-function UserSection({ titleEditor,  ...props }: Props) {
+function UserSection({ titleEditor, ...props }: Props) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [getUserDetail, result, loading] = useDetailUser();
-  const [mount, setmount] = useState(true)
-  
+  const [mount, setmount] = useState(true);
 
   const sheetRef = useRef<BottomSheetRef>(null);
 
@@ -38,24 +37,24 @@ function UserSection({ titleEditor,  ...props }: Props) {
     if (props.handleHelmetTitle) {
       props.handleHelmetTitle("Peta", null);
     }
-    props.handleUserView(false)
+    props.handleUserView(false);
     navigate("/peta");
   };
   const [getSize, screenSize] = useScreenSize();
 
   useEffect(() => {
-      if (idParams) {
-        if (props.handleView) {
-          props.handleView();
-        }
-        getUserDetail(idParams);
-      }else{
-          props.handleUserView(false)
+    if (idParams) {
+      if (props.handleView) {
+        props.handleView();
       }
+      getUserDetail(idParams);
+    } else {
+      props.handleUserView(false);
+    }
   }, [idParams]);
 
   useEffect(() => {
-    if(mount){
+    if (mount) {
       if (!loading) {
         if (result.data) {
           if (props.handleHelmetTitle) {
@@ -64,7 +63,7 @@ function UserSection({ titleEditor,  ...props }: Props) {
         }
       }
     }
-    return ()=>setmount(false)
+    return () => setmount(false);
   }, [loading, result.data]);
 
   useEffect(() => {
@@ -81,11 +80,11 @@ function UserSection({ titleEditor,  ...props }: Props) {
             </h2>
           }
           {...props}
-          onOutsideEditor={
-            ()=>{props.handleUserView(false)}
-          }
-          onCloseEditor={()=>{
-            props.handleUserView(false)
+          onOutsideEditor={() => {
+            props.handleUserView(false);
+          }}
+          onCloseEditor={() => {
+            props.handleUserView(false);
           }}
         >
           <div className="pb-5">
@@ -110,11 +109,25 @@ function UserSection({ titleEditor,  ...props }: Props) {
               <h2 className="text-center font-nunito font-medium text-xl mt-2 capitalize">
                 {result.data.user.username}
               </h2>
-              <Link to={`/user/${result.data.user.username}`} className="w-full flex justify-center mt-5">
-                <Button size="xs" className="w-fit">
-                  Lihat profil seutuhnya
-                </Button>
-              </Link>
+              <div className="flex justify-center gap-5">
+                <Link
+                  to={`/user/${result.data.user.username}`}
+                  className="w-fit flex justify-center mt-5"
+                >
+                  <Button size="xs" className="w-fit">
+                    Lihat profil
+                  </Button>
+                </Link>
+
+                <Link
+                  to={`/journey/${result.data.user.username}`}
+                  className="w-fit flex justify-center mt-5"
+                >
+                  <Button size="xs" className="w-fit" variant="outline-primary">
+                    Lihat Riwayat
+                  </Button>
+                </Link>
+              </div>
               <div className="mt-9">
                 <h3 className="mb-7 text-xl font-semibold font-nunito">
                   Cerita

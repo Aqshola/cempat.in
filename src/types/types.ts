@@ -16,7 +16,7 @@ export type Result<R, E> = {
 };
 
 export type ApiLocation = Location & {
-  id?: number;
+  id: number;
   jml_cerita?: number;
 };
 

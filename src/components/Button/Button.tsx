@@ -33,7 +33,7 @@ const ButtonType: {
     "bg-blue-primary text-white font-semibold rounded-lg btn-secondary",
   danger: "bg-red-primary text-white font-semibold rounded-lg btn-danger",
   "outline-primary":
-    "bg-transparent text-green-primary font-semibold rounded-lg btn-primary",
+    "bg-transparent text-green-primary border border-green-primary font-semibold rounded-lg btn-primary",
   "outline-secondary":
     "bg-transparent text-blue-primary font-semibold rounded-lg btn-secondary",
   "outline-gray":

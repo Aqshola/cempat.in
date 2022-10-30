@@ -271,6 +271,15 @@ export default function Peta() {
     // });
   }
 
+  function hoverMarker(id:number){
+      let hoverLocation=listLocation.filter(el=>el.id===id)
+      let anotherLocation=listLocation.filter(el=>el.id!==id)
+
+      //OVERLAP
+      setlistLocation([...anotherLocation,...hoverLocation])
+
+  }
+
 
   
   useEffect(() => {
@@ -384,6 +393,7 @@ export default function Peta() {
 
           {listLocation.map((loc, i) => (
             <StoryMarker
+              onHover={()=>hoverMarker(loc.id)}
               markerId={i}
               key={i}
               onClick={(()=>storyMarkerAction(loc))}

@@ -34,14 +34,19 @@ const PickedMarker = ({ lng, lat, className }: PickedMarkerProps) => {
 type StoryMarkerProps = PickedMarkerProps & {
   listStory?: any;
   onClick?: (...T: any) => void;
+  onHover?:(...T:any)=>void
 };
 
-const StoryMarker = ({ onClick, lng, lat, markerId }: StoryMarkerProps) => {
+const StoryMarker = ({ onClick, lng, lat, markerId,onHover }: StoryMarkerProps) => {
   const refMarker = useRef<HTMLDivElement>(null);
 
   return (
-    <Marker longitude={lng} latitude={lat} anchor="bottom" onClick={onClick}>
+    <Marker  longitude={lng} latitude={lat} anchor="bottom" onClick={onClick}>
       <motion.div
+      onHoverStart={onHover}
+        whileHover={{
+          translateY:-10,
+        }}
         ref={refMarker}
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
