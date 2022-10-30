@@ -26,15 +26,13 @@ type Props = {
   handleDetailView:(state:boolean)=>void
   stateDetailView:boolean
   titleEditor?: string;
-  viewData: ApiLocation;
+  zoomLevel?:number
   handleHelmetTitle?: (title: string, desc: string | null) => void;
   flying: (lng: number, lat: number) => void;
   stateFlying:boolean
 };
 
-function DetailStory({ titleEditor, viewData, ...props }: Props) {
-  
-
+function DetailStory({ titleEditor,  ...props }: Props) {
   //REF
   const sheetRef = useRef<BottomSheetRef>(null);
   //HOOKS
@@ -69,7 +67,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
   });
 
   //FUNCTION
-  function _handleEdit(value: boolean) {
+  function toggleEdit(value: boolean) {
     setedit(value);
     if (edit) {
       if (result.data?.content) {
@@ -81,11 +79,11 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
     }
   }
 
-  function _setTitle(e: React.ChangeEvent<HTMLInputElement>) {
+  function setFormTitle(e: React.ChangeEvent<HTMLInputElement>) {
     setformData({ ...formData, title: e.target.value });
   }
 
-  function _setContent(editorState: EditorState) {
+  function setFormContent(editorState: EditorState) {
     setformData({ ...formData, content: editorState });
   }
 
@@ -94,16 +92,16 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
       props.handleHelmetTitle("Peta", null);
     }
     props.handleDetailView(false)
-    _handleEdit(false);
+    toggleEdit(false);
   }
 
-  function _postLike(action: "like" | "unlike") {
+  function toggleLike(action: "like" | "unlike") {
     if (result.data) {
       postLike(user_id || "", result.data.id, action);
     }
   }
 
-  function _shareStory() {
+  function shareStory() {
     if (!navigator.canShare) {
       navigator.clipboard.writeText(window.location.href);
       toast.success("Link berhasil dicopy", {
@@ -119,14 +117,14 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
     }
   }
 
-  function _updateCerita() {
+  function postUpdateStory() {
     let plainContent = formData.content.getCurrentContent().getPlainText();
 
     if (formData.title.trim() === "" || plainContent.trim() === "") {
       toast.error("Hayoo, judul dan isi gaboleh kosong yaa");
       return;
     }
-    updateCerita(viewData.id || 0, user_id || "", {
+    updateCerita(Number(idParams) || 0, user_id || "", {
       title: formData.title,
       content: formData.content,
     });
@@ -145,10 +143,15 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
         getLike(user_id, idParams);
       }
       if(!props.stateFlying){
-        let timeout=setTimeout(() => {
+
+        if(props.zoomLevel && props.zoomLevel>=15){
           props.handleDetailView(true)
-          clearTimeout(timeout)
-        }, 2000);
+        }else{
+          let timeout=setTimeout(() => {
+            props.handleDetailView(true)
+            clearTimeout(timeout)
+          }, 2000);
+        }
         
       }
 
@@ -201,7 +204,6 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
   useEffect(() => {
     if (!loadingUpdate && !resultUpdate.error) {
       setedit(false);
-      props.handleDetailView(false)
     }
   }, [loadingUpdate, resultUpdate.error]);
 
@@ -231,7 +233,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
         <RightNav
           title={
             <h2 className="text-center font-nunito text-2xl font-bold">
-              {viewData.place_name || result.data?.place_name}
+              { result.data?.place_name}
             </h2>
           }
           {...props}
@@ -247,7 +249,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
             user_id === result.data?.user_id &&
             !edit && (
               <Button
-                onClick={() => _handleEdit(true)}
+                onClick={() => toggleEdit(true)}
                 size="sm"
                 variant={edit ? "secondary" : "primary"}
               >
@@ -276,7 +278,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
               aria-label="judul cerita"
               name="title"
               type="text"
-              onChange={_setTitle}
+              onChange={setFormTitle}
               placeholder="Judul Cerita..."
               className="text-green-primary outline-none border rounded p-1 border-green-primary text-lg placeholder:text-lg  w-full"
               value={formData.title}
@@ -307,7 +309,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
                   ariaLabel="isi cerita"
                   placeholder="Tulis ceritamu disini"
                   editorState={formData.content}
-                  onEditorStateChange={_setContent}
+                  onEditorStateChange={setFormContent}
                   toolbarHidden={true}
                   readOnly={edit ? false : true}
                 />
@@ -318,8 +320,8 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
                 <div className="mt-10 flex justify-between">
                   {props.authData.isAuth && (
                     <LikeAction
-                      likeCallback={() => _postLike("like")}
-                      unlikeCallback={() => _postLike("unlike")}
+                      likeCallback={() => toggleLike("like")}
+                      unlikeCallback={() => toggleLike("unlike")}
                       likeCount={likingData.like_count}
                       unlikeCount={likingData.unlike_count}
                       loading={loadingLike || loadingLiking}
@@ -330,7 +332,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
                     <Button size="sm" variant="vanilla">
                       <span
                         className="flex items-center justify-self-end gap-2 ml-auto"
-                        onClick={_shareStory}
+                        onClick={shareStory}
                       >
                         <img
                           src={`/icon/outline/share-logo-outline.svg`}
@@ -347,13 +349,13 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
 
           {result.data && edit && user_id === result.data?.user_id && props.authData.isAuth && (
             <div className="mt-5 flex justify-end gap-5">
-              <Button variant="secondary" onClick={() => _handleEdit(false)}>
+              <Button variant="secondary" onClick={() => toggleEdit(false)}>
                 Batal
               </Button>
               <Button
                 loading={loadingUpdate}
                 onClick={() => {
-                  updateCerita(viewData.id || 0, user_id || "", {
+                  updateCerita(Number(idParams) || 0, user_id || "", {
                     title: formData.title,
                     content: formData.content,
                   });
@@ -394,12 +396,12 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
           <CgClose className="w-6 h-6" />
         </button>
         <h1 className="w-full text-center font-nunito font-bold text-lg">
-          {viewData.place_name || result.data?.place_name}
+          {result.data?.place_name}
         </h1>
         <div>
           {user_id === result.data?.user_id && !edit && (
             <Button
-              onClick={() => _handleEdit(true)}
+              onClick={() => toggleEdit(true)}
               size="xs"
               variant={edit ? "secondary" : "primary"}
             >
@@ -438,7 +440,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
                 aria-label="judul cerita"
                 name="title"
                 type="text"
-                onChange={_setTitle}
+                onChange={setFormTitle}
                 placeholder="Judul Cerita..."
                 className="text-green-primary outline-none border-b focus:border-b-2 transition-all rounded p-1 border-b-green-primary text-lg placeholder:text-lg  w-full"
                 value={formData.title}
@@ -483,7 +485,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
                   ariaLabel="isi cerita"
                   placeholder="Tulis ceritamu disini"
                   editorState={formData.content}
-                  onEditorStateChange={_setContent}
+                  onEditorStateChange={setFormContent}
                   toolbarHidden={true}
                   readOnly={edit ? false : true}
                 />
@@ -493,8 +495,8 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
                 <div className="mt-10 flex justify-between">
                   {props.authData.isAuth && (
                     <LikeAction
-                      likeCallback={() => _postLike("like")}
-                      unlikeCallback={() => _postLike("unlike")}
+                      likeCallback={() => toggleLike("like")}
+                      unlikeCallback={() => toggleLike("unlike")}
                       likeCount={likingData.like_count}
                       unlikeCount={likingData.unlike_count}
                       loading={loadingLike || loadingLiking}
@@ -502,7 +504,7 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
                     />
                   )}
                   <div className="flex w-full justify-end">
-                    <Button size="sm" variant="vanilla" onClick={_shareStory}>
+                    <Button size="sm" variant="vanilla" onClick={shareStory}>
                       <span className="flex items-center gap-2">
                         <img
                           src={`/icon/outline/share-logo-outline.svg`}
@@ -519,10 +521,10 @@ function DetailStory({ titleEditor, viewData, ...props }: Props) {
 
           {result.data && edit && user_id === result.data?.user_id && (
             <div className="mt-5 flex justify-end gap-5">
-              <Button variant="secondary" onClick={() => _handleEdit(false)}>
+              <Button variant="secondary" onClick={() => toggleEdit(false)}>
                 Batal
               </Button>
-              <Button loading={loadingUpdate} onClick={_updateCerita}>
+              <Button loading={loadingUpdate} onClick={postUpdateStory}>
                 Simpan
               </Button>
             </div>

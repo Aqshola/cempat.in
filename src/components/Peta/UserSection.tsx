@@ -15,16 +15,15 @@ import useDetailUser from "hooks/user/useDetailUser";
 import parseDateString from "hooks/helper/parseDateString";
 
 type Props = {
-  onOutsideEditor: () => void;
   showEditor: boolean;
-  onCloseEditor: () => void;
   titleEditor?: string;
-  viewData: ApiLocation;
+  handleUserView:(state:boolean)=>void
+  stateUserView:boolean
   handleView?: () => void;
   handleHelmetTitle?: (title: string, desc: string | null) => void;
 };
 
-function UserSection({ titleEditor, viewData, ...props }: Props) {
+function UserSection({ titleEditor,  ...props }: Props) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [getUserDetail, result, loading] = useDetailUser();
@@ -36,27 +35,23 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
   const idParams = searchParams.get("user");
 
   const handleOnClose = () => {
-    
     if (props.handleHelmetTitle) {
       props.handleHelmetTitle("Peta", null);
     }
-    props.onCloseEditor();
-    // navigate("/peta");
+    props.handleUserView(false)
+    navigate("/peta");
   };
   const [getSize, screenSize] = useScreenSize();
 
   useEffect(() => {
-    // if(mount){
       if (idParams) {
         if (props.handleView) {
           props.handleView();
         }
         getUserDetail(idParams);
       }else{
-          handleOnClose()
+          props.handleUserView(false)
       }
-    // }
-    // return ()=>setmount(false)
   }, [idParams]);
 
   useEffect(() => {
@@ -66,13 +61,6 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
           if (props.handleHelmetTitle) {
             props.handleHelmetTitle(result.data.user.username, null);
           }
-  
-          // splitbee.track("view story", {
-          //   id: result.data.id,
-          //   title: result.data.title,
-          //   place_name: result.data.place_name,
-          //   coordinat: result.data.lat + " - " + result.data.lng,
-          // });
         }
       }
     }
@@ -93,7 +81,12 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
             </h2>
           }
           {...props}
-          onCloseEditor={handleOnClose}
+          onOutsideEditor={
+            ()=>{props.handleUserView(false)}
+          }
+          onCloseEditor={()=>{
+            props.handleUserView(false)
+          }}
         >
           <div className="pb-5">
             {loading && (

@@ -21,7 +21,7 @@ import UserSection from "components/Peta/UserSection";
 import HelmetTitle from "components/Helper/HelmetTitle";
 import toast, { Toaster } from "react-hot-toast";
 import { authStore } from "store/authStore";
-import mapboxgl from 'mapbox-gl';
+import mapboxgl, { LngLat } from 'mapbox-gl';
 import "mapbox-gl/dist/mapbox-gl.css";
 
 // The following is required to stop "npm build" from transpiling mapbox code.
@@ -40,9 +40,6 @@ export default function Peta() {
 
   const latParams = searchParams.get("lat");
   const lngParams = searchParams.get("lng");
-  const id = searchParams.get("id");
-
-  
 
 
   //HOOKS
@@ -59,15 +56,16 @@ export default function Peta() {
     title: "Peta",
     desc: null,
   });
+
+
+  
   //STATE FOR PICKED LOCATION
-
-  const [pickLocation, setpickLocation] = useState<boolean>(false);
-  const [pickedLocation, setpickedLocation] = useState<Location | null>({
-    lng: 0,
-    lat: 0,
-  });
-
-  const [pickedLocationData, setpickedLocationData] = useState<Location | null>({
+  const [pickedLocationData, setpickedLocationData] = useState<Location &{
+    minLng?: number, 
+    minLat?: number, 
+    maxLng? : number, 
+    maxLat? : number
+  } | null>({
     lng: 0,
     lat: 0,
   });
@@ -90,14 +88,15 @@ export default function Peta() {
   const [isClash, setisClash] = useState(false)
   const [flying, setflying] = useState(false)
 
-
-  
-
+  const [initialLocation, setinitialLocation] = useState({
+    lat: 106.816666,
+    long: -6.2,
+  });
 
 
   //FUNCTION FOR COMPONENT ACTION
   function storyMarkerAction(dataLocation:ApiLocation){
-      if(userEvent=='netral'){
+      if(userEvent==='netral'){
         navigate(`?id=${dataLocation.id}`);
         flyTo(dataLocation.lng,dataLocation.lat)
       }
@@ -127,91 +126,66 @@ export default function Peta() {
     }
   }
 
+  function pickLocation(obj:mapboxgl.MapLayerMouseEvent){
+    const {lat,lng}=obj.lngLat
+    const detailData= mapGlRef.current?.queryRenderedFeatures(obj.point)
+    
+    
+    
+
+    if(userEvent==="picking_location" || userEvent==="picked_location"){
+      if(!isClash){
+        mapGlRef.current?.flyTo({
+          center: [lng, lat],
+          essential: true,
+        })
+        setpickedLocationData({
+          lat,
+          lng,
+          place_name:detailData?detailData[0]?.properties?.name:null
+        })
+        setuserEvent("picked_location")
+
+
+
+      }else{
+        toast.error("Jangan pilih lokasi yang nimpa orang ya")
+      }
+    }else{
+      setisClash(false) 
+      setpickedLocationData(null)
+    }
+  } 
+
+  function cancelPickLocation(){
+    setuserEvent("netral")
+    setpickedLocationData(null)
+    handleEditorSectionView(false)
+  }
+
+  
+  //FUNCTION STORY USECASE
   function newStory(){
     if(userEvent==="picking_location"){
         toast.error("Hayoo, pilih tempat dulu ya")
     }else{
-      handleDetailSectionView(true)
+        if(pickedLocationData){
+          mapGlRef.current?.zoomTo(15)
+          handleEditorSectionView(true)
+        }
+        
     }
   }
 
-  function cancelNewStory(){
-    setpickedLocationData(null)
-    handleEditorSectionView(false)
-    setuserEvent("netral")
-  }
 
-
-  
-  const [showEditor, setshowEditor] = useState<boolean>(false);
-
-  const [initialLocation, setinitialLocation] = useState({
-    lat: 106.816666,
-    long: -6.2,
-  });
-
-  const [storyDetailView, setstoryDetailView] = useState<boolean>(false);
-
-  const [viewStory, setviewStory] = useState<ApiLocation>({
-    lat: 0,
-    lng: 0,
-    id: 0,
-    jml_cerita: 0,
-    place_name: "",
-  }); 
-
-  function _saveCallback({ lat, lng, id, place_name }: ApiLocation) {
+  function saveStoryCallback({ lat, lng, id, place_name }: ApiLocation) {
     setlistLocation([...listLocation, { lat, lng, id, place_name }]);
-    setpickLocation(false);
+    setpickedLocationData(null)
   }
-
-  function _pickLocation(obj: any) {
-    const { lng, lat } = obj.lngLat;
-
-    mapGlRef.current?.flyTo({
-      center: [lng, lat],
-      essential: true,
-    });
-
-    const detail = mapGlRef.current?.queryRenderedFeatures(obj.point);
-
-    if(!isClash){
-      if (pickLocation) {
-        setpickedLocation({
-          lng,
-          lat,
-          place_name: detail ? detail[0]?.properties?.name : null,
-        });
-      }
-    }else{
-      setpickedLocation(null)
-      
-      setisClash(false)
-    }
-  }
-
-  function _cancelPick() {
-    setshowEditor(false);
-    setpickedLocation(null);
-    setpickLocation(false);
-  }
-
-  function _newStory() {
-    if (pickLocation) {
-      if (
-        !pickedLocation ||
-        (pickedLocation.lat === 0 && pickedLocation.lng === 0)
-      ) {
-        toast.error("Hayoo, pilih tempat dulu ya");
-      } else {
-        setshowEditor(true);
-      }
-    } else {
-      setpickLocation(true);
-    }
-  }
-
-  function _handleGet() {
+  
+  
+  //FUNCTION GET DATA
+  function getAllStory() {
     const bound = mapGlRef.current?.getBounds();
     let zoomLevel = mapGlRef.current?.getZoom() || 0;
 
@@ -223,7 +197,7 @@ export default function Peta() {
     }
   }
 
-  function _getCurrentPosition() {
+  function getCurrentPosition() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((e) => {
         setinitialLocation({
@@ -236,13 +210,9 @@ export default function Peta() {
     }
   }
 
-  function _handleStoryView(count: number, data: ApiLocation) {
-    setviewStory(data);
-    navigate(`?id=${data.id}`);
-    setstoryDetailView(true);
-    setuserSectionView(false);
-  }
+  
 
+  //FUNCTION HELPER
   function viewLocation(
     lat: number,
     long: number,
@@ -304,7 +274,7 @@ export default function Peta() {
 
   
   useEffect(() => {
-    _getCurrentPosition();
+    getCurrentPosition();
     let localData = getSessionStorage<ApiLocation[]>("list_location");
     if (localData != null) {
       setlistLocation([...localData]);
@@ -312,7 +282,7 @@ export default function Peta() {
   }, []);
 
   useEffect(() => {
-    _getCurrentPosition();
+    getCurrentPosition();
     let localData = getSessionStorage<ApiLocation[]>("list_location");
     if (localData == null) {
       const bound = mapGlRef.current?.getBounds();
@@ -357,11 +327,7 @@ export default function Peta() {
     }
   }, [loadedMap, latParams, lngParams]);
 
-  useEffect(() => {
-    if (id) {
-      setstoryDetailView(true);
-    }
-  }, [id]);
+  
 
   return (
     <>
@@ -380,11 +346,11 @@ export default function Peta() {
 
         <MapGL
           onLoad={() => {
-            _handleGet();
+            getAllStory();
           }}
           reuseMaps={true}
-          onMoveEnd={_handleGet}
-          onZoomEnd={_handleGet}
+          onMoveEnd={getAllStory}
+          onZoomEnd={getAllStory}
           optimizeForTerrain={true}
           ref={(e) => {
             mapGlRef.current = e;
@@ -393,7 +359,7 @@ export default function Peta() {
               setloadedMap(true);
             }
           }}
-          onClick={(el) => _pickLocation(el)}
+          onClick={pickLocation}
           mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
           initialViewState={{
             longitude: initialLocation.lat,
@@ -407,12 +373,12 @@ export default function Peta() {
             height: "100%",
           }}
         >
-          {pickedLocation && (
+          {pickedLocationData && (userEvent==="picking_location" || userEvent==="picked_location")  &&(
             <PickedMarker
               markerId={1}
               className="z-10"
-              lat={pickedLocation.lat}
-              lng={pickedLocation.lng}
+              lat={pickedLocationData.lat}
+              lng={pickedLocationData.lng}
             />
           )}
 
@@ -431,58 +397,48 @@ export default function Peta() {
           authData={authData}
           flying={flyTo}
           handleHelmetTitle={handleTitleHelmet}
-          viewData={viewStory}
           handleDetailView={handleDetailSectionView}
           stateDetailView={detailSectionView}
           stateFlying={flying}
+          zoomLevel={mapGlRef.current?.getZoom()}
           
         />
-        {/* <UserSection
+        <UserSection
           handleHelmetTitle={handleTitleHelmet}
-          viewData={viewStory}
           showEditor={userSectionView}
-          onCloseEditor={() => {
-            setuserSectionView(false);
-          }}
-          onOutsideEditor={() => {
-            setuserSectionView(false);
-          }}
+          handleUserView={handleUserSectionView}
+          stateUserView={userSectionView}
           handleView={() => {
             setuserSectionView(true);
           }}
         />
-        {isAuth && (
+        {authData.isAuth && (
           <>
             <EditorSection
-              showEditor={showEditor}
-              onCloseEditor={() => {
-                setshowEditor(false);
-              }}
-              onSaveEditor={_saveCallback}
-              onOutsideEditor={() => {
-                setshowEditor(false);
-              }}
-              infoLocation={pickedLocation}
+              showEditor={editorSectionView}
+              handleEditorView={handleEditorSectionView}
+              onSaveEditor={saveStoryCallback}
+              infoLocation={pickedLocationData}
             />
 
             <Button
               variant="danger"
-              onClick={_cancelPick}
+              onClick={cancelPickLocation}
               className={clsx(
                 "shadow w-max absolute left-10 md:left-40 bottom-20 md:right-20",
-                pickLocation && ["visible opacity-100"],
-                !pickLocation && [" invisible opacity-0"]
+                (userEvent==="picked_location" || userEvent==="picking_location") && ["visible opacity-100"],
+                (userEvent !=="picked_location" && userEvent !=="picking_location") && [" invisible opacity-0"]
               )}
             >
               Batal
             </Button>
 
             <Button
-              onClick={_newStory}
+              onClick={()=>{setuserEvent("picking_location")}}
               className={clsx(
                 "absolute  right-5 bottom-20 md:right-20 shadow",
-                !pickLocation && ["visible opacity-100"],
-                pickLocation && [" invisible opacity-0"]
+                userEvent==="netral" && ["visible opacity-100"],
+                userEvent!=="netral" && [" invisible opacity-0"]
               )}
               variant={"primary"}
             >
@@ -490,11 +446,11 @@ export default function Peta() {
             </Button>
 
             <Button
-              onClick={_newStory}
+              onClick={newStory}
               className={clsx(
                 "absolute  right-5 bottom-20 md:right-20 shadow",
-                pickLocation && ["visible opacity-100"],
-                !pickLocation && [" invisible opacity-0"]
+                userEvent ==="picked_location" && ["visible opacity-100"],
+                userEvent !== "picked_location" && [" invisible opacity-0"]
               )}
               variant={"secondary"}
             >
@@ -503,7 +459,7 @@ export default function Peta() {
           </>
         )}
 
-        {!isAuth && (
+        {!authData.isAuth && (
           <Button
             onClick={()=>navigate("/login")}
             className="absolute  right-5 bottom-20 md:right-20 shadow"
@@ -511,7 +467,7 @@ export default function Peta() {
           >
             Buat Cerita
           </Button>
-        )} */}
+        )}
       </div>
     </>
   );
