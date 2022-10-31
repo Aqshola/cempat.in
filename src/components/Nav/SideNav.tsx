@@ -37,6 +37,7 @@ export default function SideNav() {
   const [getSize, screenSize] = useScreenSize();
   const route = useLocation();
   const navigate = useNavigate();
+  
 
   const isNotMainRoute =
     route.pathname === "/" ||
@@ -44,8 +45,10 @@ export default function SideNav() {
     route.pathname === "/register" ||
     route.pathname === "/register/username" ||
     route.pathname === "/404" ||
-    route.pathname === "/lupa-sandi";
+    route.pathname === "/lupa-sandi"||
+    route.pathname.includes("/journey/")
 
+    
   useEffect(() => {
     getSize();
   });
@@ -71,6 +74,7 @@ export default function SideNav() {
     setspanSideNav(!spanSideNav);
   }
 
+  
   return isNotMainRoute || !isAuth ? (
     <></>
   ) : (

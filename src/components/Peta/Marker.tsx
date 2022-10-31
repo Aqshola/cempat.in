@@ -8,14 +8,17 @@ type PickedMarkerProps = {
   lng: number;
   lat: number;
   className?: string;
-  markerId: number;
+  markerId: string;
 };
 
-const PickedMarker = ({ lng, lat, className }: PickedMarkerProps) => {
+const PickedMarker = ({ lng, lat, className,markerId }: PickedMarkerProps) => {
   return (
     <>
       <Marker longitude={lng} latitude={lat} anchor="bottom">
         <motion.div
+        layoutId={markerId.toString()}
+        itemID={markerId.toString()}
+        id={markerId.toString()}
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{
@@ -43,6 +46,10 @@ const StoryMarker = ({ onClick, lng, lat, markerId,onHover }: StoryMarkerProps) 
   return (
     <Marker  longitude={lng} latitude={lat} anchor="bottom" onClick={onClick}>
       <motion.div
+      layoutId={markerId.toString()}
+      itemID={markerId.toString()}
+      id={markerId.toString()}
+
       onHoverStart={onHover}
         whileHover={{
           translateY:-10,

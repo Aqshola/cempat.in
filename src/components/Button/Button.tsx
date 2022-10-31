@@ -19,6 +19,7 @@ type ButtonProps = {
     | "outline-secondary"
     | "outline-gray" 
     |'vanilla'
+    |'invert_primary'
     ;
   size?: "sm" | "md" | "lg" | "xs" | "xl";
   shape?: "normal" | "round";
@@ -32,6 +33,7 @@ const ButtonType: {
   secondary:
     "bg-blue-primary text-white font-semibold rounded-lg btn-secondary",
   danger: "bg-red-primary text-white font-semibold rounded-lg btn-danger",
+  invert_primary:"bg-white font-semibold text-green-primary rounded-lg btn-primary",
   "outline-primary":
     "bg-transparent text-green-primary border border-green-primary font-semibold rounded-lg btn-primary",
   "outline-secondary":
@@ -137,7 +139,9 @@ type Props = {
     | "outline-primary"
     | "outline-secondary"
     | "outline-gray"
-    | 'vanilla';
+    | 'vanilla'
+    |'invert_primary'
+    ;
 };
 
 const LoaderType: {

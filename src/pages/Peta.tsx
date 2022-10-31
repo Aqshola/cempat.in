@@ -181,6 +181,7 @@ export default function Peta() {
   function saveStoryCallback({ lat, lng, id, place_name }: ApiLocation) {
     setlistLocation([...listLocation, { lat, lng, id, place_name }]);
     setpickedLocationData(null)
+    setuserEvent("netral")
   }
   
   
@@ -384,7 +385,7 @@ export default function Peta() {
         >
           {pickedLocationData && (userEvent==="picking_location" || userEvent==="picked_location")  &&(
             <PickedMarker
-              markerId={1}
+              markerId={`${pickedLocationData.lat} - ${pickedLocationData.lat}`}
               className="z-10"
               lat={pickedLocationData.lat}
               lng={pickedLocationData.lng}
@@ -394,8 +395,8 @@ export default function Peta() {
           {listLocation.map((loc, i) => (
             <StoryMarker
               onHover={()=>hoverMarker(loc.id)}
-              markerId={i}
-              key={i}
+              markerId={loc.id.toString()}
+              key={loc.id}
               onClick={(()=>storyMarkerAction(loc))}
               lat={loc.lat}
               lng={loc.lng}

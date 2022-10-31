@@ -27,4 +27,4 @@ function MarkerStory({ className }: Props) {
   );
 }
 
-export default MarkerStory;
+export default React.memo(MarkerStory);

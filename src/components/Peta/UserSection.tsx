@@ -115,7 +115,7 @@ function UserSection({ titleEditor, ...props }: Props) {
                   className="w-fit flex justify-center mt-5"
                 >
                   <Button size="xs" className="w-fit">
-                    Lihat profil
+                    Profil
                   </Button>
                 </Link>
 
@@ -124,7 +124,7 @@ function UserSection({ titleEditor, ...props }: Props) {
                   className="w-fit flex justify-center mt-5"
                 >
                   <Button size="xs" className="w-fit" variant="outline-primary">
-                    Lihat Riwayat
+                    Riwayat
                   </Button>
                 </Link>
               </div>
@@ -205,14 +205,20 @@ function UserSection({ titleEditor, ...props }: Props) {
               <h2 className="text-center font-nunito font-medium text-xl mt-2 capitalize">
                 {result.data.user.username}
               </h2>
-              <Link
-                to={`/user/${result.data.user.username}`}
-                className="w-full flex justify-center mt-5"
-              >
-                <Button size="xs" className="w-fit">
-                  Lihat profil seutuhnya
-                </Button>
-              </Link>
+              <div className="flex gap-2 justify-center items-center mt-5">
+                <Link
+                  to={`/user/${result.data.user.username}`}
+                >
+                  <Button size="xs" className="w-fit">
+                    Profil
+                  </Button>
+                </Link>
+                <Link to={`/journey/${result.data.user.username}`}>
+                  <Button size="xs" variant="outline-primary">Riwayat</Button>
+
+                </Link>
+
+              </div>
               <div className="mt-9">
                 <h3 className="mb-7 text-xl font-semibold font-nunito">
                   Cerita

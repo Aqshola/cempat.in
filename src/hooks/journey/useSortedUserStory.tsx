@@ -18,7 +18,7 @@ export default function useSortedUserStory():[(username:string)=>Promise<void>,R
             const {data,error}=await supabase.rpc("user_journey",{
                 username_param:username
             })
-            console.log(data);
+            
             
 
             if(data){

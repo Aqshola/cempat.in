@@ -243,7 +243,7 @@ function DetailStory({ titleEditor,  ...props }: Props) {
           }}
           onCloseEditor={() => {
             handleOnClose();
-            navigate("/peta");
+            navigate("?");
           }}
           leftEvent={
             user_id === result.data?.user_id &&
@@ -390,7 +390,7 @@ function DetailStory({ titleEditor,  ...props }: Props) {
           className="w-fit h-fit"
           onClick={() => {
             handleOnClose();
-            navigate("/peta");
+            navigate("?");
           }}
         >
           <CgClose className="w-6 h-6" />
