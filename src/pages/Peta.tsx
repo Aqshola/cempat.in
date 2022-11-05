@@ -99,6 +99,8 @@ export default function Peta() {
       if(userEvent==='netral'){
         navigate(`?id=${dataLocation.id}`);
         flyTo(dataLocation.lng,dataLocation.lat)
+      }else{
+        setisClash(true)
       }
   }
 
@@ -149,7 +151,10 @@ export default function Peta() {
 
 
       }else{
-        toast.error("Jangan pilih lokasi yang nimpa orang ya")
+        toast.error("Jangan pilih lokasi yang nimpa orang ya",{
+          duration:2000
+        })
+        setisClash(false)
       }
     }else{
       setisClash(false) 
@@ -396,7 +401,7 @@ export default function Peta() {
             <StoryMarker
               onHover={()=>hoverMarker(loc.id)}
               markerId={loc.id.toString()}
-              key={loc.id}
+              key={i}
               onClick={(()=>storyMarkerAction(loc))}
               lat={loc.lat}
               lng={loc.lng}

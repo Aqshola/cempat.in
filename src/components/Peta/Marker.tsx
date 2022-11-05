@@ -1,8 +1,9 @@
 import MarkerStory from "components/Icon/MarkerStory";
 import MarkerPicked from "components/Icon/MarkerPicked";
 import { Marker } from "react-map-gl";
-import { useRef } from "react";
+import { useRef,memo } from "react";
 import { motion } from "framer-motion";
+
 
 type PickedMarkerProps = {
   lng: number;
@@ -40,7 +41,7 @@ type StoryMarkerProps = PickedMarkerProps & {
   onHover?:(...T:any)=>void
 };
 
-const StoryMarker = ({ onClick, lng, lat, markerId,onHover }: StoryMarkerProps) => {
+const StoryMarker= memo(function StoryMarker ({ onClick, lng, lat, markerId,onHover }: StoryMarkerProps) {
   const refMarker = useRef<HTMLDivElement>(null);
 
   return (
@@ -64,10 +65,11 @@ const StoryMarker = ({ onClick, lng, lat, markerId,onHover }: StoryMarkerProps) 
           // delay:0.2*markerId
         }}
       >
-        <MarkerStory className="w-16 h-16" />
+        <MarkerStory className="w-16 h-16 fill-green-primary transition-colors hover:fill-blue-primary" />
       </motion.div>
     </Marker>
   );
-};
+});
 
-export { PickedMarker, StoryMarker };
+
+export { PickedMarker,  StoryMarker };

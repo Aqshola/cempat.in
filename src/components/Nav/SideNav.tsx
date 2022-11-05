@@ -45,8 +45,7 @@ export default function SideNav() {
     route.pathname === "/register" ||
     route.pathname === "/register/username" ||
     route.pathname === "/404" ||
-    route.pathname === "/lupa-sandi"||
-    route.pathname.includes("/journey/")
+    route.pathname === "/lupa-sandi"
 
     
   useEffect(() => {
@@ -79,7 +78,7 @@ export default function SideNav() {
     <></>
   ) : (
     <>
-      <div className="absolute top-10 left-0 right-0 w-full grid md:hidden px-3 items-center grid-cols-9 z-10">
+      <div className="absolute top-10 left-0 right-0 w-full grid md:hidden px-3 items-center grid-cols-9 z-20">
         <div className="col-span-1">
           <button
             aria-label="side nav"
@@ -99,7 +98,8 @@ export default function SideNav() {
         <div
           className={clsx(
             "col-span-7",
-            route.pathname === "/peta" && ["hidden"]
+            (route.pathname === "/peta" || route.pathname.includes("/journey/")) && ["hidden"],
+            
           )}
         >
           <h1 className="top-12 text-xl font-semibold font-nunito  capitalize text-black w-full text-center">
