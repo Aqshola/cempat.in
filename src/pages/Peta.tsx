@@ -277,12 +277,19 @@ export default function Peta() {
     // });
   }
 
-  function hoverMarker(id:number){
-      let hoverLocation=listLocation.filter(el=>el.id===id)
-      let anotherLocation=listLocation.filter(el=>el.id!==id)
+  function hoverMarker(id:number,idx:number){
+      let allArray=listLocation
+      let spliced=allArray.splice(idx,1);
+      
 
-      //OVERLAP
-      setlistLocation([...anotherLocation,...hoverLocation])
+      setlistLocation([...allArray,...spliced])
+      // console.log(allArray,spliced)
+      
+      // let hoverLocation=listLocation.filter(el=>el.id===id)
+      // let anotherLocation=listLocation.filter(el=>el.id!==id)
+
+      // //OVERLAP
+      // setlistLocation([...anotherLocation,...hoverLocation])
 
   }
 
@@ -399,7 +406,7 @@ export default function Peta() {
 
           {listLocation.map((loc, i) => (
             <StoryMarker
-              onHover={()=>hoverMarker(loc.id)}
+              onHover={()=>hoverMarker(loc.id,i)}
               markerId={loc.id.toString()}
               key={i}
               onClick={(()=>storyMarkerAction(loc))}
