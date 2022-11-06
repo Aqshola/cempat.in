@@ -12,6 +12,10 @@
   
 }
 
+/* marker */
+.mapboxgl-marker:hover{
+  z-index: 20;
+}
 
 /* shadow */
 .shadow-journey-box{

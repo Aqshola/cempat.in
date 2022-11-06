@@ -54,6 +54,7 @@ const StoryMarker= memo(function StoryMarker ({ onClick, lng, lat, markerId,onHo
       onHoverStart={onHover}
         whileHover={{
           translateY:-10,
+          zIndex:30,
         }}
         ref={refMarker}
         initial={{ scale: 0 }}
@@ -62,7 +63,6 @@ const StoryMarker= memo(function StoryMarker ({ onClick, lng, lat, markerId,onHo
           type: "spring",
           bounce: 0.5,
           duration: 0.5,
-          // delay:0.2*markerId
         }}
       >
         <MarkerStory className="w-16 h-16 fill-green-primary transition-colors hover:fill-blue-primary" />

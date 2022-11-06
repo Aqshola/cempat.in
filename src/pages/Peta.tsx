@@ -278,11 +278,16 @@ export default function Peta() {
   }
 
   function hoverMarker(id:number,idx:number){
-      let allArray=listLocation
-      let spliced=allArray.splice(idx,1);
+      // let allArray=[...listLocation]
+      
+      // let spliced=allArray.splice(idx,1);
+      
+      // allArray.push(spliced[0])
+      
+      // setlistLocation(allArray)
       
 
-      setlistLocation([...allArray,...spliced])
+      // setlistLocation([...allArray,...spliced])
       // console.log(allArray,spliced)
       
       // let hoverLocation=listLocation.filter(el=>el.id===id)
