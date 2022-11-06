@@ -48,7 +48,7 @@ export default function Search({ handleSearch }: Props) {
   };
 
   return (
-    <div className="absolute  right-10 top-10 w-64 md:w-auto z-10">
+    <div className="absolute  right-10 top-10 w-64 md:w-auto z-30">
       <div className="py-3 px-2 h-10 md:h-12 flex bg-white shadow-mapbox-ctrl rounded-xl relative items-center">
         <div id="search" className="shadow-none font-nunito" ref={searchBox}></div>
         <span className="w-[2px] bg-green-primary opacity-30 h-full  block"></span>
