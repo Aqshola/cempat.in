@@ -30,9 +30,10 @@ type Props = {
   handleHelmetTitle?: (title: string, desc: string | null) => void;
   flying: (lng: number, lat: number) => void;
   stateFlying:boolean
+  zoomLimit?:number
 };
 
-function DetailStory({ titleEditor,  ...props }: Props) {
+function DetailStory({ titleEditor,zoomLimit=15,  ...props }: Props) {
   //REF
   const sheetRef = useRef<BottomSheetRef>(null);
   //HOOKS
@@ -144,7 +145,7 @@ function DetailStory({ titleEditor,  ...props }: Props) {
       }
       if(!props.stateFlying){
 
-        if(props.zoomLevel && props.zoomLevel>=15){
+        if(props.zoomLevel && props.zoomLevel>=zoomLimit){
           props.handleDetailView(true)
         }else{
           let timeout=setTimeout(() => {

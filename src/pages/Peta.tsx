@@ -98,7 +98,9 @@ export default function Peta() {
   function storyMarkerAction(dataLocation:ApiLocation){
       if(userEvent==='netral'){
         navigate(`?id=${dataLocation.id}`);
-        flyTo(dataLocation.lng,dataLocation.lat)
+        if(mapGlRef.current && mapGlRef.current.getZoom()<15){
+          flyTo(dataLocation.lng,dataLocation.lat)
+        }
       }else{
         setisClash(true)
       }
@@ -175,7 +177,9 @@ export default function Peta() {
         toast.error("Hayoo, pilih tempat dulu ya")
     }else{
         if(pickedLocationData){
-          mapGlRef.current?.zoomTo(15)
+          if(mapGlRef.current && mapGlRef.current?.getZoom()<15){
+            mapGlRef.current?.zoomTo(15)
+          }
           handleEditorSectionView(true)
         }
         
@@ -194,13 +198,30 @@ export default function Peta() {
   function getAllStory() {
     const bound = mapGlRef.current?.getBounds();
     let zoomLevel = mapGlRef.current?.getZoom() || 0;
+    setSessionStorage("zoomLevel",zoomLevel)
 
-    if (zoomLevel >= 10 && bound) {
+    
+    
+    if (bound) {
       const ne = bound.getNorthEast();
       const sw = bound.getSouthWest();
-
-      getMarker(ne.lng, sw.lng, ne.lat, sw.lat);
+      setSessionStorage("bound",[ne.lng, ne.lat, sw.lng,  sw.lat])
+      console.log(ne.lng, sw.lng, ne.lat, sw.lat);
+      
+      // setSessionStorage("bound",[ne.lat, sw.lat, ne.lng, sw.lng])
+      if(zoomLevel >= 10){
+        getMarker(ne.lng, sw.lng, ne.lat, sw.lat);
+      }
     }
+    // else{
+    //   const sessionBound=getSessionStorage("bound") as any
+    //   console.log(sessionBound)
+    //   if(sessionBound){
+    //     mapGlRef.current?.fitBounds([sessionBound.ne.lng,  sessionBound.sw.lng, sessionBound.ne.lat, sessionBound.sw.lat])
+    //     console.log(sessionBound)
+    //     getMarker(sessionBound.ne.lng,  sessionBound.sw.lng, sessionBound.ne.lat, sessionBound.sw.lat);
+    //   }
+    // }
   }
 
   function getCurrentPosition() {
@@ -259,12 +280,6 @@ export default function Peta() {
         duration:2000,
       });
     }, 0);
-
-
-    
-
-    
-
     // mapGlRef.current?.on("flyend", () => {
     //   console.log('sasa')
     //   setflying(false)
@@ -277,26 +292,9 @@ export default function Peta() {
     // });
   }
 
-  function hoverMarker(id:number,idx:number){
-      // let allArray=[...listLocation]
-      
-      // let spliced=allArray.splice(idx,1);
-      
-      // allArray.push(spliced[0])
-      
-      // setlistLocation(allArray)
-      
+  
 
-      // setlistLocation([...allArray,...spliced])
-      // console.log(allArray,spliced)
-      
-      // let hoverLocation=listLocation.filter(el=>el.id===id)
-      // let anotherLocation=listLocation.filter(el=>el.id!==id)
-
-      // //OVERLAP
-      // setlistLocation([...anotherLocation,...hoverLocation])
-
-  }
+  
 
 
   
@@ -372,6 +370,13 @@ export default function Peta() {
         )}
 
         <MapGL
+        fog={{
+          range:[0.8, 8],
+          color:"#dc9f9f",
+          "horizon-blend":0.5,
+        }}
+          
+          keyboard={true}
           onLoad={() => {
             getAllStory();
           }}
@@ -389,12 +394,13 @@ export default function Peta() {
           onClick={pickLocation}
           mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
           initialViewState={{
+            bounds:getSessionStorage("zoomLevel")?getSessionStorage("bound")|| undefined:undefined,
             longitude: initialLocation.lat,
             latitude: initialLocation.long,
-            zoom: 10,
+            zoom: getSessionStorage("zoomLevel")|| 10,
           }}
           attributionControl={false}
-          mapStyle="mapbox://styles/mapbox/streets-v9"
+          mapStyle="mapbox://styles/mapbox/streets-v11"
           style={{
             width: "100%",
             height: "100%",
@@ -411,7 +417,6 @@ export default function Peta() {
 
           {listLocation.map((loc, i) => (
             <StoryMarker
-              onHover={()=>hoverMarker(loc.id,i)}
               markerId={loc.id.toString()}
               key={i}
               onClick={(()=>storyMarkerAction(loc))}

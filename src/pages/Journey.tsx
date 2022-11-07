@@ -7,19 +7,17 @@ import { StoryMarker } from "components/Peta/Marker";
 
 import { authStore } from "store/authStore";
 import clsx from "clsx";
-import mapboxgl, { FeatureIdentifier, LngLat } from "mapbox-gl";
+import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import useSortedUserStory from "hooks/journey/useSortedUserStory";
 import {
-  Route,
   useLocation,
   useNavigate,
   useParams,
-  useSearchParams,
+  
 } from "react-router-dom";
 import { ApiLocation } from "types/types";
 import DetailStory from "components/Peta/DetailStory";
-import Button from "components/Button/Button";
 import UserSection from "components/Peta/UserSection";
 import useUserSummary from "hooks/journey/getUserSummary";
 
@@ -27,7 +25,7 @@ import useUserSummary from "hooks/journey/getUserSummary";
 // notice the exclamation point in the import.
 // @ts-ignore
 // eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
-// mapboxgl.workerClass =require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
+mapboxgl.workerClass =require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
 export default function Journey() {
   //REF
@@ -40,7 +38,7 @@ export default function Journey() {
 
   //DATA
   const authData = authStore((state) => state);
-  const location = useLocation();
+
   
 
   //STATE
@@ -76,7 +74,7 @@ export default function Journey() {
       mapGlRef.current?.flyTo({
         center: [lng, lat],
         essential: true,
-        zoom: 10,
+        zoom: 12,
         duration: 2000,
       });
     }, 0);
@@ -99,8 +97,6 @@ export default function Journey() {
   
 
 
-  
-
   const geojson: FeatureCollection = {
     type: "FeatureCollection",
     features: [
@@ -116,7 +112,9 @@ export default function Journey() {
   };
 
   function markerAction(dataLocation: ApiLocation) {
-    flyTo(dataLocation.lng, dataLocation.lat);
+    if(mapGlRef.current && mapGlRef.current.getZoom()<12){
+      flyTo(dataLocation.lng, dataLocation.lat);
+    }
     navigate(`?id=${dataLocation.id}`);
   }
 
@@ -128,7 +126,7 @@ export default function Journey() {
         aria-label="nav-btn"
       >
 
-        <div className="absolute top-10 z-30 left-0 right-0 flex justify-center">
+        <div className="absolute top-10 z-30 w-fit left-1/2 -translate-x-1/2 flex justify-center">
           <div
             onClick={() => {
               setsummaryUser(!summaryUser);
@@ -201,8 +199,9 @@ export default function Journey() {
               listLocation.length > 0
                 ? listLocation[0].lat
                 : initialLocation.long,
-            zoom: 9,
+            zoom:10,
           }}
+
           attributionControl={false}
           mapStyle="mapbox://styles/mapbox/streets-v9"
           style={{
@@ -238,6 +237,8 @@ export default function Journey() {
           </Source>
         </MapGL>
         <DetailStory
+          zoomLevel={mapGlRef.current?.getZoom()}
+          zoomLimit={10}
           authData={authData}
           handleDetailView={handleDetailView}
           stateDetailView={detailView}

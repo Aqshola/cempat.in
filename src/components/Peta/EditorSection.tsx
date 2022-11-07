@@ -44,7 +44,6 @@ export default function EditorSection({
     if (infoLocation) {
       let info = await getInfo(infoLocation.lng, infoLocation.lat);
       setplaceName(info.features[0].text);
-      console.log("sasa",info)
     }
   }
 
