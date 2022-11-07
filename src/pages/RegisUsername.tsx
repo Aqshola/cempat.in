@@ -87,6 +87,7 @@ export default function RegisUsername() {
               placeholder="Username"
               minLength={6}
               onChange={(e) => {
+                e.target.value=e.target.value.replaceAll(" ","")
                 setvalid("check");
                 setusername(e.target.value);
               }}

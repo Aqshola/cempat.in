@@ -15,68 +15,55 @@ import useDetailUser from "hooks/user/useDetailUser";
 import parseDateString from "hooks/helper/parseDateString";
 
 type Props = {
-  onOutsideEditor: () => void;
   showEditor: boolean;
-  onCloseEditor: () => void;
   titleEditor?: string;
-  viewData: ApiLocation;
+  handleUserView: (state: boolean) => void;
+  stateUserView: boolean;
   handleView?: () => void;
   handleHelmetTitle?: (title: string, desc: string | null) => void;
 };
 
-function UserSection({ titleEditor, viewData, ...props }: Props) {
+function UserSection({ titleEditor, ...props }: Props) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [getUserDetail, result, loading] = useDetailUser();
-  const [mount, setmount] = useState(true)
-  
+  const [mount, setmount] = useState(true);
 
   const sheetRef = useRef<BottomSheetRef>(null);
 
   const idParams = searchParams.get("user");
 
   const handleOnClose = () => {
-    
     if (props.handleHelmetTitle) {
       props.handleHelmetTitle("Peta", null);
     }
-    props.onCloseEditor();
-    // navigate("/peta");
+    props.handleUserView(false);
+    navigate("/peta");
   };
   const [getSize, screenSize] = useScreenSize();
 
   useEffect(() => {
-    // if(mount){
-      if (idParams) {
-        if (props.handleView) {
-          props.handleView();
-        }
-        getUserDetail(idParams);
-      }else{
-          handleOnClose()
+    if (idParams) {
+      if (props.handleView) {
+        props.handleView();
       }
-    // }
-    // return ()=>setmount(false)
+      getUserDetail(idParams);
+    } else {
+      props.handleUserView(false);
+    }
   }, [idParams]);
 
   useEffect(() => {
-    if(mount){
+    if (mount) {
       if (!loading) {
         if (result.data) {
           if (props.handleHelmetTitle) {
             props.handleHelmetTitle(result.data.user.username, null);
           }
-  
-          // splitbee.track("view story", {
-          //   id: result.data.id,
-          //   title: result.data.title,
-          //   place_name: result.data.place_name,
-          //   coordinat: result.data.lat + " - " + result.data.lng,
-          // });
         }
       }
     }
-    return ()=>setmount(false)
+    return () => setmount(false);
   }, [loading, result.data]);
 
   useEffect(() => {
@@ -93,7 +80,12 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
             </h2>
           }
           {...props}
-          onCloseEditor={handleOnClose}
+          onOutsideEditor={() => {
+            props.handleUserView(false);
+          }}
+          onCloseEditor={() => {
+            props.handleUserView(false);
+          }}
         >
           <div className="pb-5">
             {loading && (
@@ -117,11 +109,25 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
               <h2 className="text-center font-nunito font-medium text-xl mt-2 capitalize">
                 {result.data.user.username}
               </h2>
-              <Link to={`/user/${result.data.user.username}`} className="w-full flex justify-center mt-5">
-                <Button size="xs" className="w-fit">
-                  Lihat profil seutuhnya
-                </Button>
-              </Link>
+              <div className="flex justify-center gap-5">
+                <Link
+                  to={`/user/${result.data.user.username}`}
+                  className="w-fit flex justify-center mt-5"
+                >
+                  <Button size="xs" className="w-fit">
+                    Profil
+                  </Button>
+                </Link>
+
+                <Link
+                  to={`/journey/${result.data.user.username}`}
+                  className="w-fit flex justify-center mt-5"
+                >
+                  <Button size="xs" className="w-fit" variant="outline-primary">
+                    Riwayat
+                  </Button>
+                </Link>
+              </div>
               <div className="mt-9">
                 <h3 className="mb-7 text-xl font-semibold font-nunito">
                   Cerita
@@ -199,14 +205,20 @@ function UserSection({ titleEditor, viewData, ...props }: Props) {
               <h2 className="text-center font-nunito font-medium text-xl mt-2 capitalize">
                 {result.data.user.username}
               </h2>
-              <Link
-                to={`/user/${result.data.user.username}`}
-                className="w-full flex justify-center mt-5"
-              >
-                <Button size="xs" className="w-fit">
-                  Lihat profil seutuhnya
-                </Button>
-              </Link>
+              <div className="flex gap-2 justify-center items-center mt-5">
+                <Link
+                  to={`/user/${result.data.user.username}`}
+                >
+                  <Button size="xs" className="w-fit">
+                    Profil
+                  </Button>
+                </Link>
+                <Link to={`/journey/${result.data.user.username}`}>
+                  <Button size="xs" variant="outline-primary">Riwayat</Button>
+
+                </Link>
+
+              </div>
               <div className="mt-9">
                 <h3 className="mb-7 text-xl font-semibold font-nunito">
                   Cerita

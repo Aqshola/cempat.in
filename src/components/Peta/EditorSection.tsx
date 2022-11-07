@@ -15,9 +15,8 @@ import { CgClose } from "react-icons/cg";
 import toast from "react-hot-toast";
 
 type Props = {
-  onOutsideEditor: () => void;
+  handleEditorView:(state:boolean)=>void
   showEditor: boolean;
-  onCloseEditor: () => void;
   infoLocation: Location | null;
   onSaveEditor: (T: any) => void;
 };
@@ -86,7 +85,7 @@ export default function EditorSection({
         showSideNav(false);
         let res = result.data[0];
         onSaveEditor({ ...res });
-        props.onCloseEditor();
+        props.handleEditorView(false)
         setformData({
           title: "",
           content: EditorState.createEmpty(),
@@ -96,13 +95,19 @@ export default function EditorSection({
   }, [loading, result.error]);
 
   useEffect(() => {
-    if (mount) {
       if (props.showEditor) {
         gettingInfo();
       }
-    }
-    return () => setmount(false);
   }, [props.showEditor]);
+
+  useEffect(() => {
+    if(props.showEditor){
+      gettingInfo()
+    }
+  }, [infoLocation])
+  
+
+  
 
   useEffect(() => {
     getSize();
@@ -118,9 +123,10 @@ export default function EditorSection({
             </h2>
           }
           {...props}
+          onOutsideEditor={()=>props.handleEditorView(false)}
           onCloseEditor={() => {
             setplaceName(null);
-            props.onCloseEditor();
+            props.handleEditorView(false)
           }}
         >
           <form onSubmit={_createStory}>
@@ -164,7 +170,7 @@ export default function EditorSection({
         <button
           className="w-fit h-fit"
           onClick={() => {
-            props.onCloseEditor();
+            props.handleEditorView(false)
           }}
         >
           <CgClose className="w-6 h-6" />

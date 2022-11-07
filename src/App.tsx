@@ -7,6 +7,7 @@ import useSession from "hooks/auth/useSession";
 import Layout from "components/Layout/Layout";
 import { PrivateRoute, PublicRoute } from "components/Route/Route";
 import Spinner from "components/Spinner/Spinner";
+import Journey from "pages/Journey";
 
 const Landing = lazy(() => import("pages/Landing"));
 const Cerita = lazy(() => import("pages/Cerita"));
@@ -78,6 +79,11 @@ function App() {
                   <User />
                 </PrivateRoute>
               }
+            />
+
+            <Route
+              path="/journey/:username"
+              element={<Journey />}
             />
 
             <Route
