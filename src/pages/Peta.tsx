@@ -206,7 +206,6 @@ export default function Peta() {
       const ne = bound.getNorthEast();
       const sw = bound.getSouthWest();
       setSessionStorage("bound",[ne.lng, ne.lat, sw.lng,  sw.lat])
-      console.log(ne.lng, sw.lng, ne.lat, sw.lat);
       
       // setSessionStorage("bound",[ne.lat, sw.lat, ne.lng, sw.lng])
       if(zoomLevel >= 10){

@@ -81,7 +81,10 @@ function Register() {
                 debounce={true}
                 debounceCallback={() => checkUsername(formData.username)}
                 loading={loadingCheck}
-                onChange={_setformData}
+                onChange={(e)=>{
+                  e.target.value=e.target.value.replaceAll(" ","")
+                  _setformData(e)
+                }}
                 required
                 placeholder="Username"
                 id="username"

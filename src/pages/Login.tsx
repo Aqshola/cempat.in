@@ -46,7 +46,7 @@ function Login() {
       exit="exit"
     >
       <HelmetTitle title="Cempat.in | Login" />
-      <motion.div className="loginpage transition-all pb-96 bg-green-primary h-screen md:py-8 px-7 md:px-32">
+      <motion.div className="loginpage transition-all pb-96 bg-green-primary min-h-screen max-h-screen md:py-8 px-7 md:px-32">
         <div className="md:w-[450px] w-full mx-auto">
           <motion.h1
             initial={{

@@ -16,7 +16,8 @@ const AvatarSize: {
 };
 
 export default function Avatar({size="md", className,name}: AvatarProps) {
-  const avatarName=name.charAt(0)+name.charAt(name.length-1)
+  const splitName=name.split(" ");
+  const avatarName=splitName.length>1?splitName[0][0]+splitName[splitName.length-1][0]:splitName[0][0]+splitName[0][splitName[0].length-1][0]
   return (
     <div
       id="profile"
