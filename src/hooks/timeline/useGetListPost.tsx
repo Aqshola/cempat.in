@@ -29,12 +29,8 @@ export default function useGetListPost(): [
 
       
 
-      const { data: Count } = await supabase
-        .from("cerita")
-        .select("count(*")
-        .single();
-
-        
+      
+      const { data: Count } = await supabase.rpc("get_count")
 
       if (Count) {
         if (skip === 0 && paginateInfinite.from === 0) {
