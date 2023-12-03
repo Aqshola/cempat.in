@@ -30,7 +30,7 @@ export default function useGetListPost(): [
       
 
       
-      const { data: Count } = await supabase.rpc("get_count")
+      const { data: Count } = await supabase.rpc("get_count").single();
 
       if (Count) {
         if (skip === 0 && paginateInfinite.from === 0) {
